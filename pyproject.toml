@@ -1,0 +1,14 @@
+[project]
+name = "decom-py"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "DanTanAtAims", email = "d.tan@aims.gov.au" }
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
