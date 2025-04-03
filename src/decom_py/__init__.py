@@ -1,2 +1,3 @@
-def hello() -> str:
-    return "Hello from decom-py!"
+from .EwE import EwE
+
+__all__ = ['EwE']
