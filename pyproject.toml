@@ -7,7 +7,9 @@ authors = [
     { name = "DanTanAtAims", email = "d.tan@aims.gov.au" }
 ]
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "pythonnet>=3.0.5",
+]
 
 [build-system]
 requires = ["hatchling"]
