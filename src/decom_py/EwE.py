@@ -15,9 +15,9 @@ class EwE:
         if not self._ewe_core_path.exists():
             raise FileNotFoundError(self._ewe_core_path)
 
-        clr.AddReference(self._ewe_core_path)
+        clr.AddReference(str(self._ewe_core_path))
 
-        self._ewe_core = __import__(EwECore)
+        self._ewe_core = __import__('EwECore')
 
     def core(self):
         return self._ewe_core.cCore()
