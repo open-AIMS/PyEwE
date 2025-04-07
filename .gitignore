@@ -7,3 +7,7 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Script outputs
+Outputs/
+

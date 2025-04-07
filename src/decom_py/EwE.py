@@ -2,9 +2,11 @@ import clr
 import sys
 import os
 from pathlib import Path
+from warnings import warn
+from importlib import import_module
 
 class EwE:
-    
+
     def __init__(self, ewe_dir):
 
         self._ewe_dir = Path(ewe_dir)
@@ -17,7 +19,54 @@ class EwE:
 
         clr.AddReference(str(self._ewe_core_path))
 
-        self._ewe_core = __import__('EwECore')
+        self._ewe_core = import_module('EwECore')
+        self._core = self._ewe_core.cCore()
+        self._ecopath_result_writer = self._ewe_core.cEcopathResultWriter(self._core)
+        self._ecosim_result_writer = self._ewe_core.Ecosim.cEcosimResultWriter(self._core)
+        self._core.OutputPath = "Outputs/"
+
+    def load_model(self, path: str):
+        return self._core.LoadModel(path)
+
+    def load_ecosim_scenario(self, idx: int):
+        if idx >= self._core.nEcosimScenarios:
+            msg = "Given index, {}".format(idx)
+            msg += " but there are {} scenarios".format(self._core.nEcosimScenarios)
+            raise IndexError(msg)
+
+        return self._core.LoadEcosimScenario(idx)
+
+    def load_ecotracer_scenario(self, idx: int):
+        if idx >= self._core.nEcotracerScenarios:
+            msg = "Given index, {}".format(idx)
+            msg += " but there are {} scenarios".format(self._core.nEcotracerScenarios)
+            raise IndexError(msg)
+
+        return self._core.LoadEcotracerScenario(idx)
 
     def core(self):
-        return self._ewe_core.cCore()
+        return self._core
+
+    def run_ecopath(self):
+        is_balanced: bool = self._core.IsModelBalanced
+        if not is_balanced:
+            warn("Ecopath model is not balanced.")
+
+        results = self._core.RunEcopath()
+
+        return results
+
+    def run_ecosim(self):
+    
+        self.run_ecopath()
+        successful: bool = self._core.RunEcosim()
+
+        return successful
+
+    def save_ecopath_results(self, path: str):
+        # Missing use monthly enum type to pass to write results.
+        return self._ecopath_result_writer.WriteResults()
+
+    def save_ecosim_results(self, path: str):
+        # Missing use monthly enum type to pass to write results.
+        return self._ecosim_result_writer.WriteResults()
