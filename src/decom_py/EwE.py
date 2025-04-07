@@ -29,17 +29,19 @@ class EwE:
         return self._core.LoadModel(path)
 
     def load_ecosim_scenario(self, idx: int):
-        if idx >= self._core.nEcosimScenarios:
+        n_ecosim_scens: int = self._core.nEcosimScenarios
+        if idx > n_ecosim_scens or idx < 1:
             msg = "Given index, {}".format(idx)
-            msg += " but there are {} scenarios".format(self._core.nEcosimScenarios)
+            msg += " but there are {} scenarios".format(n_ecosim_scens)
             raise IndexError(msg)
 
         return self._core.LoadEcosimScenario(idx)
 
     def load_ecotracer_scenario(self, idx: int):
-        if idx >= self._core.nEcotracerScenarios:
+        n_ecotracer_scens: int = self._core.nEcotracerScenarios
+        if idx > n_ecotracer_scens or idx < 1:
             msg = "Given index, {}".format(idx)
-            msg += " but there are {} scenarios".format(self._core.nEcotracerScenarios)
+            msg += " but there are {} scenarios".format(n_ecotracer_scens)
             raise IndexError(msg)
 
         return self._core.LoadEcotracerScenario(idx)
@@ -67,6 +69,6 @@ class EwE:
         # Missing use monthly enum type to pass to write results.
         return self._ecopath_result_writer.WriteResults()
 
-    def save_ecosim_results(self):
+    def save_ecosim_results(self, dir: str):
         # Missing use monthly enum type to pass to write results.
-        return self._ecosim_result_writer.WriteResults()
+        return self._ecosim_result_writer.WriteResults(dir)

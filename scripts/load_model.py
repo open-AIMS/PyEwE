@@ -7,12 +7,14 @@ model_file = r'C:\Users\dtan\data\Decommissioning\Past_Ecopath\NorthSea\North Se
 ewe.load_model(model_file)
 
 ewe.run_ecopath()
-ewe.load_ecosim_scenario(0)
-ewe.load_ecotracer_scenario(0)
+ewe.load_ecosim_scenario(1)
+ewe.load_ecotracer_scenario(1)
 
-ewe.run_ecosim()
+if not ewe.run_ecosim():
+    print("Failed to run ecosim.")
 
 ewe.save_ecopath_results()
-ewe.save_ecosim_results()
+if not ewe.save_ecosim_results('Outputs/ecosim_res'):
+    print("Failed to save ecosim results.")
 
 core.CloseModel()
