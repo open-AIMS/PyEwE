@@ -17,10 +17,12 @@ ewe.run_ecopath()
 ewe.load_ecosim_scenario(0)
 ewe.load_ecotracer_scenario(0)
 
-ewe.run_ecosim()
+if not ewe.run_ecosim():
+    print("Failed to run ecosim.")
 
 ewe.save_ecopath_results()
-ewe.save_ecosim_results()
+if not ewe.save_ecosim_results("directory to save ecosim results"):
+    print("Failed to save ecosim results")
 
 ewe.core().CloseModel()
 
