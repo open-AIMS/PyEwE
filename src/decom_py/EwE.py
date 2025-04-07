@@ -7,7 +7,7 @@ from importlib import import_module
 
 class EwE:
 
-    def __init__(self, ewe_dir):
+    def __init__(self, ewe_dir: str, result_save_dir: str):
 
         self._ewe_dir = Path(ewe_dir)
         if not self._ewe_dir.exists():
@@ -23,7 +23,7 @@ class EwE:
         self._core = self._ewe_core.cCore()
         self._ecopath_result_writer = self._ewe_core.cEcopathResultWriter(self._core)
         self._ecosim_result_writer = self._ewe_core.Ecosim.cEcosimResultWriter(self._core)
-        self._core.OutputPath = "Outputs/"
+        self._core.OutputPath = result_save_dir
 
     def load_model(self, path: str):
         return self._core.LoadModel(path)
@@ -63,10 +63,10 @@ class EwE:
 
         return successful
 
-    def save_ecopath_results(self, path: str):
+    def save_ecopath_results(self):
         # Missing use monthly enum type to pass to write results.
         return self._ecopath_result_writer.WriteResults()
 
-    def save_ecosim_results(self, path: str):
+    def save_ecosim_results(self):
         # Missing use monthly enum type to pass to write results.
         return self._ecosim_result_writer.WriteResults()
