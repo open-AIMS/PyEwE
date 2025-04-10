@@ -27,3 +27,46 @@ if not ewe.save_ecosim_results("directory to save ecosim results"):
 ewe.core().CloseModel()
 
 ```
+
+### Debugging
+
+```python
+from decom_py import EwE, EwEState
+ewe = EwE("path to dlls")
+
+# ... code running models
+
+state = EwEState(ewe.core())
+state.print_summary()
+
+# Possible output
+# ---- Complate State Summary ----
+# 
+# ---- EwE State ----
+# CanEcopathLoad: True
+# CanEcosimLoad: True
+# CanEcospaceLoad: True
+# CanEcotracerLoad: True
+# 
+# ---- Ecopath State ----
+# HasEcopathInitialized: True
+# HasEcopathLoaded: True
+# HasEcopathRan: True
+# IsEcopathRunning: False
+# IsEcopathModified: False
+# 
+# ---- Ecosim State ----
+# HasEcosimInitialized: False
+# HasEcosimLoaded: True
+# HasEcosimRan: False
+# IsEcosimRunning: False
+# IsEcosimModified: False
+# 
+# ---- EcoTracer State ----
+# HasEcotracerLoaded: True
+# HasEcotracerRanForEcosim: False
+# HasEcotracerRanForEcospace: False
+# IsEcotracerModified: False
+
+# ... more code running models
+```
