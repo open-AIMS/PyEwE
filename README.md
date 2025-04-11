@@ -3,6 +3,21 @@
 A tool using [Ecopath with Ecosim](https://ecopath.org/), to explore a wide range of
 decomissioning scenarios.
 
+## Setup
+
+Install [uv](https://docs.astral.sh/uv/#__tabbed_1_2) to manage python versions and
+dependencies.
+
+Once installed, restart the terminal for changes to take effect.
+
+Navigate to the project directory and run:
+
+```bash
+uv sync
+```
+
+This will install needed dependencies.
+
 ## Example
 
 ```python
@@ -50,27 +65,27 @@ state.print_summary()
 
 # Possible output
 # ---- Complate State Summary ----
-# 
+#
 # ---- EwE State ----
 # CanEcopathLoad: True
 # CanEcosimLoad: True
 # CanEcospaceLoad: True
 # CanEcotracerLoad: True
-# 
+#
 # ---- Ecopath State ----
 # HasEcopathInitialized: True
 # HasEcopathLoaded: True
 # HasEcopathRan: True
 # IsEcopathRunning: False
 # IsEcopathModified: False
-# 
+#
 # ---- Ecosim State ----
 # HasEcosimInitialized: False
 # HasEcosimLoaded: True
 # HasEcosimRan: False
 # IsEcosimRunning: False
 # IsEcosimModified: False
-# 
+#
 # ---- EcoTracer State ----
 # HasEcotracerLoaded: True
 # HasEcotracerRanForEcosim: False
