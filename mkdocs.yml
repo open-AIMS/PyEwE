@@ -1,6 +1,8 @@
-site_name: decom_py 
+site_name: decom_py
 site_description: EwE model wrapper
 site_author: Daniel Tan
+site_url: https://open-aims.github.io/decom_py
+repo_url: https://github.com/open-AIMS/decom_py
 
 theme:
   name: material
