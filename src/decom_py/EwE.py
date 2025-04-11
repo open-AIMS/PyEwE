@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 from warnings import warn
 from importlib import import_module
+from .EwEState import EwEState
 
 class EwE:
 
@@ -27,6 +28,7 @@ class EwE:
         self._ewe_core = import_module('EwECore')
         self._ewe_util = import_module('EwEUtils')
         self._core = self._ewe_core.cCore()
+        self._state = EwEState(self._core)
         self._ecopath_result_writer = self._ewe_core.cEcopathResultWriter(self._core)
         self._ecosim_result_writer = self._ewe_core.Ecosim.cEcosimResultWriter(self._core)
         self._ecotracer_result_writer = self._ewe_core.cEcotracerResultWriter(self._core)
@@ -71,8 +73,20 @@ class EwE:
 
         return results
 
-    def run_ecosim(self):
+    def run_ecosim_wo_ecotracer(self) -> bool:
 
+        self._core.EcotracerModelParameters.ContaminantTracing = False
+        self.run_ecopath()
+        successful: bool = self._core.RunEcosim()
+
+        return successful
+
+    def run_ecosim_w_ecotracer(self) -> bool:
+
+        if not self._state.HasEcotracerLoaded():
+            raise Exception("Ecotracer scenario is not loaded.")
+
+        self._core.EcotracerModelParameters.ContaminantTracing = True
         self.run_ecopath()
         successful: bool = self._core.RunEcosim()
 
