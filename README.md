@@ -17,7 +17,7 @@ ewe.run_ecopath()
 ewe.load_ecosim_scenario(0)
 ewe.load_ecotracer_scenario(0)
 
-if not ewe.run_ecosim():
+if not ewe.run_ecosim_w_ecotracer():
     print("Failed to run ecosim.")
 
 ewe.save_ecopath_results()
