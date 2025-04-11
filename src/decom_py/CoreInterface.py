@@ -1,52 +1,48 @@
-import abc
-import clr
-import sys
 import os
 from pathlib import Path
-from warnings import warn
-from importlib import import_module
+
 from .EwEState import EwEState
+from .EwEModule import get_ewe_core_module
 
-class EwE:
+class CoreInterface:
+    """Interface to update the state of the underlying EwECore.
 
-    def __init__(self, ewe_dir: str, result_save_dir: str):
+    Attributes:
+        _core (cCore): Visual Basic cCore object describing the state of the program.
+        _ecopath_result_writer (cEcopathResultWriter): Object the handles writing ecopath results
+        _ecosim_result_writer (cEcosimResultWriter): Object the handles writing ecosim results
+        _ecotracer_result_writer (cEcotracerResultWriter): Object the handles writing ecotracer results
+        _state (cStateMonitor): Object handling high level state information bout _core
+    """
 
-        self._ewe_dir = Path(ewe_dir)
-        if not self._ewe_dir.exists():
-            raise FileNotFoundError(self._ewe_dir)
+    def __init__(self):
+        
+        core_module = get_ewe_core_module()
 
-        self._ewe_core_path = self._ewe_dir.joinpath('EwECore.dll')
-        if not self._ewe_core_path.exists():
-            raise FileNotFoundError(self._ewe_core_path)
-
-        self._ewe_util_path = self._ewe_dir.joinpath('EwEUtils.dll')
-        if not self._ewe_core_path.exists():
-            raise FileNotFoundError(self._ewe_core_path)
-
-        clr.AddReference(str(self._ewe_core_path))
-
-        self._ewe_core = import_module('EwECore')
-        self._ewe_util = import_module('EwEUtils')
-        self._core = self._ewe_core.cCore()
+        self._core = core_module.cCore()
+        self._ecopath_result_writer = core_module.cEcopathResultWriter(self._core)
+        self._ecosim_result_writer = core_module.Ecosim.cEcosimResultWriter(self._core)
+        self._ecotracer_result_writer = core_module.cEcotracerResultWriter(self._core)
         self._state = EwEState(self._core)
-        self._ecopath_result_writer = self._ewe_core.cEcopathResultWriter(self._core)
-        self._ecosim_result_writer = self._ewe_core.Ecosim.cEcosimResultWriter(self._core)
-        self._ecotracer_result_writer = self._ewe_core.cEcotracerResultWriter(self._core)
-        self._core.OutputPath = result_save_dir
 
-    def core(self):
+    def get_core(self):
         return self._core
-
-    def _get_core_module(self):
-        return self._ewe_core
-
-    def _get_util_module(self):
-        return self._ewe_util
 
     def load_model(self, path: str):
         return self._core.LoadModel(path)
 
     def load_ecosim_scenario(self, idx: int):
+        """Load an ecosim scenario into the core object.
+        
+        Args:
+            idx (int): Index of already existing ecosim scenario
+
+        Returns:
+            bool: success or failure
+
+        Raises: 
+            IndexError: The provided idx was out of bounds.
+        """
         n_ecosim_scens: int = self._core.nEcosimScenarios
         if idx > n_ecosim_scens or idx < 1:
             msg = "Given index, {}".format(idx)
@@ -56,6 +52,17 @@ class EwE:
         return self._core.LoadEcosimScenario(idx)
 
     def load_ecotracer_scenario(self, idx: int):
+        """Load an ecotracer scenario into the core object.
+        
+        Args:
+            idx (int): Index of already existing ecotracer scenario
+
+        Returns:
+            bool: success or failure
+
+        Raises: 
+            IndexError: The provided idx was out of bounds.
+        """
         n_ecotracer_scens: int = self._core.nEcotracerScenarios
         if idx > n_ecotracer_scens or idx < 1:
             msg = "Given index, {}".format(idx)
@@ -65,6 +72,7 @@ class EwE:
         return self._core.LoadEcotracerScenario(idx)
 
     def run_ecopath(self):
+        """Run the ecopath model and return whether it was successful"""
         is_balanced: bool = self._core.IsModelBalanced
         if not is_balanced:
             warn("Ecopath model is not balanced.")
@@ -74,6 +82,7 @@ class EwE:
         return results
 
     def run_ecosim_wo_ecotracer(self) -> bool:
+        """Run the ecosim model without ecotracer and return whether it was successful"""
 
         self._core.EcotracerModelParameters.ContaminantTracing = False
         self.run_ecopath()
@@ -82,6 +91,7 @@ class EwE:
         return successful
 
     def run_ecosim_w_ecotracer(self) -> bool:
+        """Run the ecosim model with ecotracer and return whether it was successful"""
 
         if not self._state.HasEcotracerLoaded():
             raise Exception("Ecotracer scenario is not loaded.")
@@ -106,3 +116,10 @@ class EwE:
 
     def save_ecotracer_results(self):
         return self._ecotracer_result_writer.WriteEcosimResults()
+
+    def set_default_save_dir(self, save_dir: str):
+        """Set the default save directory in underlying core object."""
+        self._core.OutputPath = save_dir
+
+    def close_model(self):
+        return self._core.CloseModel()
