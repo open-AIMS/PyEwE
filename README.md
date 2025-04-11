@@ -6,37 +6,46 @@ decomissioning scenarios.
 ## Example
 
 ```python
-from decom_py import EwE
+from decom_py import CoreInterface, EwEState, initialise
 
-ewe = EwE("path to EwE dll directory.", "path to result save dir")
+initialise(r'C:\Program Files\Ecopath with Ecosim 40 years 6.7.0.18865_64-bit')
+core = CoreInterface()
 
-model_file = "path to model file"
-ewe.load_model(model_file)
+core.set_default_save_dir('Outputs/')
 
-ewe.run_ecopath()
-ewe.load_ecosim_scenario(0)
-ewe.load_ecotracer_scenario(0)
+model_file = r'C:\Users\dtan\data\Decommissioning\Past_Ecopath\GippslandBasin\East Bass Strait.eweaccdb'
+core.load_model(model_file)
 
-if not ewe.run_ecosim_w_ecotracer():
+core.load_ecosim_scenario(1)
+
+
+if not core.load_ecotracer_scenario(1):
+    print("Failed to load ecotracer scenario.")
+
+if not core.run_ecosim_w_ecotracer():
     print("Failed to run ecosim.")
 
-ewe.save_ecopath_results()
-if not ewe.save_ecosim_results("directory to save ecosim results"):
-    print("Failed to save ecosim results")
+core.save_ecopath_results()
+core.save_ecosim_results('Outputs/ecosim_res')
 
-ewe.core().CloseModel()
+if not core.save_ecotracer_results():
+   print("Failed to save ecotracer results.")
 
+core.close_model()
 ```
 
 ### Debugging
 
 ```python
-from decom_py import EwE, EwEState
-ewe = EwE("path to dlls")
+from decom_py import CoreInterfacea, EwEState
+
+initialise('path to ewe binary directory')
+
+core = CoreInterface()
 
 # ... code running models
 
-state = EwEState(ewe.core())
+state = core._state
 state.print_summary()
 
 # Possible output
