@@ -18,6 +18,35 @@ uv sync
 
 This will install needed dependencies.
 
+## Developer setup
+
+Additional packages for a development environment can be added:
+
+```bash
+uv add --dev <name of package>
+```
+
+These packages will not be included in the package dependencies and are only installed
+locally.
+
+### Jupyter notebooks
+
+To setup a ipykernel:
+
+Linux:
+
+```bash
+uv run ipython kernel install --user --env VIRTUAL_ENV $(pwd)/.venv --name=decom_py
+```
+
+For Powershell:
+
+```bash
+uv run ipython kernel install --user --env VIRTUAL_ENV "$((Get-Location).Path)\.venv" --name=decom_py
+```
+
+The appropriate kernel can then be selected in Jupyter Notebook.
+
 ## Example
 
 ```python
