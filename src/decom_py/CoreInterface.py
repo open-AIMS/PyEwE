@@ -5,7 +5,7 @@ from pathlib import Path
 from .EwEState import EwEState
 from .EwEModule import get_ewe_core_module
 
-class CoreInterface:
+class CoreInterface():
     """Interface to update the state of the underlying EwECore.
 
     Attributes:
@@ -123,3 +123,6 @@ class CoreInterface:
 
     def close_model(self):
         return self._core.CloseModel()
+
+    def print_summary(self):
+        return self._state.print_summary()

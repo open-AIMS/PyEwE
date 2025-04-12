@@ -104,8 +104,7 @@ core = CoreInterface()
 
 # ... code running models
 
-state = core._state
-state.print_summary()
+core.print_summary()
 
 # Possible output
 # ---- Complate State Summary ----
