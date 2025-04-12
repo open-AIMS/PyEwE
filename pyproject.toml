@@ -8,9 +8,32 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "polars>=1.27.1",
     "pythonnet>=3.0.5",
+    "xarray>=2025.3.1",
 ]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.workspace]
+members = [
+    "sandbox",
+]
+
+[dependency-groups]
+dev = [
+    "autopep8",
+    "black",
+    "ipython",
+    "ipdb",
+    "jupyter",
+    "py-spy",
+    "pudb",
+    "pytest>=8.3.5",
+    "ipykernel>=6.29.5",
+]
+test = [
+    "pytest"
+]
