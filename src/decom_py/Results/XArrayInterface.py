@@ -56,19 +56,16 @@ class XarrayCSV(ResultsInterface):
 
         return metadata
 
-    def extract_text(self, result_csv: str, start_pos: int, end_pos: int):
-        start_pos += 1
-        lines = []
-        with open(result_csv, "r") as fp:
-            for i, line in enumerate(fp):
-                if start_pos <= i <= end_pos-1:
-                    lines.append(line.rstrip('\n'))
+    def extract_data(self, result_csv: Path):
+        """Extract raw results from EwE outputs."""
 
-                if i > end_pos:
-                    print(i)
-                    break
+        header_row = self._find_data_start(result_csv)
 
-        return lines
+        # data = pl.read_csv(result_csv, skip_lines=header_row-1).to_numpy(structured=True)
+        # tbl = xr.DataArray(data)
+        data = pl.read_csv(result_csv, skip_lines=header_row)
+
+        return data
 
     def _identify_row(self, results_csv: Path, needle: str):
         """Identify row with a given string.
@@ -81,46 +78,40 @@ class XarrayCSV(ResultsInterface):
                     return line_number, line.strip()
 
         # No matches found, return none
-        return None
+        return None, None
 
     def _find_data_start(self, result_csv: Path):
         """
         Search file line-by-line until a table-like data structure is found.
         """
-        md_end = self._identify_row(result_csv, "<HEADER end/>")
-        header_line = 0
+        md_end, _ = self._identify_row(result_csv, "<HEADER end/>")
+        if md_end is None:
+            raise ValueError("Metadata block could not be identified.")
 
+        header_line = md_end + 1
         with open(result_csv, "r") as fp:
             # Move file pointer to line after header end
-            for _ in range(md_end+1):
+            for _ in range(md_end):
                 next(fp, None)
 
-            current_line = md_end-1
+            current_line = md_end
             valid_lines = 0
             line = fp.readline()
-            while line and line.strip() == "":
-                current_line += 1
+            while line:
                 line = fp.readline()
                 if line.strip() != "":
                     valid_lines += 1
+                else:
+                    valid_lines = 0
 
                 if valid_lines == 2:
-                    # Data must have two consecutive lines of content after metadata
-                    header_line = current_line - 1
+                    # Data must have at least two consecutive lines of content after metadata
+                    header_line = current_line
                     break
 
-            if header_line == 0:
-                warnings.warn("No data found!")
+                current_line += 1
+
+        if header_line == (md_end + 1):
+            warnings.warn("No data found!")
 
         return header_line
-
-    def extract_data(self, result_csv: Path):
-        """Extract raw results from EwE outputs."""
-
-        header_row = self._find_data_start(self, result_csv)
-
-        # data = pl.read_csv(result_csv, skip_lines=header_row-1).to_numpy(structured=True)
-        # tbl = xr.DataArray(data)
-        data = pl.read_csv(result_csv, skip_lines=header_row-1)
-
-        return data
