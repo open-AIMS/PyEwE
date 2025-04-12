@@ -47,6 +47,21 @@ uv run ipython kernel install --user --env VIRTUAL_ENV "$((Get-Location).Path)\.
 
 The appropriate kernel can then be selected in Jupyter Notebook.
 
+### Useful IPython magic commands
+
+When developing in a Jupyter notebook or in IPython, it is useful for code to be
+hot-reloaded after changing the code. To enable this, use the autoreload extension.
+
+```bash
+%load_ext autoreload
+%autoreload 2
+```
+
+The number `2` in the example above autoreloads all modules.
+
+See [here](https://ipython.readthedocs.io/en/stable/config/extensions/autoreload.html#magic-autoreload)
+for more information.
+
 ## Example
 
 ```python
