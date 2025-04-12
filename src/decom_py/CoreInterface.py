@@ -4,6 +4,7 @@ from pathlib import Path
 
 from .EwEState import EwEState
 from .EwEModule import get_ewe_core_module
+from .Results import XarrayCSV
 
 class CoreInterface():
     """Interface to update the state of the underlying EwECore.
@@ -51,7 +52,7 @@ class CoreInterface():
 
         return self._core.LoadEcosimScenario(idx)
 
-    def load_ecotracer_scenario(self, idx: int):
+    def load_ecotracer_scenario(self, idx: int) -> bool:
         """Load an ecotracer scenario into the core object.
 
         Args:
@@ -69,7 +70,11 @@ class CoreInterface():
             msg += " but there are {} scenarios".format(n_ecotracer_scens)
             raise IndexError(msg)
 
-        return self._core.LoadEcotracerScenario(idx)
+        success = self._core.LoadEcotracerScenario(idx)
+        if not success:
+            print("Loading Ecotracer failed.")
+
+        return success
 
     def run_ecopath(self):
         """Run the ecopath model and return whether it was successful"""
@@ -100,6 +105,9 @@ class CoreInterface():
         self.run_ecopath()
         successful: bool = self._core.RunEcosim()
 
+        if not successful:
+            print("EcoSim with Ecotracer run failed.")
+
         return successful
 
     def save_ecopath_results(self):
@@ -115,11 +123,16 @@ class CoreInterface():
         return True
 
     def save_ecotracer_results(self):
-        return self._ecotracer_result_writer.WriteEcosimResults()
+        success = self._ecotracer_result_writer.WriteEcosimResults()
+        if not success:
+            print("Saving Ecotracer results failed.")
+
+        return success
 
     def set_default_save_dir(self, save_dir: str):
         """Set the default save directory in underlying core object."""
         self._core.OutputPath = save_dir
+        self.results = XarrayCSV(save_dir)
 
     def close_model(self):
         return self._core.CloseModel()

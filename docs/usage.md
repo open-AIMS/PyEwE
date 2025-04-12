@@ -27,9 +27,7 @@ if not core.run_ecosim_w_ecotracer():
 
 core.save_ecopath_results()
 core.save_ecosim_results('Outputs/ecosim_res')
-
-if not core.save_ecotracer_results():
-   print("Failed to save ecotracer results.")
+core.save_ecotracer_results()
 
 core.close_model()
 ```

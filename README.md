@@ -29,6 +29,12 @@ uv add --dev <name of package>
 These packages will not be included in the package dependencies and are only installed
 locally.
 
+### Docstrings
+
+The docstrings follow the [Google Python style guide](https://google.github.io/styleguide/pyguide.html).
+
+[Black](https://github.com/psf/black) is used for code formatting.
+
 ### Jupyter notebooks
 
 To setup a ipykernel:
@@ -76,19 +82,11 @@ model_file = "C:/Users/dtan/data/Decommissioning/Past_Ecopath/GippslandBasin/Eas
 core.load_model(model_file)
 
 core.load_ecosim_scenario(1)
-
-
-if not core.load_ecotracer_scenario(1):
-    print("Failed to load ecotracer scenario.")
-
-if not core.run_ecosim_w_ecotracer():
-    print("Failed to run ecosim.")
+core.load_ecotracer_scenario(1)
 
 core.save_ecopath_results()
 core.save_ecosim_results("Outputs/ecosim_res")
-
-if not core.save_ecotracer_results():
-   print("Failed to save ecotracer results.")
+core.save_ecotracer_results()
 
 core.close_model()
 ```
@@ -98,7 +96,7 @@ core.close_model()
 ```python
 from decom_py import CoreInterfacea, EwEState
 
-initialise("path to ewe binary directory")
+initialise("path to EwE binary directory")
 
 core = CoreInterface()
 
