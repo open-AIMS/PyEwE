@@ -1,3 +1,8 @@
+import importlib
+from types import MethodType
+from functools import wraps, partial
+
+
 def _format_property_line(property_name: str, val) -> str:
     return "{}: {}\n".format(property_name, val)
 
@@ -7,86 +12,19 @@ class EwEState:
     def __init__(self, core):
         self._monitor = core.StateMonitor
 
-    def CanEcopathLoad(self) -> bool:
-        return self._monitor.CanEcopathLoad()
+        # Auto-add monitor methods
+        for method_name in dir(self._monitor):
+            if not method_name.startswith('_'):
+                # Only bind public methods
+                method = getattr(self._monitor, method_name)
+                if callable(method):
+                    # Use functools.partial to bind the method
+                    setattr(self, method_name, partial(getattr(self._monitor, method_name)))
 
-    def CanEcosimLoad(self) -> bool:
-        return self._monitor.CanEcosimLoad()
-
-    def CanEcospaceLoad(self) -> bool:
-        return self._monitor.CanEcospaceLoad()
-
-    def CanEcotracerLoad(self) -> bool:
-        return self._monitor.CanEcotracerLoad()
-
-    def HasEcopathInitialized(self) -> bool:
-        return self._monitor.HasEcopathInitialized()
-
-    def HasEcopathLoaded(self) -> bool:
-        return self._monitor.HasEcopathLoaded()
-
-    def HasEcopathRan(self) -> bool:
-        return self._monitor.HasEcopathRan()
-
-    def HasEcosimInitialized(self) -> bool:
-        return self._monitor.HasEcosimInitialized()
-
-    def HasEcosimLoaded(self) -> bool:
-        return self._monitor.HasEcosimLoaded()
-
-    def HasEcosimRan(self) -> bool:
-        return self._monitor.HasEcosimRan()
-
-    def HasEcospaceInitialized(self) -> bool:
-        return self._monitor.HasEcospaceInitialized()
-
-    def HasEcospaceLoaded(self) -> bool:
-        return self._monitor.HasEcospaceLoaded()
-
-    def HasEcospaceRan(self) -> bool:
-        return self._monitor.HasEcospaceRan()
-
-    def HasEcotracerLoaded(self) -> bool:
-        return self._monitor.HasEcotracerLoaded()
-
-    def HasEcotracerRanForEcosim(self) -> bool:
-        return self._monitor.HasEcotracerRanForEcosim()
-
-    def HasEcotracerRanForEcospace(self) -> bool:
-        return self._monitor.HasEcotracerRanForEcospace()
-
-    def HasPSDRan(self) -> bool:
-        return self._monitor.HasPSDRan()
-
-    def IsBatchLocked(self) -> bool:
-        return self._monitor.IsBatchLocked()
-
-    def IsBusy(self) -> bool:
-        return self._monitor.IsBusy()
-
-    def IsDatasourceModified(self) -> bool:
-        return self._monitor.IsDatasourceModified()
-
-    def IsEcopathModified(self) -> bool:
-        return self._monitor.IsEcopathModified()
-
-    def IsEcopathRunning(self) -> bool:
-        return self._monitor.IsEcopathRunning()
-
-    def IsEcosimModified(self) -> bool:
-        return self._monitor.IsEcosimModified()
-
-    def IsEcosimRunning(self) -> bool:
-        return self._monitor.IsEcosimRunning()
-
-    def IsEcospaceModified(self) -> bool:
-        return self._monitor.IsEcospaceModified()
-
-    def IsEcospaceRunning(self) -> bool:
-        return self._monitor.IsEcospaceRunning()
-
-    def IsEcotracerModified(self) -> bool:
-        return self._monitor.IsEcotracerModified()
+    # This is the quick and dirty way of reflecting methods from StateMonitor.
+    # It works, but reduces discoverability (e.g., tab-completion does not work)
+    # def __getattr__(self, name):
+    #     return getattr(self._monitor, name)
 
     def print_non_model_summary(self) -> None:
         summary = "---- EwE State ----\n"
