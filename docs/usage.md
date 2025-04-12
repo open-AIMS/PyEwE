@@ -50,27 +50,27 @@ state.print_summary()
 
 # Possible output
 # ---- Complate State Summary ----
-# 
+#
 # ---- EwE State ----
 # CanEcopathLoad: True
 # CanEcosimLoad: True
 # CanEcospaceLoad: True
 # CanEcotracerLoad: True
-# 
+#
 # ---- Ecopath State ----
 # HasEcopathInitialized: True
 # HasEcopathLoaded: True
 # HasEcopathRan: True
 # IsEcopathRunning: False
 # IsEcopathModified: False
-# 
+#
 # ---- Ecosim State ----
 # HasEcosimInitialized: False
 # HasEcosimLoaded: True
 # HasEcosimRan: False
 # IsEcosimRunning: False
 # IsEcosimModified: False
-# 
+#
 # ---- EcoTracer State ----
 # HasEcotracerLoaded: True
 # HasEcotracerRanForEcosim: False
