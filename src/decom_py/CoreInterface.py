@@ -1,4 +1,5 @@
 import os
+from warnings import warn
 from pathlib import Path
 
 from .EwEState import EwEState
@@ -16,7 +17,6 @@ class CoreInterface:
     """
 
     def __init__(self):
-        
         core_module = get_ewe_core_module()
 
         self._core = core_module.cCore()
@@ -33,14 +33,14 @@ class CoreInterface:
 
     def load_ecosim_scenario(self, idx: int):
         """Load an ecosim scenario into the core object.
-        
+
         Args:
             idx (int): Index of already existing ecosim scenario
 
         Returns:
             bool: success or failure
 
-        Raises: 
+        Raises:
             IndexError: The provided idx was out of bounds.
         """
         n_ecosim_scens: int = self._core.nEcosimScenarios
@@ -53,14 +53,14 @@ class CoreInterface:
 
     def load_ecotracer_scenario(self, idx: int):
         """Load an ecotracer scenario into the core object.
-        
+
         Args:
             idx (int): Index of already existing ecotracer scenario
 
         Returns:
             bool: success or failure
 
-        Raises: 
+        Raises:
             IndexError: The provided idx was out of bounds.
         """
         n_ecotracer_scens: int = self._core.nEcotracerScenarios
