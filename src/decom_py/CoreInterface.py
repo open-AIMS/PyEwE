@@ -2,9 +2,10 @@ import os
 from warnings import warn
 from pathlib import Path
 
+from warnings import warn
 from .EwEState import EwEState
-from .EwEModule import get_ewe_core_module
 from .Results import XarrayCSV
+from .EwEModule import get_ewe_core_module, get_ecosim_result_type_enum
 
 class CoreInterface():
     """Interface to update the state of the underlying EwECore.
@@ -114,7 +115,22 @@ class CoreInterface():
         # Missing use monthly enum type to pass to write results.
         return self._ecopath_result_writer.WriteResults()
 
-    def save_ecosim_results(self, dir: str):
+    def save_ecosim_results(
+            self, 
+            filepath: str, 
+            result_type: str, 
+            monthly: bool = True
+    ) -> bool:
+        target_dir = os.path.dirname(filepath)
+        if not os.path.isdir(target_dir):
+            raise FileNotFoundError(target_dir)
+
+        res_type = get_ecosim_result_type_enum(result_type)
+        is_success = self._ecosim_result_writer.WriteResults(target_dir, res_type, monthly)
+
+        return is_success
+
+    def save_all_ecosim_results(self, dir: str):
         # Missing use monthly enum type to pass to write results.
         if not self._ecosim_result_writer.WriteResults(dir):
             warn("Failed to save ecosim results. Make sure target directory is empty.")
@@ -122,12 +138,27 @@ class CoreInterface():
 
         return True
 
-    def save_ecotracer_results(self):
-        success = self._ecotracer_result_writer.WriteEcosimResults()
-        if not success:
-            print("Saving Ecotracer results failed.")
+    def save_ecotracer_results(self, filepath: str) -> None:
+        """Save ecotracer results to a given file
 
-        return success
+        Args:
+            filepath (str): Path to save file
+
+        Returns:
+            successful save
+        """
+
+        file_stream = self._ecotracer_result_writer.OpenWriter(filepath)
+        if file_stream is None:
+            msg = "Unable to open new file at {}".format(filepath)
+            msg += " Check that directory exists and there is no pre-existing file."
+            raise RuntimeError(msg)
+
+        # EwE writes directly to the file and does not construct intermediate arrays
+        self._ecosim_result_writer.WriteBody(file_stream)
+        self._ecotracer_result_writer.CloseWriter(file_stream)
+
+        return None
 
     def set_default_save_dir(self, save_dir: str):
         """Set the default save directory in underlying core object."""
