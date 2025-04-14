@@ -31,7 +31,7 @@ core.save_ecosim_results(
 )
 
 # or save result variables to a given directory
-core.save_ecosim_results('ecosim/save/dir')
+core.save_all_ecosim_results('ecosim/save/dir')
 
 core.save_ecotracer_results()
 

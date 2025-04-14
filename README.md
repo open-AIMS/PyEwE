@@ -94,7 +94,7 @@ save_monthly = False
 core.save_ecosim_results(
     '<path/to/save/dir>', ["Variables", "to", "save"], save_monthly, be_quiet
 )
-core.save_ecosim_results("ecosim/save/dir")
+core.save_all_ecosim_results("ecosim/save/dir")
 
 core.save_ecotracer_results()
 

@@ -32,4 +32,6 @@ plugins:
 nav:
   - Home: index.md
   - User Guide: usage.md
-  - API Reference: api/reference.md
+  - API: 
+      - Reference: api/reference.md
+      - Results: api/results.md
