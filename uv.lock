@@ -6,12 +6,6 @@ resolution-markers = [
     "python_full_version < '3.12'",
 ]
 
-[manifest]
-members = [
-    "decom-py",
-    "sandbox",
-]
-
 [[package]]
 name = "anyio"
 version = "4.9.0"
@@ -1638,21 +1632,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/20/dd/1f1a923d6cd798b8582176aca8a0784676f1a0449fb6f07fce6ac1cdbfb6/rpds_py-0.24.0-pp311-pypy311_pp73-musllinux_1_2_aarch64.whl", hash = "sha256:eda5c1e2a715a4cbbca2d6d304988460942551e4e5e3b7457b50943cd741626d", size = 565818 },
     { url = "https://files.pythonhosted.org/packages/56/ec/d8da6df6a1eb3a418944a17b1cb38dd430b9e5a2e972eafd2b06f10c7c46/rpds_py-0.24.0-pp311-pypy311_pp73-musllinux_1_2_i686.whl", hash = "sha256:9abc80fe8c1f87218db116016de575a7998ab1629078c90840e8d11ab423ee25", size = 592627 },
     { url = "https://files.pythonhosted.org/packages/b3/14/c492b9c7d5dd133e13f211ddea6bb9870f99e4f73932f11aa00bc09a9be9/rpds_py-0.24.0-pp311-pypy311_pp73-musllinux_1_2_x86_64.whl", hash = "sha256:6a727fd083009bc83eb83d6950f0c32b3c94c8b80a9b667c87f4bd1274ca30ba", size = 560885 },
-]
-
-[[package]]
-name = "sandbox"
-version = "0.1.0"
-source = { virtual = "sandbox" }
-dependencies = [
-    { name = "autopep8" },
-    { name = "black" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "autopep8", specifier = ">=2.3.2" },
-    { name = "black", specifier = ">=25.1.0" },
 ]
 
 [[package]]

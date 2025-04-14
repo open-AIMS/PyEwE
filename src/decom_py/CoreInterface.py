@@ -1,11 +1,13 @@
 import os
 from warnings import warn
 from pathlib import Path
+from typing import Iterable
 
 from warnings import warn
 from .EwEState import EwEState
 from .Results import XarrayCSV
-from .EwEModule import get_ewe_core_module, get_ecosim_result_type_enum
+from .EwEModule import get_ewe_core_module, result_type_enum_array, py_bool_to_ewe_tristate
+
 
 class CoreInterface():
     """Interface to update the state of the underlying EwECore.
@@ -31,6 +33,7 @@ class CoreInterface():
         return self._core
 
     def load_model(self, path: str):
+        """"Load model from a EwE database file into the EwE core."""
         return self._core.LoadModel(path)
 
     def load_ecosim_scenario(self, idx: int):
@@ -90,7 +93,7 @@ class CoreInterface():
     def run_ecosim_wo_ecotracer(self) -> bool:
         """Run the ecosim model without ecotracer and return whether it was successful"""
 
-        self._core.EcotracerModelParameters.ContaminantTracing = False
+        self._core.EcosimModelParameters.ContaminantTracing = False
         self.run_ecopath()
         successful: bool = self._core.RunEcosim()
 
@@ -102,8 +105,8 @@ class CoreInterface():
         if not self._state.HasEcotracerLoaded():
             raise Exception("Ecotracer scenario is not loaded.")
 
-        self._core.EcotracerModelParameters.ContaminantTracing = True
         self.run_ecopath()
+        self._core.EcosimModelParameters.ContaminantTracing = True
         successful: bool = self._core.RunEcosim()
 
         if not successful:
@@ -116,22 +119,38 @@ class CoreInterface():
         return self._ecopath_result_writer.WriteResults()
 
     def save_ecosim_results(
-            self, 
-            filepath: str, 
-            result_type: str, 
-            monthly: bool = True
+            self,
+            dir: str,
+            result_types: Iterable[str],
+            monthly: bool=True,
+            quiet: bool=True
     ) -> bool:
-        target_dir = os.path.dirname(filepath)
-        if not os.path.isdir(target_dir):
-            raise FileNotFoundError(target_dir)
+        """Save ecosim results for a given setup of result variables.
+        
+        Args:
+            dir (str): Directory to save csv files to.
+            result_types (str): Names of variables to save.
+            monthly (bool): flag to save monthly or yearly values.
+            quiet (bool): flag to print information.
 
-        res_type = get_ecosim_result_type_enum(result_type)
-        is_success = self._ecosim_result_writer.WriteResults(target_dir, res_type, monthly)
+        Returns:
+            bool: True if successful
+        """
+        if not os.path.isdir(dir):
+            raise FileNotFoundError(dir)
+
+        res_type = result_type_enum_array(result_types)
+        monthly_flag = py_bool_to_ewe_tristate(monthly)
+        is_success = self._ecosim_result_writer.WriteResults(
+            dir, res_type, monthly_flag, quiet
+        )
 
         return is_success
 
     def save_all_ecosim_results(self, dir: str):
+        """Save all ecosim result variables to the given directory."""
         # Missing use monthly enum type to pass to write results.
+        self._core.m_EcoSimData
         if not self._ecosim_result_writer.WriteResults(dir):
             warn("Failed to save ecosim results. Make sure target directory is empty.")
             return False
@@ -155,8 +174,9 @@ class CoreInterface():
             raise RuntimeError(msg)
 
         # EwE writes directly to the file and does not construct intermediate arrays
-        self._ecosim_result_writer.WriteBody(file_stream)
-        self._ecotracer_result_writer.CloseWriter(file_stream)
+        self._ecotracer_result_writer.WriteHeader(file_stream, False)
+        self._ecotracer_result_writer.WriteBody(file_stream)
+        self._ecotracer_result_writer.CloseWriter(file_stream, filepath)
 
         return None
 
@@ -169,4 +189,5 @@ class CoreInterface():
         return self._core.CloseModel()
 
     def print_summary(self):
+        """Print summary on the state of the EwE core."""
         return self._state.print_summary()

@@ -3,8 +3,13 @@ import sys
 from pathlib import Path
 from importlib import import_module
 from warnings import warn
+from typing import Iterable
+
+# .NET array
+from System import Array
 
 _ewe_core_module = None
+_ewe_util_module = None
 
 def initialise(ewe_binary_dir: str) -> None:
     """Initialise the EwE Core binaries.
@@ -12,7 +17,7 @@ def initialise(ewe_binary_dir: str) -> None:
     Args:
         ewe_binary_dir (str): Path to a directory containing EwE binaries.
     """
-    global _ewe_core_module 
+    global _ewe_core_module, _ewe_util_module
 
     ewe_bin_dir = Path(ewe_binary_dir)
     if not ewe_bin_dir.exists():
@@ -25,14 +30,23 @@ def initialise(ewe_binary_dir: str) -> None:
     clr.AddReference(str(ewe_core_path))
 
     _ewe_core_module = import_module('EwECore')
-        
+    _ewe_util_module = import_module('EwEUtils')
 
 def get_ewe_core_module():
     """Get the EwE Core module."""
+    global _ewe_core_module
     if _ewe_core_module is None:
         raise RuntimeError("EwE Core module not initialised. Call initialise().")
 
     return _ewe_core_module
+
+def get_ewe_util_module():
+    """Get the EwE Util module."""
+    global _ewe_util_module
+    if _ewe_util_module is None:
+        raise RuntimeError("EwE Util module not initialised. Call initialise().")
+
+    return _ewe_util_module
 
 _ewe_ecosim_res_types = None
 
@@ -70,3 +84,15 @@ def get_ecosim_result_type_enum(type_name: str):
         initialise_ecosim_result_types()
 
     return _ewe_ecosim_res_types[type_name]
+
+def result_type_enum_array(type_names: Iterable[str]):
+    core_module = get_ewe_core_module()
+    
+    el_type = core_module.Ecosim.cEcosimResultWriter.eResultTypes
+    return Array[el_type]([get_ecosim_result_type_enum(nm) for nm in type_names])
+
+def py_bool_to_ewe_tristate(flag: bool):
+    """Concert bool to TriState.bool"""
+    _ewe_util = get_ewe_util_module()
+
+    return _ewe_util.Core.TriState(0 if flag else -1)
