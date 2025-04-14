@@ -1,7 +1,7 @@
 import os
 from warnings import warn
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Union, Union
 
 from warnings import warn
 from .EwEState import EwEState
@@ -11,6 +11,10 @@ from .EwEModule import get_ewe_core_module, result_type_enum_array, py_bool_to_e
 
 class CoreInterface():
     """Interface to update the state of the underlying EwECore.
+
+    CoreInterface provides a thin wrapper over the original cCore object defined in the EwE
+    binaries. It should provide convenience functions to carry out operations already
+    defined in the cCore object. Larger scale manipulations should not occur in this class.
 
     Attributes:
         _core (cCore): Visual Basic cCore object describing the state of the program.
@@ -80,6 +84,93 @@ class CoreInterface():
 
         return success
 
+    def new_ecosim_scenario(
+            self,
+            name: str,
+            description: str,
+            author: str,
+            contact: str
+    ) -> bool:
+        return self._core.NewEcosimScenario(name, description, author, contact)
+
+    def _remove_named_ecosim_scenario(self, name: str) -> bool:
+        """Remove a ecosim scenario with the given a name."""
+
+        for index in range(1, self._core.nEcosimScenarios + 1):
+            if self._core.get_EcosimScenarios(index).Name == name:
+                return self._core.RemoveEcosimScenario(index)
+
+        raise LookupError(f"Unable to find scenario named {name}.")
+
+    def _remove_indexed_ecosim_scenario(self, index: int) -> bool:
+        """Remove ecosim scenario given a one-based index."""
+
+        n_ecosim_scens: int = self._core.nEcotracerScenarios
+        if index > n_ecosim_scens:
+            msg = "Given index, {}".format(index)
+            msg += " but there are {} scenarios".format(n_ecosim_scens)
+            raise IndexError(msg)
+
+        if index == self._core.ActiveEcosimScenarioIndex:
+            warn("Removing active ecosim scenario.")
+
+        return self._core.RemoveEcosimScenario(index)
+
+    def remove_ecosim_scenario(self, identifier: Union[str, int]) -> bool:
+        """Remove scenario from core."""
+        if isinstance(identifier, str):
+            self._remove_named_ecosim_scenario(identifier)
+        elif isinstance(identifier, int):
+            self._remove_indexed_ecosim_scenario(identifier)
+        else:
+            raise TypeError(f"Unsupported type: {type(identifier)}")
+
+        return False
+
+    def new_ecotracer_scenario(
+            self,
+            name: str,
+            description: str,
+            author: str,
+            contact: str
+    ) -> bool:
+        """Add new ecotracer scenario."""
+        return self._core.NewEcotracerScenario(name, description, author, contact)
+
+    def _remove_named_ecotracer_scenario(self, name: str) -> bool:
+        """Remove ecotracer scenario with the given name."""
+
+        for index in range(1, self._core.nEcosimScenarios + 1):
+            if self._core.get_EcotracerScenarios(index).Name == name:
+                return self._core.RemoveEcotracerScenario(index)
+
+        raise LookupError(f"Unable to find scenario named {name}.")
+
+    def _remove_indexed_ecotracer_scenario(self, index: int) -> bool:
+        """Remove a ecotracer scenario given a one based index."""
+
+        n_ecotracer_scens: int = self._core.nEcotracerScenarios
+        if index > n_ecotracer_scens:
+            msg = "Given index, {}".format(index)
+            msg += " but there are {} scenarios".format(n_ecotracer_scens)
+            raise IndexError(msg)
+
+        if index == self._core.ActiveEcosimScenarioIndex:
+            warn("Removing active ecotracer scenario.")
+
+        return self._core.RemoveEcotracerScenario(index)
+
+    def remove_ecotracer_scenario(self, identifier: Union[str, int]) -> bool:
+        """Remove scenario from core."""
+        if isinstance(identifier, str):
+            self._remove_named_ecotracer_scenario(identifier)
+        elif isinstance(identifier, int):
+            self._remove_indexed_ecotracer_scenario(identifier)
+        else:
+            raise TypeError(f"Unsupported type: {type(identifier)}")
+
+        return False
+
     def run_ecopath(self):
         """Run the ecopath model and return whether it was successful"""
         is_balanced: bool = self._core.IsModelBalanced
@@ -126,7 +217,7 @@ class CoreInterface():
             quiet: bool=True
     ) -> bool:
         """Save ecosim results for a given setup of result variables.
-        
+
         Args:
             dir (str): Directory to save csv files to.
             result_types (str): Names of variables to save.
