@@ -8,25 +8,31 @@ decomissioning scenarios.
 ```python
 from decom_py import CoreInterface, EwEState, initialise
 
-initialise(r'C:\Program Files\Ecopath with Ecosim 40 years 6.7.0.18865_64-bit')
+initialise(r'path/to/EwE/binaries/directory')
 core = CoreInterface()
 
-core.set_default_save_dir('Outputs/')
+core.set_default_save_dir('default/save/dir')
 
-model_file = r'C:\Users\dtan\data\Decommissioning\Past_Ecopath\GippslandBasin\East Bass Strait.eweaccdb'
+model_file = r'path/to/model/file'
 core.load_model(model_file)
 
 core.load_ecosim_scenario(1)
+core.load_ecotracer_scenario(1)
 
-
-if not core.load_ecotracer_scenario(1):
-    print("Failed to load ecotracer scenario.")
-
-if not core.run_ecosim_w_ecotracer():
-    print("Failed to run ecosim.")
+core.run_ecosim_w_ecotracer()
 
 core.save_ecopath_results()
-core.save_ecosim_results('Outputs/ecosim_res')
+
+# Save specific ecosim result variables
+be_quiet = True
+save_monthly = False
+core.save_ecosim_results(
+    '<path/to/save/dir>', ["Variables", "to", "save"], save_monthly, be_quiet
+)
+
+# or save result variables to a given directory
+core.save_ecosim_results('ecosim/save/dir')
+
 core.save_ecotracer_results()
 
 core.close_model()
