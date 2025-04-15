@@ -40,11 +40,29 @@ class CoreInterface():
         """"Load model from a EwE database file into the EwE core."""
         return self._core.LoadModel(path)
 
-    def load_ecosim_scenario(self, idx: int):
+    def _load_named_ecosim_scenario(self, name: str) -> bool:
+        """Load an ecosim scenario with the given name."""
+        for index in range(1, self._core.nEcosimScenarios + 1):
+            if self._core.get_EcosimScenarios(index).Name == name:
+                return self._core.LoadEcosimScenario(index)
+
+        raise LookupError(f"Unable to find scenario named: {name}")
+
+    def _load_indexed_ecosim_scenario(self, index: int) -> bool:
+        """Load an ecosim scenario for the given one-based index."""
+        n_ecosim_scens: int = self._core.nEcosimScenarios
+        if index > n_ecosim_scens or index < 1:
+            msg = "Given index, {}".format(index)
+            msg += " but there are {} scenarios".format(n_ecosim_scens)
+            raise IndexError(msg)
+
+        return self._core.LoadEcosimScenario(index)
+
+    def load_ecosim_scenario(self, identifier: Union[str, int]):
         """Load an ecosim scenario into the core object.
 
         Args:
-            idx (int): Index of already existing ecosim scenario
+            identifier (Union[str, int]): Index or name of already existing ecosim scenario
 
         Returns:
             bool: success or failure
@@ -52,13 +70,14 @@ class CoreInterface():
         Raises:
             IndexError: The provided idx was out of bounds.
         """
-        n_ecosim_scens: int = self._core.nEcosimScenarios
-        if idx > n_ecosim_scens or idx < 1:
-            msg = "Given index, {}".format(idx)
-            msg += " but there are {} scenarios".format(n_ecosim_scens)
-            raise IndexError(msg)
+        if isinstance(identifier, str):
+            return self._load_named_ecosim_scenario(identifier)
+        elif isinstance(identifier, int):
+            return self._load_indexed_ecosim_scenario(identifier)
+        else:
+            raise TypeError(f"Unsupported type: {type(identifier)}")
 
-        return self._core.LoadEcosimScenario(idx)
+        return False
 
     def load_ecotracer_scenario(self, idx: int) -> bool:
         """Load an ecotracer scenario into the core object.
@@ -170,6 +189,12 @@ class CoreInterface():
             raise TypeError(f"Unsupported type: {type(identifier)}")
 
         return False
+
+    def close_ecosim_scenario(self):
+        self._core.CloseEcosimScenario()
+
+    def close_ecotracer_scenario(self):
+        self._core.CloseEcotracerScenario()
 
     def run_ecopath(self):
         """Run the ecopath model and return whether it was successful"""

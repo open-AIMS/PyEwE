@@ -1,12 +1,16 @@
-import os
+from os import environ
+from os import path
+from decom_py.EwEModule import get_ewe_core_module
 import pytest
 import tempfile
 import shutil
 from pathlib import Path
 
+from decom_py import initialise, get_ewe_core_module
+
 @pytest.fixture(scope="session")
-def get_ewe_bin_dir() -> str:
-    ewe_bin_dir = os.environ.get("EWE_BIN_DIR_PATH") 
+def ewe_module():
+    ewe_bin_dir = environ.get("EWE_BIN_DIR_PATH") 
     
     if ewe_bin_dir is None:
         pytest.skip("EwE bin path not provided. Set EWE_BIN_DIR_PATH environment variable.")
@@ -15,31 +19,22 @@ def get_ewe_bin_dir() -> str:
     ewe_bin_path = Path(ewe_bin_dir)
     if not ewe_bin_path.exists():
         pytest.skip(f"EwE binaries not found at {ewe_bin_dir}.")
-        return ""
+        return None
 
-    return str(ewe_bin_path.resolve())
+    initialise(str(ewe_bin_path.resolve()))
 
-@pytest.fixture(scope="session")
-def temp_dir():
-    temp_dir = tempfile.mkdtemp()
-    yield temp_dir
+    return get_ewe_core_module()
 
-    shutil.rmtree(temp_dir)
+@pytest.fixture(scope="function")
+def model_path(tmpdir_factory) -> str:
+    model_path = path.join(path.dirname(path.abspath(__file__)), "resources", "BlackSea.EwEaccdb")
 
-@pytest.fixture(scope="session")
-def get_model_path() -> str:
-    model_path = os.environ.get("EWE_MODEL_PATH") 
-    
-    if model_path is None:
-        pytest.skip("EwE model path not provided. Set EWE_MODEL_PATH environment variable.")
-        return ""
-
-    ewe_model_path = Path(model_path)
-    if not ewe_model_path.exists():
+    mod_path_obj = Path(model_path)
+    if not mod_path_obj.exists():
         pytest.skip(f"Model file not found at {model_path}.")
 
-    temp_model_path = Path(temp_dir) / original_path.name
-    shutil.copy2(original_path, temp_model_path)
+    temp_model_path = tmpdir_factory.mktemp("model").join(mod_path_obj.name)
+    shutil.copy2(model_path, temp_model_path)
     
     # Return the path to the temporary copy
     return str(temp_model_path)

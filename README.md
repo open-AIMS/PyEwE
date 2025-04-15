@@ -101,6 +101,28 @@ core.save_ecotracer_results()
 core.close_model()
 ```
 
+### Testing
+
+*There is currently an issue with access violation for temporary directories. However the
+tests still pass.*
+
+1. Define an environment variable pointing to the EwE binaries.
+
+**Powershell**
+```Powershell
+$env:EWE_BIN_DIR_PATH="Path to EwE binaries"
+
+**bash**
+```bash
+export ENV_BIN_DIR_PATH="Path to EwE binaries"
+```
+
+2. Run tests with `pytest`
+
+```bash
+uv run --dev pytest
+```
+
 ### Debugging
 
 ```python

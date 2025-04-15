@@ -37,3 +37,6 @@ dev = [
 test = [
     "pytest"
 ]
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = "*.py"
