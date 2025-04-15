@@ -73,3 +73,39 @@ class TestScenarioAddRemove:
         assert str(excinfo.value) == "Unable to find scenario named: remove_test"
 
         core.close_model()
+
+
+class TestCoreProperties:
+
+    def test_get_functional_group_names(self, model_path, ewe_module):
+
+        core = CoreInterface()
+        core.load_model(model_path)
+
+        expected_names = [
+            "Large pelagics",
+            "Large demersal",
+            "Merlangius",
+            "Mullus and Spicara",
+            "Small pelagics",
+            "Belone and Scomber",
+            "Zoobenthos",
+            "Mesozooplankton",
+            "Ciliates",
+            "Chaetognaths",
+            "Jellies",
+            "Appendicularians",
+            "Noctituca",
+            "Bacteria",
+            "Phytoplankton",
+            "Detritus",
+        ]
+
+        fg_names = core.get_functional_group_names()
+        print(fg_names)
+
+        assert all(
+            [expected == output for (expected, output) in zip(expected_names, fg_names)]
+        )
+
+        core.close_model()

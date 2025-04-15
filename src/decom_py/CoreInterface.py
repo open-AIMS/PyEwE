@@ -36,7 +36,20 @@ class CoreInterface():
     def get_core(self):
         return self._core
 
-    def load_model(self, path: str):
+    def get_state(self):
+        return self._state
+
+    def get_functional_group_names(self) -> list[str]:
+        """Get the name of all functional groups in the EwE model."""
+        n_groups: int = self._core.nGroups
+        fg_names: list[str] = [""] * n_groups
+        for i in range(1, n_groups + 1):
+            fg_names[i - 1] = self._core.get_EcopathGroupInputs(i).Name
+            print(fg_names[i - 1])
+
+        return fg_names
+
+    def load_model(self, path: str) -> bool:
         """"Load model from a EwE database file into the EwE core."""
         return self._core.LoadModel(path)
 

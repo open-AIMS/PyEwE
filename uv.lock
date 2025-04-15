@@ -354,6 +354,7 @@ name = "decom-py"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "pandas" },
     { name = "polars" },
     { name = "pythonnet" },
     { name = "xarray" },
@@ -377,6 +378,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
+    { name = "pandas", specifier = ">=2.2.3" },
     { name = "polars", specifier = ">=1.27.1" },
     { name = "pythonnet", specifier = ">=3.0.5" },
     { name = "xarray", specifier = ">=2025.3.1" },
