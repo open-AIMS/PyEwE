@@ -7,6 +7,7 @@ from warnings import warn
 from .EwEState import EwEState
 from .Results import XarrayCSV
 from .EwEModule import get_ewe_core_module, result_type_enum_array, py_bool_to_ewe_tristate
+from .EwEModels import EcosimStateManager, EcotracerStateManager
 
 
 class CoreInterface():
@@ -22,6 +23,9 @@ class CoreInterface():
         _ecosim_result_writer (cEcosimResultWriter): Object the handles writing ecosim results
         _ecotracer_result_writer (cEcotracerResultWriter): Object the handles writing ecotracer results
         _state (cStateMonitor): Object handling high level state information bout _core
+
+        Ecosim (EcosimStateManager): object that manages scenario loading, model runs and results for Ecosim
+        Ecotracer (EcotracerStateManager): object that manages scenario loading, model runs and results for Ecotracer
     """
 
     def __init__(self):
@@ -33,13 +37,20 @@ class CoreInterface():
         self._ecotracer_result_writer = core_module.cEcotracerResultWriter(self._core)
         self._state = EwEState(self._core)
 
+        self.Ecosim = EcosimStateManager(self._core, self._state)
+        self.Ecotracer = EcotracerStateManager(self._core, self._state)
+
     def get_core(self):
         return self._core
 
     def get_state(self):
         return self._state
 
-    def get_functional_group_names(self) -> list[str]:
+    def load_model(self, path: str):
+        """Load model from a EwE access database file into the EwE core."""
+        return self._core.LoadModel(path)
+
+    def get_functional_group_names(self):
         """Get the name of all functional groups in the EwE model."""
         n_groups: int = self._core.nGroups
         fg_names: list[str] = [""] * n_groups
@@ -48,200 +59,6 @@ class CoreInterface():
             print(fg_names[i - 1])
 
         return fg_names
-
-    def load_model(self, path: str) -> bool:
-        """"Load model from a EwE database file into the EwE core."""
-        return self._core.LoadModel(path)
-
-    def _load_named_ecosim_scenario(self, name: str) -> bool:
-        """Load an ecosim scenario with the given name."""
-        for index in range(1, self._core.nEcosimScenarios + 1):
-            if self._core.get_EcosimScenarios(index).Name == name:
-                return self._core.LoadEcosimScenario(index)
-
-        raise LookupError(f"Unable to find scenario named: {name}")
-
-    def _load_indexed_ecosim_scenario(self, index: int) -> bool:
-        """Load an ecosim scenario for the given one-based index."""
-        n_ecosim_scens: int = self._core.nEcosimScenarios
-        if index > n_ecosim_scens or index < 1:
-            msg = "Given index, {}".format(index)
-            msg += " but there are {} scenarios".format(n_ecosim_scens)
-            raise IndexError(msg)
-
-        return self._core.LoadEcosimScenario(index)
-
-    def load_ecosim_scenario(self, identifier: Union[str, int]):
-        """Load an ecosim scenario into the core object.
-
-        Args:
-            identifier (Union[str, int]): Index or name of already existing ecosim scenario
-
-        Returns:
-            bool: success or failure
-
-        Raises:
-            IndexError: The provided idx was out of bounds.
-        """
-        if isinstance(identifier, str):
-            return self._load_named_ecosim_scenario(identifier)
-        elif isinstance(identifier, int):
-            return self._load_indexed_ecosim_scenario(identifier)
-        else:
-            raise TypeError(f"Unsupported type: {type(identifier)}")
-
-        return False
-
-    def load_ecotracer_scenario(self, idx: int) -> bool:
-        """Load an ecotracer scenario into the core object.
-
-        Args:
-            idx (int): Index of already existing ecotracer scenario
-
-        Returns:
-            bool: success or failure
-
-        Raises:
-            IndexError: The provided idx was out of bounds.
-        """
-        n_ecotracer_scens: int = self._core.nEcotracerScenarios
-        if idx > n_ecotracer_scens or idx < 1:
-            msg = "Given index, {}".format(idx)
-            msg += " but there are {} scenarios".format(n_ecotracer_scens)
-            raise IndexError(msg)
-
-        success = self._core.LoadEcotracerScenario(idx)
-        if not success:
-            print("Loading Ecotracer failed.")
-
-        return success
-
-    def new_ecosim_scenario(
-            self,
-            name: str,
-            description: str,
-            author: str,
-            contact: str
-    ) -> bool:
-        return self._core.NewEcosimScenario(name, description, author, contact)
-
-    def _remove_named_ecosim_scenario(self, name: str) -> bool:
-        """Remove a ecosim scenario with the given a name."""
-
-        for index in range(1, self._core.nEcosimScenarios + 1):
-            if self._core.get_EcosimScenarios(index).Name == name:
-                return self._core.RemoveEcosimScenario(index)
-
-        raise LookupError(f"Unable to find scenario named {name}.")
-
-    def _remove_indexed_ecosim_scenario(self, index: int) -> bool:
-        """Remove ecosim scenario given a one-based index."""
-
-        n_ecosim_scens: int = self._core.nEcotracerScenarios
-        if index > n_ecosim_scens:
-            msg = "Given index, {}".format(index)
-            msg += " but there are {} scenarios".format(n_ecosim_scens)
-            raise IndexError(msg)
-
-        if index == self._core.ActiveEcosimScenarioIndex:
-            warn("Removing active ecosim scenario.")
-
-        return self._core.RemoveEcosimScenario(index)
-
-    def remove_ecosim_scenario(self, identifier: Union[str, int]) -> bool:
-        """Remove scenario from core."""
-        if isinstance(identifier, str):
-            self._remove_named_ecosim_scenario(identifier)
-        elif isinstance(identifier, int):
-            self._remove_indexed_ecosim_scenario(identifier)
-        else:
-            raise TypeError(f"Unsupported type: {type(identifier)}")
-
-        return False
-
-    def new_ecotracer_scenario(
-            self,
-            name: str,
-            description: str,
-            author: str,
-            contact: str
-    ) -> bool:
-        """Add new ecotracer scenario."""
-        return self._core.NewEcotracerScenario(name, description, author, contact)
-
-    def _remove_named_ecotracer_scenario(self, name: str) -> bool:
-        """Remove ecotracer scenario with the given name."""
-
-        for index in range(1, self._core.nEcosimScenarios + 1):
-            if self._core.get_EcotracerScenarios(index).Name == name:
-                return self._core.RemoveEcotracerScenario(index)
-
-        raise LookupError(f"Unable to find scenario named {name}.")
-
-    def _remove_indexed_ecotracer_scenario(self, index: int) -> bool:
-        """Remove a ecotracer scenario given a one based index."""
-
-        n_ecotracer_scens: int = self._core.nEcotracerScenarios
-        if index > n_ecotracer_scens:
-            msg = "Given index, {}".format(index)
-            msg += " but there are {} scenarios".format(n_ecotracer_scens)
-            raise IndexError(msg)
-
-        if index == self._core.ActiveEcosimScenarioIndex:
-            warn("Removing active ecotracer scenario.")
-
-        return self._core.RemoveEcotracerScenario(index)
-
-    def remove_ecotracer_scenario(self, identifier: Union[str, int]) -> bool:
-        """Remove scenario from core."""
-        if isinstance(identifier, str):
-            self._remove_named_ecotracer_scenario(identifier)
-        elif isinstance(identifier, int):
-            self._remove_indexed_ecotracer_scenario(identifier)
-        else:
-            raise TypeError(f"Unsupported type: {type(identifier)}")
-
-        return False
-
-    def close_ecosim_scenario(self):
-        self._core.CloseEcosimScenario()
-
-    def close_ecotracer_scenario(self):
-        self._core.CloseEcotracerScenario()
-
-    def run_ecopath(self):
-        """Run the ecopath model and return whether it was successful"""
-        is_balanced: bool = self._core.IsModelBalanced
-        if not is_balanced:
-            warn("Ecopath model is not balanced.")
-
-        results = self._core.RunEcopath()
-
-        return results
-
-    def run_ecosim_wo_ecotracer(self) -> bool:
-        """Run the ecosim model without ecotracer and return whether it was successful"""
-
-        self._core.EcosimModelParameters.ContaminantTracing = False
-        self.run_ecopath()
-        successful: bool = self._core.RunEcosim()
-
-        return successful
-
-    def run_ecosim_w_ecotracer(self) -> bool:
-        """Run the ecosim model with ecotracer and return whether it was successful"""
-
-        if not self._state.HasEcotracerLoaded():
-            raise Exception("Ecotracer scenario is not loaded.")
-
-        self.run_ecopath()
-        self._core.EcosimModelParameters.ContaminantTracing = True
-        successful: bool = self._core.RunEcosim()
-
-        if not successful:
-            print("EcoSim with Ecotracer run failed.")
-
-        return successful
 
     def save_ecopath_results(self):
         # Missing use monthly enum type to pass to write results.
