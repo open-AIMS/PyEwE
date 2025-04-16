@@ -1,10 +1,11 @@
+from decom_py.Exceptions.EwEExceptions import EcotracerNoScenarioError
 import pytest
 from random import random
 from warnings import warn
 from math import isclose
 
 from decom_py import CoreInterface
-from decom_py.Exceptions import EwEError, EcopathError, EcosimError, EcotracerError
+from decom_py.Exceptions import EwEError, EcopathError, EcosimError, EcotracerError, EcotracerNoScenarioError
 
 class TestScenarioAddRemove:
 
@@ -216,11 +217,23 @@ class TestCoreProperties:
         core.Ecosim.load_scenario("default_test")
 
         expected_error_msg = "No Ecotracer scenario loaded. .*"
-        with pytest.raises(EcotracerError, match=expected_error_msg):
+        with pytest.raises(EcotracerNoScenarioError, match=expected_error_msg):
             core.Ecotracer.get_initial_concentrations()
 
-        core.Ecotracer.load_scenario("property_test")
+        with pytest.raises(EcotracerNoScenarioError, match=expected_error_msg):
+            core.Ecotracer.get_immigration_concentrations()
 
+        with pytest.raises(EcotracerNoScenarioError, match=expected_error_msg):
+            core.Ecotracer.get_direct_absorption_rates()
+
+        with pytest.raises(EcotracerNoScenarioError, match=expected_error_msg):
+            core.Ecotracer.get_physical_decay_rates()
+
+        with pytest.raises(EcotracerNoScenarioError, match=expected_error_msg):
+            core.Ecotracer.get_excretion_rates()
+
+        with pytest.raises(EcotracerNoScenarioError, match=expected_error_msg):
+            core.Ecotracer.get_metabolic_decay_rates()
 
     def test_ecotracer_getters(self, model_path, ewe_module):
 
