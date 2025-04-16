@@ -1,5 +1,8 @@
 import pytest
+from random import random
 from warnings import warn
+from math import isclose
+
 from decom_py import CoreInterface
 from decom_py.Exceptions import EwEError, EcopathError, EcosimError, EcotracerError
 
@@ -112,7 +115,7 @@ class TestScenarioAddRemove:
         core.load_model(model_path)
         # Keep reference to internal core to test state directly
         internal_core = core.get_core()
-        
+
         # Load ecosim scenario before ecotracer
         core.Ecosim.load_scenario("default_test")
 
@@ -134,7 +137,7 @@ class TestScenarioAddRemove:
             msg = "Ecotracer empty description bug is still present in EwE software. "
             msg += "Skipping description test assertion"
             warn(msg)
-        else: 
+        else:
             assert active_scenario.Description == "description"
 
         core.close_model()
@@ -202,3 +205,111 @@ class TestCoreProperties:
         )
 
         core.close_model()
+
+    def test_get_property_exceptions(self, model_path, ewe_module):
+
+        core = CoreInterface()
+        core.load_model(model_path)
+        # Keep reference to internal core to test state directly
+        internal_core = core.get_core()
+
+        core.Ecosim.load_scenario("default_test")
+
+        expected_error_msg = "No Ecotracer scenario loaded. .*"
+        with pytest.raises(EcotracerError, match=expected_error_msg):
+            core.Ecotracer.get_initial_concentrations()
+
+        core.Ecotracer.load_scenario("property_test")
+
+
+    def test_ecotracer_getters(self, model_path, ewe_module):
+
+        core = CoreInterface()
+        core.load_model(model_path)
+
+        core.Ecosim.load_scenario("default_test")
+        core.Ecotracer.load_scenario("property_test")
+
+        expected_property = [
+            i / 10 for i in range(1, 16) # 0.1, 0.2...
+        ]
+
+        retrieved = core.Ecotracer.get_initial_concentrations()
+        assert all([
+            isclose(expected, out, rel_tol=1e-7)
+            for (expected, out) in zip(expected_property, retrieved)
+        ])
+
+        retrieved = core.Ecotracer.get_immigration_concentrations()
+        assert all([
+            isclose(expected, out, rel_tol=1e-7)
+            for (expected, out) in zip(expected_property, retrieved)
+        ])
+
+        expected_property = [
+            i / 100 for i in range(1, 16) # 0.01, 0.02...
+        ]
+
+        retrieved = core.Ecotracer.get_direct_absorption_rates()
+        assert all([
+            isclose(expected, out, rel_tol=1e-7)
+            for (expected, out) in zip(expected_property, retrieved)
+        ])
+
+        retrieved = core.Ecotracer.get_physical_decay_rates()
+        assert all([
+            isclose(expected, out, rel_tol=1e-7)
+            for (expected, out) in zip(expected_property, retrieved)
+        ])
+
+        retrieved = core.Ecotracer.get_excretion_rates()
+        assert all([
+            isclose(expected, out, rel_tol=1e-7)
+            for (expected, out) in zip(expected_property, retrieved)
+        ])
+
+        retrieved = core.Ecotracer.get_metabolic_decay_rates()
+        assert all([
+            isclose(expected, out, rel_tol=1e-7)
+            for (expected, out) in zip(expected_property, retrieved)
+        ])
+
+        core.close_model()
+
+    def test_ecotracer_setters(self, model_path, ewe_module):
+
+        core = CoreInterface()
+        core.load_model(model_path)
+
+        core.Ecosim.load_scenario("default_test")
+        core.Ecotracer.load_scenario("property_set_test")
+
+        to_set = [random() / 10 for i in range(16)]
+        core.Ecotracer.set_initial_concentrations(to_set)
+        retrieved = core.Ecotracer.get_initial_concentrations()
+        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+
+        to_set = [random() / 10 for i in range(16)]
+        core.Ecotracer.set_immigration_concentrations(to_set)
+        retrieved = core.Ecotracer.get_immigration_concentrations()
+        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+
+        to_set = [random() / 10 for i in range(16)]
+        core.Ecotracer.set_direct_absorption_rates(to_set)
+        retrieved = core.Ecotracer.get_direct_absorption_rates()
+        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+
+        to_set = [random() / 10 for i in range(16)]
+        core.Ecotracer.set_physical_decay_rates(to_set)
+        retrieved = core.Ecotracer.get_physical_decay_rates()
+        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+
+        to_set = [random() / 10 for i in range(16)]
+        core.Ecotracer.set_excretion_rates(to_set)
+        retrieved = core.Ecotracer.get_excretion_rates()
+        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+
+        to_set = [random() / 10 for i in range(16)]
+        core.Ecotracer.set_metabolic_decay_rates(to_set)
+        retrieved = core.Ecotracer.get_metabolic_decay_rates()
+        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
