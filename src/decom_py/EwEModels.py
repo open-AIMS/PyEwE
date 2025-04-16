@@ -1,6 +1,8 @@
 from abc import abstractmethod
-from typing import Union
+from typing import Union, Iterable
 from warnings import warn
+
+from decom_py.Exceptions.EwEExceptions import EcosimNoScenarioError, EcotracerNoScenarioError
 from .Exceptions import EwEError, EcopathError, EcosimError, EcotracerError
 
 class EwEModel:
@@ -35,6 +37,17 @@ class EwEScenarioModel(EwEModel):
     def _remove_scenario(self, index:int) -> bool:
         """Remove scenario with given index from core."""
         pass
+
+    @abstractmethod
+    def _assert_scenario_loaded(self):
+        """Check that a scenario is loaded. Throw error is not loaded."""
+        pass
+
+    def _assert_setter_list_length(self, property: list):
+        if len(property) != self._core.nGroups:
+            msg = f"Expected list of length {self._core.nGroups} "
+            msg += f"but received {len(property)}"
+            raise EcopathError(self._state, msg)
 
     def _load_named_scenario(self, name: str) -> bool:
         """Load a scenario with the given name."""
@@ -145,6 +158,10 @@ class EcosimStateManager(EwEScenarioModel):
     def _remove_scenario(self, index: int) -> bool:
         return self._core.RemoveEcosimScenario(index)
 
+    def _assert_scenario_loaded(self):
+        if not self._state.HasEcosimLoaded():
+            raise EcosimNoScenarioError(self._state)
+
     def new_scenario(self, name: str, description: str, author: str, contact: str):
         """Create a new Ecosim scenario."""
         return self._core.NewEcosimScenario(name, description, author, contact)
@@ -190,10 +207,17 @@ class EcotracerStateManager(EwEScenarioModel):
         return self._core.get_EcotracerScenarios(index)
 
     def _load_scenario(self, index: int):
+        # Make sure ecosim scenario is loaded before ecotracer.
+        if not self._state.HasEcosimLoaded():
+            raise EcosimNoScenarioError(self._state)
         return self._core.LoadEcotracerScenario(index)
 
     def _remove_scenario(self, index: int):
         return self._core.RemoveEcotracerScenario(index)
+
+    def _assert_scenario_loaded(self):
+        if not self._state.HasEcotracerLoaded():
+            raise EcotracerNoScenarioError(self._state)
 
     def new_scenario(self, name: str, description: str, author: str, contact: str):
         """Create a new EcoTracer scenario."""
@@ -226,3 +250,36 @@ class EcotracerStateManager(EwEScenarioModel):
             print("EcoSim with Ecotracer run failed.")
 
         return successful
+
+    @staticmethod
+    def _generate_getter(name):
+        def getter(self):
+            self._assert_scenario_loaded()
+            return [
+                self._core.get_EcotracerGroupInputs(i).__getattribute__(name)()
+                for i in range(1, self._core.nGroups + 1)
+            ]
+        return getter
+
+    @staticmethod
+    def _generate_setter(name):
+        def setter(self, values):
+            self._assert_scenario_loaded()
+            self._assert_setter_list_length(list(values))
+            for i, val in zip(range(1, self._core.nGroups + 1), values):
+                self._core.get_EcotracerGroupInputs(i).__getattribute__(name)(val)
+        return setter
+
+    _attributes = {
+        "initial_concentrations": ("get_CZero","set_CZero"),
+        "immigration_concentrations": ("get_CImmig","set_CImmig"),
+        "direct_absorption_rates": ("get_CAssimilationProp","set_CAssimilationProp"),
+        "physical_decay_rates": ("get_CDecay","set_CDecay"),
+        "metabolic_decay_rates": ("get_CMetablismRate","set_CMetablismRate"),
+        "excretion_rates": ("get_CEnvironment","set_CEnvironment"),
+    }
+
+    for method_name, attr in _attributes.items():
+        locals()[f"get_{method_name}"] = _generate_getter(attr[0])
+        locals()[f"set_{method_name}"] = _generate_setter(attr[1])
+

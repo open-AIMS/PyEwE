@@ -5,11 +5,13 @@ import shutil
 import os
 
 from decom_py import CoreInterface
-from Exceptions import EwEError
+from Exceptions import EwEError, EcotracerError, EcosimError, EcopathError
 
 class EwEScenarioInterface:
 
     def __init__(self, model_path: str):
+
+        self._model_path = model_path
         mod_path_obj = Path(model_path)
         if not mod_path_obj.exists():
             raise FileNotFoundError(model_path)
@@ -19,7 +21,7 @@ class EwEScenarioInterface:
         self._temp_model_path = os.path.join(self._temp_dir.name, os.path.basename(model_path))
 
         # to avoid modifying the original model file, create a copy
-        shutil.copy2(model_path, self.temp_model_path)
+        shutil.copy2(model_path, self._temp_model_path)
 
         self._core_instance = CoreInterface()
         if not self._core_instance.load_model(model_path):
@@ -27,19 +29,23 @@ class EwEScenarioInterface:
             msg += "Check that the model file is loadable via the gui."
             raise EwEError(self._core_instance.get_state(), msg)
 
-        self._core_instance.new_ecosim_scenario(
+        if not self._core_instance.new_ecosim_scenario(
             "tmp_ecosim_scen",
             "temporary ecosim scenario used by decom_py",
             "", # author
             ""  # contact
-        )
+        ):
+            msg = "Failed to create and load temporary ecosim scenario."
+            raise EcosimError(self._core_instance.get_state(), msg)
 
-        self._core_instance.new_ecotracer_scenario(
+        if not self._core_instance.new_ecotracer_scenario(
             "tmp_ecotracer_scen",
             "temporary ecosim scenario used by decom_py",
             "", # author
             ""  # contact
-        )
+        ):
+            msg = "Failed to create and load temporary ecotracer scenario."
+            raise EcotracerError(self._core_instance.get_state(), msg)
 
     def get_temp_model_path(self):
         return self._temp_model_path
