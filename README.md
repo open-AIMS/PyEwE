@@ -123,6 +123,40 @@ export ENV_BIN_DIR_PATH="Path to EwE binaries"
 uv run --dev pytest
 ```
 
+For more information, add `-v`. To suppress "Windows fatal exception: access violation",
+set `-p no:faulthandler`
+```bash
+uv run --dev pytest -p no:faulthandler -v
+```
+
+---
+
+If you use an IDE test runner, you can specify the environment variable in a `.env` file,
+which pytest will discover:
+
+```
+EWE_BIN_DIR_PATH=c:\\Program Files\\Ecopath with Ecosim 40 years 6.7.0.18865_64-bit
+```
+
+For VSCode test runner, go through pytest setup in the Testing left panel, or search
+ Settings (Workspace) for "pytest". Your _.vscode/settings.json_ file should look like this:
+
+```json
+{
+    "terminal.integrated.env.windows": {
+        "EWE_BIN_DIR_PATH": "c:\\Program Files\\Ecopath with Ecosim 40 years 6.7.0.18865_64-bit"
+    },
+    "python.testing.pytestArgs": [
+        "test",
+        "-v",
+        "-p no:faulthandler"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
+```
+
+
 ### Debugging
 
 ```python
