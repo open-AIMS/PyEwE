@@ -8,9 +8,11 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "numpy>=2.2.4",
     "pandas>=2.2.3",
     "polars>=1.27.1",
     "pythonnet>=3.0.5",
+    "tqdm>=4.67.1",
     "xarray>=2025.3.1",
 ]
 

@@ -56,7 +56,6 @@ class CoreInterface():
         fg_names: list[str] = [""] * n_groups
         for i in range(1, n_groups + 1):
             fg_names[i - 1] = self._core.get_EcopathGroupInputs(i).Name
-            print(fg_names[i - 1])
 
         return fg_names
 
