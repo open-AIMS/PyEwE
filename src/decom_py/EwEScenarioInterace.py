@@ -247,7 +247,7 @@ class EwEScenarioInterface:
             self._all_possible_params = set(all_params)
         if not set(params).issubset(self._all_possible_params):
             msg = "The following elements are not valid parameters: "
-            msg += str(set(params).symmetric_difference(self._all_possible_params))
+            msg += str(set(params) ^ self._all_possible_params)
             raise ValueError(msg)
 
     def set_constant_params(self, param_names: list[str], param_values: list[float]):
@@ -414,4 +414,6 @@ class EwEScenarioInterface:
         cols.extend(env_param_names)
         empty = np.zeros((n_scenarios, len(cols) + 1))
         empty[:, 0] = np.arange(1, n_scenarios + 1)
-        return DataFrame(empty, columns=["scenario_idx"].extend(cols))
+
+        cols.insert(0, "scenario")
+        return DataFrame(empty, columns=cols)
