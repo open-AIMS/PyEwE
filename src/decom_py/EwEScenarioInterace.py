@@ -387,7 +387,7 @@ class EwEScenarioInterface:
             self._load_variable_params(list(row[1:]))
             self._core_instance.Ecotracer.run()
             self._core_instance.save_ecotracer_results(
-                os.path.join(save_dir, f"ecotracer_res_scen_{idx}")
+                os.path.join(save_dir, f"ecotracer_res_scen_{idx}.csv")
             )
         return None
 
