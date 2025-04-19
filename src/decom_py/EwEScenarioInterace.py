@@ -30,16 +30,25 @@ class Parameter:
         group_idx: The index of the group in the underlying core instance. If the the
             parameter is an environmental parameter,this will be -1.
     """
-    def __init__(self, name: str, param_type: str = ParameterType.UNSET, value: float = math.nan, df_idx: int = -1):
+    def __init__(
+        self,
+        name: str,
+        category_idx: int,
+        is_env_param: bool,
+        group_idx: int = -1,
+        param_type: str = ParameterType.UNSET,
+        value: float = math.nan,
+        df_idx: int = -1
+    ):
         self.name = name
         self.param_type = param_type
         self.value = value
         self.df_idx = df_idx
 
         # Parse parameter information
-        self.is_env_param = False
-        self.category_idx = -1
-        self.group_idx = -1
+        self.is_env_param = is_env_param
+        self.category_idx = category_idx
+        self.group_idx = group_idx
 
     def set_as_constant(self, value: float) -> None:
         self.param_type = ParameterType.CONSTANT
@@ -78,6 +87,7 @@ class ParameterManager:
         """Initialize parameter manager with functional group names"""
         self.fg_names = fg_names
         self.params: Dict[str, Parameter] = {}
+        self._variable_params_processed = False
 
         self._fg_param_prefixes = fg_param_prefixes
         self._fg_param_to_setters = fg_param_to_setters
@@ -96,14 +106,14 @@ class ParameterManager:
             "immig_c",
             "direct_abs_r",
             "phys_decay_r",
-            "excretion_r",
-            "meta_decay_r"
+            "meta_decay_r",
+            "excretion_r"
         ]
         fg_param_to_setter = {
-            0: "set_initial_concentration",
+            0: "set_initial_concentrations",
             1: "set_immigration_concentrations",
             2: "set_direct_absorption_rates",
-            3: "set_phyical_decay_rates",
+            3: "set_physical_decay_rates",
             4: "set_metabolic_decay_rates",
             5: "set_excretion_rates"
         }
@@ -134,16 +144,14 @@ class ParameterManager:
             for i, fg_name in enumerate(self.fg_names, 1):
                 n_chars = len(str(len(self.fg_names)))
                 param_name = self._format_param_name(prefix, i, n_chars, fg_name)
-                param = Parameter(param_name)
-                param.category_idx = self._fg_param_prefixes.index(prefix)
-                param.group_idx = i
+                cat_idx = self._fg_param_prefixes.index(prefix)
+                param = Parameter(param_name, cat_idx, False, i)
                 self.params[param_name] = param
 
         # Create environmental parameters
         for env_param in self._env_param_names:
-            param = Parameter(env_param)
-            param.is_env_param = True
-            param.category_idx = self._env_param_names.index(env_param)
+            cat_idx = self._env_param_names.index(env_param)
+            param = Parameter(env_param, cat_idx, True)
             self.params[env_param] = param
 
     @staticmethod

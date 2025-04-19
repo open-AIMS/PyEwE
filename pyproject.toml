@@ -11,6 +11,7 @@ dependencies = [
     "numpy>=2.2.4",
     "pandas>=2.2.3",
     "polars>=1.27.1",
+    "pytest-mock>=3.14.0",
     "pythonnet>=3.0.5",
     "tqdm>=4.67.1",
     "xarray>=2025.3.1",
@@ -43,3 +44,4 @@ test = [
 [tool.pytest.ini_options]
 testpaths = ["test"]
 python_files = "*.py"
+addopts = "-p no:faulthandler"
