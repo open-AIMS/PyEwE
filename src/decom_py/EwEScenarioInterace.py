@@ -19,7 +19,17 @@ class ParameterType:
     UNSET = "unset"
 
 class Parameter:
-    """Class to represent a single parameter"""
+    """Representation of a single parameter.
+
+    Attributes:
+        name: name of parameter.
+        param_types: Constant, Varialbe or Unset.
+        value: Parameter value. If variable the parameter value will be nan if constant it will be set.
+        df_idx: Column index of parameter in scenario dataframe. If
+        is_env_param: A boolean indicating if it in environmental parameter.
+        group_idx: The index of the group in the underlying core instance. If the the
+            parameter is an environmental parameter,this will be -1.
+    """
     def __init__(self, name: str, param_type: str = ParameterType.UNSET, value: float = math.nan, df_idx: int = -1):
         self.name = name
         self.param_type = param_type
@@ -44,71 +54,96 @@ class Parameter:
         return self.param_type != ParameterType.UNSET
 
 class ParameterManager:
-    """Class to manage all parameters for the EwE scenario"""
+    """Class to manage all parameters for an EwE model module.
 
-    # Parameter name prefixes for functional groups
-    FG_PARAM_PREFIXES = [
-        "init_c",
-        "immig_c",
-        "direct_abs_r",
-        "phys_decay_r",
-        "excretion_r",
-        "meta_decay_r"
-    ]
+    Attributes:
+        fg_names: List of functional group names extracted from the core instance.
+        params: Dictionary of all parameters underer management.
+        _fg_param_prefixes: List of parameter names that are set for each functional group.
+        _fg_param_to_setters: Dictionary of indices to name of function setters.
+        _env_param_names: List of environmental parameter names.
+        _env_param_to_setters: Dictionary of indices to names of function setters.
 
-    # Environmental parameter names
-    ENV_PARAM_NAMES = [
-        "env_init_c",
-        "env_base_inflow_r",
-        "env_decay_r",
-        "base_vol_ex_loss"
-    ]
+    """
 
     # Mapping from param category to setter function name
-    PARAM_CATEGORY_TO_SETTER = {
-        0: "set_initial_concentrations",
-        1: "set_immigration_concentrations",
-        2: "set_direct_absorption_rates",
-        3: "set_physical_decay_rates",
-        4: "set_metabolic_decay_rates",
-        5: "set_excretion_rates"
-    }
-
-    # Mapping from env param index to setter function name
-    ENV_PARAM_TO_SETTER = {
-        0: "set_initial_env_concentration",
-        1: "set_base_inflow_rate",
-        2: "set_env_decay_rate",
-        3: "set_env_volume_exchange_loss"
-    }
-
-    def __init__(self, fg_names: List[str]):
+    def __init__(
+        self,
+        fg_names: List[str],
+        fg_param_prefixes: List[str],
+        fg_param_to_setters: Dict[int, str],
+        env_param_names: List[str],
+        env_param_to_setters: Dict[int, str]
+    ):
         """Initialize parameter manager with functional group names"""
         self.fg_names = fg_names
         self.params: Dict[str, Parameter] = {}
+
+        self._fg_param_prefixes = fg_param_prefixes
+        self._fg_param_to_setters = fg_param_to_setters
+        self._env_param_names = env_param_names
+        self._env_param_to_setter = env_param_to_setters
         self._initialize_params()
 
-        self._variable_fg_indices = [[] for _ in range(len(self.FG_PARAM_PREFIXES))]
-        self._variable_fg_df_indices = [[] for _ in range(len(self.FG_PARAM_PREFIXES))]
+        self._variable_fg_indices = [[] for _ in range(len(fg_param_prefixes))]
+        self._variable_fg_df_indices = [[] for _ in range(len(fg_param_prefixes))]
         self._variable_env_params = []
+
+    @staticmethod
+    def EcotracerManager(core):
+        fg_param_prefixes = [
+            "init_c",
+            "immig_c",
+            "direct_abs_r",
+            "phys_decay_r",
+            "excretion_r",
+            "meta_decay_r"
+        ]
+        fg_param_to_setter = {
+            0: "set_initial_concentration",
+            1: "set_immigration_concentrations",
+            2: "set_direct_absorption_rates",
+            3: "set_phyical_decay_rates",
+            4: "set_metabolic_decay_rates",
+            5: "set_excretion_rates"
+        }
+        env_param_names = [
+            "env_init_c",
+            "env_base_inflow_r",
+            "env_decay_r",
+            "base_vol_ex_loss"
+        ]
+        env_param_to_setter = {
+            0: "set_initial_env_concentration",
+            1: "set_base_inflow_rate",
+            2: "set_env_decay_rate",
+            3: "set_env_volume_exchange_loss"
+        }
+        return ParameterManager(
+            core.get_functional_group_names(),
+            fg_param_prefixes,
+            fg_param_to_setter,
+            env_param_names,
+            env_param_to_setter
+        )
 
     def _initialize_params(self) -> None:
         """Create all possible parameters"""
         # Create functional group parameters
-        for prefix in self.FG_PARAM_PREFIXES:
+        for prefix in self._fg_param_prefixes:
             for i, fg_name in enumerate(self.fg_names, 1):
                 n_chars = len(str(len(self.fg_names)))
                 param_name = self._format_param_name(prefix, i, n_chars, fg_name)
                 param = Parameter(param_name)
-                param.category_idx = self.FG_PARAM_PREFIXES.index(prefix)
+                param.category_idx = self._fg_param_prefixes.index(prefix)
                 param.group_idx = i
                 self.params[param_name] = param
 
         # Create environmental parameters
-        for env_param in self.ENV_PARAM_NAMES:
+        for env_param in self._env_param_names:
             param = Parameter(env_param)
             param.is_env_param = True
-            param.category_idx = self.ENV_PARAM_NAMES.index(env_param)
+            param.category_idx = self._env_param_names.index(env_param)
             self.params[env_param] = param
 
     @staticmethod
@@ -124,13 +159,13 @@ class ParameterManager:
     def get_fg_param_names(self, param_prefixes: Union[str, List[str]] = "all") -> List[str]:
         """Get functional group parameter names for given prefixes"""
         if isinstance(param_prefixes, str) and param_prefixes == "all":
-            param_prefixes = self.FG_PARAM_PREFIXES
+            param_prefixes = self._fg_param_prefixes
         elif isinstance(param_prefixes, str):
             param_prefixes = [param_prefixes]
 
         names = []
         for prefix in param_prefixes:
-            if prefix not in self.FG_PARAM_PREFIXES:
+            if prefix not in self._fg_param_prefixes:
                 raise ValueError(f"Invalid parameter prefix: {prefix}")
             names.extend([name for name in self.params.keys()
                          if name.startswith(prefix + "_")])
@@ -155,7 +190,7 @@ class ParameterManager:
     def apply_constant_params(self, core: CoreInterface) -> None:
         """Apply all constant parameters to the core interface"""
         # Group parameters by category for batch application
-        for cat_idx in range(len(self.FG_PARAM_PREFIXES)):
+        for cat_idx in range(len(self._fg_param_prefixes)):
             values = []
             group_indices = []
 
@@ -167,14 +202,14 @@ class ParameterManager:
                     group_indices.append(param.group_idx)
 
             if group_indices:
-                setter_name = self.PARAM_CATEGORY_TO_SETTER[cat_idx]
+                setter_name = self._fg_param_to_setters[cat_idx]
                 setter = getattr(core.Ecotracer, setter_name)
                 setter(values, group_indices)
 
         # Apply environmental parameters
         for param in self.params.values():
             if param.param_type == ParameterType.CONSTANT and param.is_env_param:
-                setter_name = self.ENV_PARAM_TO_SETTER[param.category_idx]
+                setter_name = self.env_param_to_setter[param.category_idx]
                 setter = getattr(core.Ecotracer, setter_name)
                 setter(param.value)
 
@@ -194,8 +229,8 @@ class ParameterManager:
             return
 
         # Reset existing calculations
-        self._variable_fg_indices = [[] for _ in range(len(self.FG_PARAM_PREFIXES))]
-        self._variable_fg_df_indices = [[] for _ in range(len(self.FG_PARAM_PREFIXES))]
+        self._variable_fg_indices = [[] for _ in range(len(self._fg_param_prefixes))]
+        self._variable_fg_df_indices = [[] for _ in range(len(self._fg_param_prefixes))]
         self._variable_env_params = []
 
         # Process functional group parameters
@@ -203,7 +238,7 @@ class ParameterManager:
             if param.param_type == ParameterType.VARIABLE:
                 if param.is_env_param:
                     # Store (env_param_index, df_index, setter_name)
-                    setter_name = self.ENV_PARAM_TO_SETTER[param.category_idx]
+                    setter_name = self.env_param_to_setter[param.category_idx]
                     self._variable_env_params.append((param.category_idx, param.df_idx, setter_name))
                 else:
                     # Group by category
@@ -218,10 +253,10 @@ class ParameterManager:
         self._process_variable_params()
 
         # Apply functional group parameters
-        for cat_idx in range(len(self.FG_PARAM_PREFIXES)):
+        for cat_idx in range(len(self._fg_param_prefixes)):
             if self._variable_fg_indices[cat_idx]:
                 values = [scenario_values[df_idx] for df_idx in self._variable_fg_df_indices[cat_idx]]
-                setter_name = self.PARAM_CATEGORY_TO_SETTER[cat_idx]
+                setter_name = self._fg_param_to_setters[cat_idx]
                 setter = getattr(core.Ecotracer, setter_name)
                 setter(values, self._variable_fg_indices[cat_idx])
 
@@ -341,9 +376,9 @@ class EwEScenarioInterface:
         """Create empty scenarios dataframe for specified parameters"""
         # Validate environmental parameter names
         for name in env_param_names:
-            if name not in ParameterManager.ENV_PARAM_NAMES:
+            if name not in ParameterManager._env_param_names:
                 msg = f"Invalid parameter name: {name}. Make sure all are "
-                msg += f"elements of {ParameterManager.ENV_PARAM_NAMES}."
+                msg += f"elements of {ParameterManager._env_param_names}."
                 raise ValueError(msg)
 
         # Get functional group parameter names

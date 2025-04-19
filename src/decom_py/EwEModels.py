@@ -278,7 +278,7 @@ class EcotracerStateManager(EwEScenarioModel):
             for i, val in zip(idx_range, values):
                 self._core.get_EcotracerGroupInputs(i).__getattribute__(name)(val)
         return setter
-    
+
     @staticmethod
     def _generate_env_getter(name):
         def getter(self, name):
