@@ -1,9 +1,96 @@
 from abc import abstractmethod
-from typing import Union, Iterable
+from typing import Union, Iterable, Callable
 from warnings import warn
+import functools
 
 from decom_py.Exceptions.EwEExceptions import EcosimNoScenarioError, EcotracerNoScenarioError
 from .Exceptions import EwEError, EcopathError, EcosimError, EcotracerError
+
+def _generate_group_getter(param_container_name: str, name: str):
+    """Generate getter functions for EwEParameterManager for group parameters."""
+    def getter(self: EwEScenarioModel):
+        self._assert_scenario_loaded()
+        return [
+            getattr(getattr(self._core, param_container_name)(i), name)()
+            for i in range(1, self._core.nGroups + 1)
+        ]
+    # For Debugging
+    getter.__name__ = f"set_{param_container_name}_{name}"
+    getter.__qualname__ = f"<generated>.{getter.__name__}"
+    return getter
+
+def _generate_group_setter(param_container_name, name):
+    """Generate getter functions for EwEParameterManager for group parameters."""
+    def setter(self: EwEScenarioModel, values, idxs=None):
+        self._assert_scenario_loaded()
+        if idxs is None:
+            self._assert_setter_list_length(list(values))
+        else:
+            if len(idxs) != len(values):
+                msg = "Length of idxs and values should be equal. "
+                msg += f"Received lengths of {len(idxs)} and {len(values)}."
+                raise ValueError(msg)
+
+        idx_range = range(1, self._core.nGroups + 1) if idxs is None else idxs
+        for i, val in zip(idx_range, values):
+            param_container = getattr(self._core, param_container_name)(i)
+            getattr(param_container, name)(val)
+    # For debugging
+    setter.__name__ = f"set_{param_container_name}_{name}"
+    setter.__qualname__ = f"<generated>.{setter.__name__}"
+    return setter
+
+def _generate_env_getter(param_container_name: str, name: str):
+    def getter(self: EwEScenarioModel, name):
+        self._assert_scenario_loaded()
+        param_container = getattr(self._core, param_container_name)
+        return getattr(param_container, name)()
+    getter.__name__ = f"set_{param_container_name}_{name}"
+    getter.__qualname__ = f"<generated>.{getter.__name__}"
+    return getter
+
+def _generate_env_setter(param_container_name: str, name: str):
+    def setter(self: EwEScenarioModel, value):
+        self._assert_scenario_loaded()
+        param_container = getattr(self._core, param_container_name)
+        return getattr(param_container, name)(value)
+    # For debugging
+    setter.__name__ = f"set_{param_container_name}_{name}"
+    setter.__qualname__ = f"<generated>.{setter.__name__}"
+    return setter
+
+class EwEParameterManager:
+    """Generic parameter manager to manage EwE Model parameters.
+    """
+    # _GROUP_PARAM_CONTAINER_NAME
+    # _GROUP_PARAM_NAMES
+    # _ENV_PARAM_CONTAINER_NAME
+    # _ENV_PARAM_NAMES
+
+    def __init_subclass__(cls):
+
+        group_param_container_name = getattr(cls, "_GROUP_PARAM_CONTAINER_NAME")
+        group_param_names = getattr(cls, "_GROUP_PARAM_NAMES")
+        env_param_container_name = getattr(cls, "_ENV_PARAM_CONTAINER_NAME")
+        env_param_names = getattr(cls, "_ENV_PARAM_NAMES")
+
+        for param_name, (getter_name, setter_name) in group_param_names.items():
+            setattr(cls, f"get_{param_name}", _generate_group_getter(
+                group_param_container_name, getter_name
+            ))
+            setattr(cls, f"set_{param_name}", _generate_group_setter(
+                group_param_container_name, setter_name
+            ))
+
+
+        for param_name, (getter_name, setter_name) in env_param_names.items():
+            setattr(cls, f"get_{param_name}", _generate_env_getter(
+                env_param_container_name, getter_name
+            ))
+            setattr(cls, f"set_{param_name}", _generate_env_setter(
+                env_param_container_name, setter_name
+            ))
+
 
 class EwEModel:
 
@@ -143,6 +230,22 @@ class EcosimStateManager(EwEScenarioModel):
     class.
     """
 
+    _GROUP_PARAM_CONTAINER_NAME = "get_EcoSimGroupInputs"
+    _GROUP_PARAM_NAMES = {
+        "density_dep_catchability": ("get_DenDepCatchability", "set_DenDepCatchability"),
+        "feeding_time_adj_rate": ("get_FeedingTimeAdjustRate", "set_FeedingTimeAdjustRate"),
+        "max_rel_feeding_time": ("get_MaxRelFeedingTime", "set_MaxRelFeedingTime"),
+        "max_rel_pb": ("get_MaxRelPB", "set_MaxRelPB"),
+        "pred_effect_feeding_time": ("get_PredEffectFeedingTime", "set_PredEffectFeedingTime"),
+        "other_mort_feeding_time": ("get_OtherMortFeedingTime", "get_OtherMortFeedingTime"),
+        "qbmax_qbio": ("get_QBMaxQBio", "get_QBMaxQBio"),
+        "switching_power": ("get_SwitchingPower", "set_SwitchingPower"),
+    }
+    _ENV_PARAM_CONTAINER_NAME = "get_EcoSimModelParameters"
+    _ENV_PARAM_NAMES = {
+        "n_years": ("get_NumberYears", "set_NumberYears"),
+    }
+
     def __init__(self, core, state):
         super().__init__(core, state)
 
@@ -189,13 +292,31 @@ class EcosimStateManager(EwEScenarioModel):
 
         return successful
 
-class EcotracerStateManager(EwEScenarioModel):
+class EcotracerStateManager(EwEScenarioModel, EwEParameterManager):
     """Ecotracer Model State Wrapper
 
     This should be the interface at which Ecotracer information is set and retrieved.
     Parameter setting, results extraction, scenario loading and ecotracer execution should
     be controlled via this class.
     """
+
+    _GROUP_PARAM_CONTAINER_NAME = "get_EcotracerGroupInputs"
+    _GROUP_PARAM_NAMES = {
+        "initial_concentrations": ("get_CZero","set_CZero"),
+        "immigration_concentrations": ("get_CImmig","set_CImmig"),
+        "direct_absorption_rates": ("get_CAssimilationProp","set_CAssimilationProp"),
+        "physical_decay_rates": ("get_CDecay","set_CDecay"),
+        "metabolic_decay_rates": ("get_CMetablismRate","set_CMetablismRate"),
+        "excretion_rates": ("get_CEnvironment","set_CEnvironment"),
+    }
+
+    _ENV_PARAM_CONTAINER_NAME = "get_EcotracerModelParameters"
+    _ENV_PARAM_NAMES = {
+        "initial_env_concentration": ("get_CZero", "set_CZero"),
+        "base_inflow_rate": ("get_CInflow", "set_CInflow"),
+        "env_decay_rate": ("get_CDecay", "set_CDecay"),
+        "env_volume_exchange_loss": ("get_COutflow", "set_COutflow"),
+    }
 
     def __init__(self, core, state):
         super().__init__(core, state)
@@ -249,70 +370,3 @@ class EcotracerStateManager(EwEScenarioModel):
             print("EcoSim with Ecotracer run failed.")
 
         return successful
-
-    @staticmethod
-    def _generate_group_getter(name):
-        """Generate getter functions for EcotracerGroupInputs"""
-        def getter(self):
-            self._assert_scenario_loaded()
-            return [
-                self._core.get_EcotracerGroupInputs(i).__getattribute__(name)()
-                for i in range(1, self._core.nGroups + 1)
-            ]
-        return getter
-
-    @staticmethod
-    def _generate_group_setter(name):
-        """Generate setters that accept a list of values and index to set parameters."""
-        def setter(self, values, idxs=None):
-            self._assert_scenario_loaded()
-            if idxs is None:
-                self._assert_setter_list_length(list(values))
-            else:
-                if len(idxs) != len(values):
-                    msg = "Length of idxs and values should be equal. "
-                    msg += f"Received lengths of {len(idxs)} and {len(values)}."
-                    raise ValueError(msg)
-
-            idx_range = range(1, self._core.nGroups + 1) if idxs is None else idxs
-            for i, val in zip(idx_range, values):
-                self._core.get_EcotracerGroupInputs(i).__getattribute__(name)(val)
-        return setter
-
-    @staticmethod
-    def _generate_env_getter(name):
-        def getter(self, name):
-            self._assert_scenario_loaded()
-            return self._core.get_EcotracerModelParameters().__getattribute__(name)()
-        return getter
-
-    @staticmethod
-    def _generate_env_setter(name):
-        def setter(self, value):
-            self._assert_scenario_loaded()
-            return self._core.get_EcotracerModelParameters().__getattribute__(name)(value)
-        return setter
-
-    _group_attributes = {
-        "initial_concentrations": ("get_CZero","set_CZero"),
-        "immigration_concentrations": ("get_CImmig","set_CImmig"),
-        "direct_absorption_rates": ("get_CAssimilationProp","set_CAssimilationProp"),
-        "physical_decay_rates": ("get_CDecay","set_CDecay"),
-        "metabolic_decay_rates": ("get_CMetablismRate","set_CMetablismRate"),
-        "excretion_rates": ("get_CEnvironment","set_CEnvironment"),
-    }
-
-    _env_attributes = {
-        "initial_env_concentration": ("get_CZero", "set_CZero"),
-        "base_inflow_rate": ("get_CInflow", "set_CInflow"),
-        "env_decay_rate": ("get_CDecay", "set_CDecay"),
-        "env_volume_exchange_loss": ("get_COutflow", "set_COutflow"),
-    }
-
-    for method_name, attr in _group_attributes.items():
-        locals()[f"get_{method_name}"] = _generate_group_getter(attr[0])
-        locals()[f"set_{method_name}"] = _generate_group_setter(attr[1])
-
-    for method_name, attr in _env_attributes.items():
-        locals()[f"get_{method_name}"] = _generate_env_getter(attr[0])
-        locals()[f"set_{method_name}"] = _generate_env_setter(attr[1])
