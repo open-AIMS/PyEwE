@@ -17,6 +17,7 @@ class TestScenarioAddRemove:
 
     def test_ecosim_load_scenario(self, model_path, ewe_module):
 
+
         core = CoreInterface()
         core.load_model(model_path)
         # Keep reference to internal core to test state directly

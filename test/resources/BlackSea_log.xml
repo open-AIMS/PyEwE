@@ -1,0 +1,600 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <Platform>Microsoft Windows NT 10.0.22631.0</Platform>
+  <Is64BitOS>True</Is64BitOS>
+  <ModelName>BlackSea</ModelName>
+  <Created>12:56:04 PM Tuesday, 22 April 2025</Created>
+<Session_Started
+  Date="12:56:04 PM Tuesday, 22 April 2025">
+  <Model>BlackSea</Model>
+  <LogFile>C:\Users\dtan\repos\decom_py\test\resources\BlackSea_log.xml</LogFile>
+  <Is64BitExe>True</Is64BitExe>
+  <CultureOS>English (Australia)</CultureOS>
+  <CultureUI>English (United States)</CultureUI>
+  <DecimalSeparator>.</DecimalSeparator>
+</Session_Started>
+<Information_Message
+  Date="12:56:04 PM Tuesday, 22 April 2025">
+  <Message>Ecopath model 'C:\Users\dtan\repos\decom_py\test\resources\BlackSea.eweaccdb' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Information_Message
+  Date="12:56:13 PM Tuesday, 22 April 2025">
+  <Message>Ecopath run completed.</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="12:56:17 PM Tuesday, 22 April 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="12:56:17 PM Tuesday, 22 April 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="12:56:17 PM Tuesday, 22 April 2025">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Information_Message
+  Date="12:56:17 PM Tuesday, 22 April 2025">
+  <Message>Ecosim scenario 'default_test' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>EcoSimScenario</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="12:56:20 PM Tuesday, 22 April 2025">
+  <Message>Ecotracerscenario 'default_test' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Log_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 137 for Ecosim group 81</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 137 for Ecosim group 81</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 81</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 138 for Ecosim group 82</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 138 for Ecosim group 82</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 82</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 139 for Ecosim group 83</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 139 for Ecosim group 83</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 83</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 140 for Ecosim group 84</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 140 for Ecosim group 84</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 84</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 141 for Ecosim group 85</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 141 for Ecosim group 85</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 85</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 142 for Ecosim group 86</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 142 for Ecosim group 86</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 86</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 143 for Ecosim group 87</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 143 for Ecosim group 87</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 87</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 144 for Ecosim group 88</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 144 for Ecosim group 88</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 88</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 145 for Ecosim group 89</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 145 for Ecosim group 89</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 89</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 146 for Ecosim group 90</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 146 for Ecosim group 90</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 90</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 147 for Ecosim group 91</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 147 for Ecosim group 91</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 91</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 148 for Ecosim group 92</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 148 for Ecosim group 92</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 92</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 149 for Ecosim group 93</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 149 for Ecosim group 93</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 93</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 150 for Ecosim group 94</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 150 for Ecosim group 94</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 94</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:48 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 151 for Ecosim group 95</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:49 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 151 for Ecosim group 95</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:49 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 95</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:49 PM Tuesday, 22 April 2025">
+  <Message>Added missing shape definition 152 for Ecosim group 96</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:49 PM Tuesday, 22 April 2025">
+  <Message>Added missing fishing mortality shape 152 for Ecosim group 96</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:49 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim group 96</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:49 PM Tuesday, 22 April 2025">
+  <Message>Added missing Ecosim fleet 1</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>DataSource</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:02:49 PM Tuesday, 22 April 2025">
+  <Message>Ecosim scenario 'test_outputs' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>EcoSimScenario</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:04:10 PM Tuesday, 22 April 2025">
+  <Message>Vulnerabilities saved to 'C:\Users\dtan\repos\decom_py\test\resources\test_inputs\BlackSea-Vulnerabilities.csv'.</Message>
+  <Message_Type>DataExport</Message_Type>
+  <Message_Source>External</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="1:04:21 PM Tuesday, 22 April 2025">
+  <Message>Group info saved to 'C:\Users\dtan\repos\decom_py\test\resources\test_inputs\BlackSea-Group info.csv'.</Message>
+  <Message_Type>DataExport</Message_Type>
+  <Message_Source>External</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="1:04:29 PM Tuesday, 22 April 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="1:04:29 PM Tuesday, 22 April 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="1:04:29 PM Tuesday, 22 April 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="1:04:29 PM Tuesday, 22 April 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="1:04:29 PM Tuesday, 22 April 2025">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="1:04:29 PM Tuesday, 22 April 2025">
+  <Message>Model closed</Message>
+</Log_Message>
+<Session_Started
+  Date="2:54:02 PM Tuesday, 22 April 2025">
+  <Model>BlackSea</Model>
+  <LogFile>C:\Users\dtan\repos\decom_py\test\resources\BlackSea_log.xml</LogFile>
+  <Is64BitExe>True</Is64BitExe>
+  <CultureOS>English (Australia)</CultureOS>
+  <CultureUI>English (United States)</CultureUI>
+  <DecimalSeparator>.</DecimalSeparator>
+</Session_Started>
+<Information_Message
+  Date="2:54:02 PM Tuesday, 22 April 2025">
+  <Message>Ecopath model 'C:\Users\dtan\repos\decom_py\test\resources\BlackSea.eweaccdb' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="2:54:13 PM Tuesday, 22 April 2025">
+  <Message>Ecopath run completed.</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="2:54:24 PM Tuesday, 22 April 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="2:54:24 PM Tuesday, 22 April 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="2:54:24 PM Tuesday, 22 April 2025">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Information_Message
+  Date="2:54:25 PM Tuesday, 22 April 2025">
+  <Message>Ecosim scenario 'test_outputs' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>EcoSimScenario</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="2:54:56 PM Tuesday, 22 April 2025">
+  <Message>Ecotracerscenario 'test_outputs' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="2:55:06 PM Tuesday, 22 April 2025">
+  <Message>Ecotracer input saved to 'C:\Users\dtan\repos\decom_py\test\resources\test_inputs\BlackSea-Ecotracer input.csv'.</Message>
+  <Message_Type>DataExport</Message_Type>
+  <Message_Source>External</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Information_Message
+  Date="3:14:04 PM Tuesday, 22 April 2025">
+  <Message>Graph data saved to 'C:\Users\dtan\repos\decom_py\test\resources\test_outputs\BlackSea_graph_Ecosim.csv'.</Message>
+  <Message_Type>DataExport</Message_Type>
+  <Message_Source>External</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="3:14:44 PM Tuesday, 22 April 2025">
+  <Message>Contaminant tracer results saved to 'C:\Users\dtan\Documents\EwE output\BlackSea\ecotracer_test_outputs\Ecosim_test_outputs.csv'</Message>
+  <Message_Type>DataExport</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Information_Message
+  Date="3:17:05 PM Tuesday, 22 April 2025">
+  <Message>Contaminant tracer results saved to 'C:\Users\dtan\Documents\EwE output\BlackSea\ecotracer_test_outputs\Ecosim_test_outputs.csv'</Message>
+  <Message_Type>DataExport</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="3:17:52 PM Tuesday, 22 April 2025">
+  <Message>Ecosim results saved to 'C:\Users\dtan\data\tmp'</Message>
+  <Message_Type>DataExport</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Question_Message
+  Date="3:19:00 PM Tuesday, 22 April 2025">
+  <Message>Unsaved changes in Ecosim and Ecotracer will be lost if you proceed. Do you wish to save these changes?</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Core</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+  <Message_Reply>YES</Message_Reply>
+  <Message_Suppressable>False</Message_Suppressable>
+  <Message_Suppressed>False</Message_Suppressed>
+</Question_Message>
+<Information_Message
+  Date="3:19:04 PM Tuesday, 22 April 2025">
+  <Message>Ecotracer scenario 'test_outputs' has been saved.</Message>
+  <Message_Type>DataModified</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="3:19:04 PM Tuesday, 22 April 2025">
+  <Message>Ecosim scenario 'test_outputs' has been saved.</Message>
+  <Message_Type>DataModified</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>EcoSimScenario</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="3:19:04 PM Tuesday, 22 April 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="3:19:04 PM Tuesday, 22 April 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="3:19:04 PM Tuesday, 22 April 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="3:19:04 PM Tuesday, 22 April 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="3:19:04 PM Tuesday, 22 April 2025">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="3:19:04 PM Tuesday, 22 April 2025">
+  <Message>Model closed</Message>
+</Log_Message>
+</doc>
