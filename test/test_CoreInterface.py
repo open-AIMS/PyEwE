@@ -1,11 +1,17 @@
 from decom_py.Exceptions.EwEExceptions import EcotracerNoScenarioError
 import pytest
-from random import random
+from random import random, randint
 from warnings import warn
 from math import isclose
 
-from decom_py import CoreInterface
-from decom_py.Exceptions import EwEError, EcopathError, EcosimError, EcotracerError, EcotracerNoScenarioError
+from decom_py import CoreInterface, EcotracerStateManager, EcosimStateManager
+from decom_py.Exceptions import EwEError, EcopathError, EcosimError, EcotracerError
+from decom_py.Exceptions import EcotracerNoScenarioError, EcosimNoScenarioError
+
+N_GROUPS = 16
+N_DETRITUS = 1
+N_PRODUCERS = 1
+N_CONSUMERS = N_GROUPS - N_PRODUCERS - N_DETRITUS
 
 class TestScenarioAddRemove:
 
@@ -18,7 +24,6 @@ class TestScenarioAddRemove:
 
         core.Ecosim.load_scenario("default_test")
 
-        print(internal_core.ActiveEcosimScenarioIndex)
         assert internal_core.get_EcosimScenarios(
             internal_core.ActiveEcosimScenarioIndex
         ).Name == "default_test"
@@ -92,7 +97,6 @@ class TestScenarioAddRemove:
         core.Ecosim.load_scenario("default_test")
         core.Ecotracer.load_scenario("default_test")
 
-        print(internal_core.ActiveEcotracerScenarioIndex)
         assert internal_core.get_EcotracerScenarios(
             internal_core.ActiveEcotracerScenarioIndex
         ).Name == "default_test"
@@ -199,7 +203,6 @@ class TestCoreProperties:
         ]
 
         fg_names = core.get_functional_group_names()
-        print(fg_names)
 
         assert all(
             [expected == output for (expected, output) in zip(expected_names, fg_names)]
@@ -207,7 +210,201 @@ class TestCoreProperties:
 
         core.close_model()
 
-    def test_get_property_exceptions(self, model_path, ewe_module):
+class TestEcosimProperties:
+
+    def test_ecosim_get_property_exceptions(self, model_path, ewe_module):
+        """
+        Test that accessing Ecosim properties raises an error
+        if no Ecosim scenario is loaded.
+        """
+        core = CoreInterface()
+        core.load_model(model_path)
+
+        expected_error_msg = "No Ecosim scenario loaded.*"
+
+        # Test Group Parameters
+        group_params = EcosimStateManager._GROUP_PARAM_NAMES.keys()
+        for param_name in group_params:
+            getter_method_name = f"get_{param_name}"
+            with pytest.raises(EcosimNoScenarioError, match=expected_error_msg):
+                getattr(core.Ecosim, getter_method_name)()
+
+            setter_method_name = f"set_{param_name}"
+            dummy_data = [0.0] * (N_GROUPS - N_DETRITUS)
+            with pytest.raises(EcosimNoScenarioError, match=expected_error_msg):
+                 getattr(core.Ecosim, setter_method_name)(dummy_data)
+
+
+        # Test Environment Parameters
+        env_params = EcosimStateManager._ENV_PARAM_NAMES.keys()
+        for param_name in env_params:
+            getter_method_name = f"get_{param_name}"
+            with pytest.raises(EcosimNoScenarioError, match=expected_error_msg):
+                getattr(core.Ecosim, getter_method_name)()
+
+            setter_method_name = f"set_{param_name}"
+            dummy_data = 0.0
+            with pytest.raises(EcosimNoScenarioError, match=expected_error_msg):
+                 getattr(core.Ecosim, setter_method_name)(dummy_data)
+
+
+        core.close_model()
+
+    def test_ecosim_getters(self, model_path, ewe_module):
+        """
+        Test the Ecosim property getters after loading a scenario.
+        """
+        core = CoreInterface()
+        core.load_model(model_path)
+
+        # Expected values in ecosim scenario
+        expected_0_1 = [i / 100 for i in range(1, N_GROUPS + 1)]
+        expected_1_2 = [v + 1 for v in expected_0_1]
+
+        # producer and detritus values are not used and the getter will return default
+        expected_0_1[-2:] = [1.0] * 2
+        expected_1_2[-2:] = [1.0] * 2
+
+        core.Ecosim.load_scenario("property_get_test")
+
+        # --- Test Group Parameters ---
+        retrieved = core.Ecosim.get_density_dep_catchability()
+        assert len(retrieved) == N_GROUPS
+        assert all(
+            isclose(exp, out, rel_tol=1e-7)
+            for exp, out in zip(expected_1_2, retrieved)
+        )
+
+        expected_0_1[-2:] = [0.5] * 2
+        retrieved = core.Ecosim.get_feeding_time_adj_rate()
+        assert len(retrieved) == N_GROUPS
+        assert all(
+            isclose(exp, out, rel_tol=1e-7)
+            for exp, out in zip(expected_0_1, retrieved)
+        )
+
+        retrieved = core.Ecosim.get_max_rel_feeding_time()
+        assert len(retrieved) == N_GROUPS
+        assert all(
+            isclose(exp, out, rel_tol=1e-7)
+            for exp, out in zip(expected_1_2, retrieved)
+        )
+
+        retrieved = core.Ecosim.get_max_rel_pb()
+        expected_max_rel_pb = [2.0] * N_GROUPS
+        assert len(retrieved) == N_GROUPS
+        assert all(
+            isclose(exp, out, rel_tol=1e-7)
+            for exp, out in zip(expected_max_rel_pb, retrieved)
+        )
+
+        # update the expected defaults
+        expected_0_1[-2:] = [0.0] * 2
+        retrieved = core.Ecosim.get_pred_effect_feeding_time()
+        assert len(retrieved) == N_GROUPS
+        assert all(
+            isclose(exp, out, rel_tol=1e-7)
+            for exp, out in zip(expected_0_1, retrieved)
+        )
+
+        expected_0_1[-2:] = [1.0] * 2
+        retrieved = core.Ecosim.get_other_mort_feeding_time()
+        assert len(retrieved) == N_GROUPS
+        assert all(
+            isclose(exp, out, rel_tol=1e-7)
+            for exp, out in zip(expected_0_1, retrieved)
+        )
+
+        expected_1_2[-2:] = [1000.0] * 2
+        retrieved = core.Ecosim.get_qbmax_qbio()
+        assert len(retrieved) == N_GROUPS
+        assert all(
+            isclose(exp, out, rel_tol=1e-7)
+            for exp, out in zip(expected_1_2, retrieved)
+        )
+
+        expected_1_2[-2:] = [0.0] * 2
+        retrieved = core.Ecosim.get_switching_power()
+        assert len(retrieved) == N_GROUPS
+        assert all(
+            isclose(exp, out, rel_tol=1e-7)
+            for exp, out in zip(expected_1_2, retrieved)
+        )
+
+
+        # Test Environment Parameters
+        expected_nyears = 42
+        retrieved = core.Ecosim.get_n_years()
+        assert retrieved == expected_nyears
+
+        core.close_model()
+
+    def test_ecosim_setters(self, model_path, ewe_module):
+
+        """Test the Ecosim property setters."""
+        core = CoreInterface()
+        core.load_model(model_path)
+
+        core.Ecosim.load_scenario("property_set_test")
+
+        to_set_0_1 = [i / 100 for i in range(1, N_CONSUMERS + 1)]
+        to_set_1_2 = [v + 1 for v in to_set_0_1]
+
+        set_idx = [i for i in range(1, N_CONSUMERS + 1)]
+
+        between_0_1 = [
+            "feeding_time_adj_rate", "other_mort_feeding_time", "pred_effect_feeding_time"
+        ]
+
+        # Test Group Parameters
+        group_params = EcosimStateManager._GROUP_PARAM_NAMES.keys()
+        for param_name in group_params:
+            if param_name == "max_rel_pb":
+                # max rel pb applies only to produces, test separately.
+                continue
+
+            setter_method_name = f"set_{param_name}"
+            getter_method_name = f"get_{param_name}"
+
+            to_set = to_set_0_1 if param_name in between_0_1 else to_set_1_2
+
+            getattr(core.Ecosim, setter_method_name)(to_set, set_idx)
+            retrieved = getattr(core.Ecosim, getter_method_name)()
+
+            assert all(
+                isclose(exp, ret, rel_tol=1e-7)
+                for exp, ret in zip(to_set, retrieved[:-2])
+            )
+
+        # test max rel pb
+        core.Ecosim.set_max_rel_pb([1.5], [15])
+        retrieved = core.Ecosim.get_max_rel_pb()[14]
+        assert isclose(retrieved, retrieved, rel_tol=1e-7)
+
+        # --- Test Environment Parameters ---
+        env_params = EcosimStateManager._ENV_PARAM_NAMES.keys()
+        for param_name in env_params:
+            setter_method_name = f"set_{param_name}"
+            getter_method_name = f"get_{param_name}"
+
+            if param_name == "n_years":
+                to_set = randint(1, 200)
+            else:
+                to_set = random() * 10
+
+            getattr(core.Ecosim, setter_method_name)(to_set)
+            retrieved = getattr(core.Ecosim, getter_method_name)()
+
+            if isinstance(to_set, int):
+                assert retrieved == to_set
+            else:
+                assert isclose(to_set, retrieved, rel_tol=1e-7)
+
+        core.close_model()
+
+class TestEcotracerProperties:
+
+    def test_ecotracer_get_property_exceptions(self, model_path, ewe_module):
 
         core = CoreInterface()
         core.load_model(model_path)

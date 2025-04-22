@@ -41,18 +41,18 @@ def _generate_group_setter(param_container_name, name):
     return setter
 
 def _generate_env_getter(param_container_name: str, name: str):
-    def getter(self: EwEScenarioModel, name):
+    def getter(self: EwEScenarioModel):
         self._assert_scenario_loaded()
-        param_container = getattr(self._core, param_container_name)
+        param_container = getattr(self._core, param_container_name)()
         return getattr(param_container, name)()
-    getter.__name__ = f"set_{param_container_name}_{name}"
+    getter.__name__ = f"get_{param_container_name}_{name}"
     getter.__qualname__ = f"<generated>.{getter.__name__}"
     return getter
 
 def _generate_env_setter(param_container_name: str, name: str):
     def setter(self: EwEScenarioModel, value):
         self._assert_scenario_loaded()
-        param_container = getattr(self._core, param_container_name)
+        param_container = getattr(self._core, param_container_name)()
         return getattr(param_container, name)(value)
     # For debugging
     setter.__name__ = f"set_{param_container_name}_{name}"
@@ -222,7 +222,7 @@ class EwEScenarioModel(EwEModel):
         """Run the model."""
         pass
 
-class EcosimStateManager(EwEScenarioModel):
+class EcosimStateManager(EwEScenarioModel, EwEParameterManager):
     """Ecosim Model State Wrapper
 
     This should be the interface at which Ecosim information is set and retrieved.
@@ -230,18 +230,18 @@ class EcosimStateManager(EwEScenarioModel):
     class.
     """
 
-    _GROUP_PARAM_CONTAINER_NAME = "get_EcoSimGroupInputs"
+    _GROUP_PARAM_CONTAINER_NAME = "get_EcosimGroupInputs"
     _GROUP_PARAM_NAMES = {
         "density_dep_catchability": ("get_DenDepCatchability", "set_DenDepCatchability"),
         "feeding_time_adj_rate": ("get_FeedingTimeAdjustRate", "set_FeedingTimeAdjustRate"),
         "max_rel_feeding_time": ("get_MaxRelFeedingTime", "set_MaxRelFeedingTime"),
         "max_rel_pb": ("get_MaxRelPB", "set_MaxRelPB"),
         "pred_effect_feeding_time": ("get_PredEffectFeedingTime", "set_PredEffectFeedingTime"),
-        "other_mort_feeding_time": ("get_OtherMortFeedingTime", "get_OtherMortFeedingTime"),
-        "qbmax_qbio": ("get_QBMaxQBio", "get_QBMaxQBio"),
+        "other_mort_feeding_time": ("get_OtherMortFeedingTime", "set_OtherMortFeedingTime"),
+        "qbmax_qbio": ("get_QBMaxQBio", "set_QBMaxQBio"),
         "switching_power": ("get_SwitchingPower", "set_SwitchingPower"),
     }
-    _ENV_PARAM_CONTAINER_NAME = "get_EcoSimModelParameters"
+    _ENV_PARAM_CONTAINER_NAME = "get_EcosimModelParameters"
     _ENV_PARAM_NAMES = {
         "n_years": ("get_NumberYears", "set_NumberYears"),
     }

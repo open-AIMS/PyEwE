@@ -1,6 +1,7 @@
 from .EwEState import EwEState
 from .CoreInterface import CoreInterface
 from .EwEModule import initialise, get_ewe_core_module
+from .EwEModels import EcosimStateManager, EcotracerStateManager
 from .EwEScenarioInterace import EwEScenarioInterface, ParameterManager, Parameter, ParameterType
 
 from .Results import XarrayCSV
