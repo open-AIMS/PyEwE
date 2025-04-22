@@ -1,4 +1,6 @@
 from abc import abstractmethod
+import numpy as np
+from math import isnan
 from typing import Union, Iterable, Callable
 from warnings import warn
 import functools
@@ -291,6 +293,19 @@ class EcosimStateManager(EwEScenarioModel, EwEParameterManager):
             print("EcoSim with Ecotracer run failed.")
 
         return successful
+
+    def set_vulnerabilities(self, vulnerabilities: np.ndarray):
+        """Set ecosim vulnerabilites from a vulnerability matrix."""
+        # Assume correct shape is checked before hand.
+        for prey_idx in range(1, self._core.nGroups):
+            prey_ecosim_input = self._core.get_EcosimGroupsInputs(prey_idx)
+            for (pred_idx, val) in enumerate(vulnerabilities[prey_idx, :]):
+                if isnan(val):
+                    continue
+
+                prey_ecosim_input.set_VulMult(pred_idx + 1, val)
+
+
 
 class EcotracerStateManager(EwEScenarioModel, EwEParameterManager):
     """Ecotracer Model State Wrapper

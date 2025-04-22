@@ -217,7 +217,7 @@ class ParameterManager:
         # Apply environmental parameters
         for param in self.params.values():
             if param.param_type == ParameterType.CONSTANT and param.is_env_param:
-                setter_name = self.env_param_to_setter[param.category_idx]
+                setter_name = self._env_param_to_setter[param.category_idx]
                 setter = getattr(core.Ecotracer, setter_name)
                 setter(param.value)
 
@@ -246,7 +246,7 @@ class ParameterManager:
             if param.param_type == ParameterType.VARIABLE:
                 if param.is_env_param:
                     # Store (env_param_index, df_index, setter_name)
-                    setter_name = self.env_param_to_setter[param.category_idx]
+                    setter_name = self._env_param_to_setter[param.category_idx]
                     self._variable_env_params.append((param.category_idx, param.df_idx, setter_name))
                 else:
                     # Group by category
@@ -315,7 +315,7 @@ class EwEScenarioInterface:
             raise EcotracerError(self._core_instance.get_state(), msg)
 
         # Initialize parameter manager
-        self._param_manager = ParameterManager(self._core_instance.get_functional_group_names())
+        self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
 
     def get_ecotracer_fg_param_names(self, param_names: Union[str, List[str]] = "all") -> List[str]:
         """Get functional group parameter names for given parameter prefixes"""
@@ -363,20 +363,78 @@ class EwEScenarioInterface:
 
         return None
 
-    def set_ecosim_group_info(self, group_info) -> None:
+    def set_ecosim_group_info(self, group_info: DataFrame) -> None:
         """Set Ecosim group information"""
         # Implementation needed
+        fg_names: list[str] = self._core_instance.get_functional_group_names()
+        n_consumers = self._core_instance.n_consumers()
+        cons_range = list(range(1, n_consumers + 1))
+
+        n_producers = self._core_instance.n_producers()
+        prod_range = list(range(n_consumers + 1, n_consumers + n_producers + 1))
+
+        self._core_instance.Ecosim.set_density_dep_catchability(
+            list(group_info["Density-dep. catchability: Qmax/Qo [>=1]"])[:n_consumers],
+            cons_list
+        )
+        self._core_instance.Ecosim.set_feeding_time_adj_rate(
+            list(group_info["Feeding time adjust rate [0,1]"])[:n_consumers],
+            cons_list
+        )
+        self._core_instance.Ecosim.set_max_rel_feeding_time(
+            list(group_info["Max rel. feeding time"])[:n_consumers],
+            cons_list
+        )
+        self._core_instance.set_pref_effect_feeding_time(
+            list(group_info["Predator effect on feeding time [0,1]"]),
+            cons_list
+        )
+        self._core_instance.set_other_mort_feeding_time(
+            list(group_info["Fraction of other mortality sens. to changes in feeding time"]),
+            cons_list
+        )
+        self._core_instance.set_qbmax_qbio(
+            list(group_info["QBmax/QBo (for handling time) [>1]"]),
+            cons_list
+        )
+        self._core_instance.set_switching_power(
+            list(group_info["Switching power parameter [0,2]"]),
+            cons_list
+        )
+        self._core_instance.set_max_rel_pb(
+            list(group_info["Max rel. P/B"])[n_consumers:n_consumers+n_producers],
+            prod_range
+        )
+        warn("Additive prop. of predation mortality [0, 1]. Not yet supported.")
+
         return None
 
-    def set_vulnerabilities(self, vulnerabilities) -> None:
+    def set_ecosim_vulnerabilities(self, vulnerabilities: DataFrame) -> None:
         """Set Ecosim vulnerabilities to use for all scenario runs"""
         # Implementation needed
-        return None
+        fg_names: list[str] = self._core_instance.get_functional_group_names()
+        if "Prey \\ predator" in vulnerabilities.columns:
+            if list(vulnerabilities["Prey \\ predator"]) != fg_names:
+                msg = "Functional group list in dataframe does not match model. "
+                msg += f"Model list {fg_names}. "
+                df_fg_list = list(vulnerabilities["Prey \\ predator"])
+                msg += f"Dataframe list {df_fg_list}"
+                raise ValueError(msg)
+        else:
+            raise ValueError("Unable to find Prey \\ Predator column in Dataframe.")
 
-    def set_fishing_effort(self, fishing_effort) -> None:
-        """Set fishing effort for scenarios"""
-        # Implementation needed
-        return None
+        first_col_idx = list(vulnerabilities.columns).index('1')
+        arr_vuln = np.array(vulnerabilities.iloc[0:, first_col_idx])
+
+        n_groups = self._core_instance.n_groups()
+        n_consumers = self._core_instance.n_consumers()
+
+        if arr_vuln.shape != (n_groups, n_consumers):
+            msg = f"Expected vulnerabilities matrix of shape {(n_groups, n_consumers)}. "
+            msg += f"but got matrix of shape {arr_vuln.shape}."
+            raise ValueError(msg)
+
+        return self._core_instance.Ecosim.set_vulnerabilities(arr_vuln)
 
     def get_empty_scenarios_df(
             self, env_param_names: List[str], fg_param_names: List[str], n_scenarios: int = 1
@@ -384,7 +442,7 @@ class EwEScenarioInterface:
         """Create empty scenarios dataframe for specified parameters"""
         # Validate environmental parameter names
         for name in env_param_names:
-            if name not in ParameterManager._env_param_names:
+            if name not in self._param_manager._env_param_names:
                 msg = f"Invalid parameter name: {name}. Make sure all are "
                 msg += f"elements of {ParameterManager._env_param_names}."
                 raise ValueError(msg)

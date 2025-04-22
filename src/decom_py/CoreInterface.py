@@ -59,6 +59,32 @@ class CoreInterface():
 
         return fg_names
 
+    def n_groups(self) -> int:
+        """Get the number of functional groups in the loaded model."""
+        return self._core.nGroups
+
+    def n_detritus_groups(self) -> int:
+        """Get the number of detritus groups in the loaded model."""
+        return self._core.nDetritusGroups
+
+    def n_living_groups(self) -> int:
+        """Get the number of living groups in the loaded models."""
+        return self._core.nLivingGroups
+
+    def n_producers(self) -> int:
+        """Get the number of producers in the loaded model"""
+        return sum([
+            self._core.get_EcopathGroupInputs(i).IsProducer
+            for i in range(1, self.n_groups() + 1)
+        ])
+
+    def n_consumers(self) -> int:
+        """Get the number of consumers in the loaded model."""
+        return sum([
+            self._core.get_EcopathGroupInputs(i).IsConsumer
+            for i in range(1, self.n_groups() + 1)
+        ])
+
     def save_ecopath_results(self):
         # Missing use monthly enum type to pass to write results.
         return self._ecopath_result_writer.WriteResults()
