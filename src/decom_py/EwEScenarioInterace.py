@@ -320,7 +320,6 @@ class EwEScenarioInterface:
         else:
             os.makedirs(os.path.dirname(os.path.abspath(temp_model_path)), exist_ok=True)
             self._temp_model_path = temp_model_path
-            raise 
 
         # Create a copy to avoid modifying the original model file
         shutil.copy2(model_path, self._temp_model_path)
