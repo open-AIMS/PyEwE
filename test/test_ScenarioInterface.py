@@ -113,7 +113,6 @@ def scenario_run_results(model_path, ewe_module, cleanup):
 
     return OUTDIR # Provide the output directory to tests
 
-@pytest.mark.filterwarnings("ignore:Additive prop")
 def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):
     """
     Asserts that two numpy arrays are close element-wise.
@@ -141,6 +140,7 @@ def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):
         pytest.fail(fail_msg)
 
 
+@pytest.mark.filterwarnings("ignore:Additive prop")
 class TestScenarioInterface:
 
     def test_biomass_output(self, scenario_run_results):
