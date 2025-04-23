@@ -74,31 +74,32 @@ for more information.
 from decom_py import CoreInterface, EwEState, initialise
 
 initialise(r'path/to/EwE/binaries/directory')
-core = CoreInterface()
-
-core.set_default_save_dir('default/save/dir')
 
 model_file = r'path/to/model/file'
-core.load_model(model_file)
+ewe_int = EwEScenarioInterface(model_file)
 
-core.load_ecosim_scenario(1)
-core.load_ecotracer_scenario(1)
+ecosim_group_info = pd.read_csv('path to ecosim group info.csv')
+ecosim_vulnerabilities = pd.read_csv('path to ecosim vulnerabilities.csv')
 
-core.run_ecosim_w_ecotracer()
+ewe_int.set_ecosim_group_info(ecosim_group_info)
+ewe_int.set_ecosim_vulnerabilities(ecosim_vulnerabilities)
 
-core.save_ecopath_results()
-
-# Save specific ecosim result variables
-be_quiet = True
-save_monthly = False
-core.save_ecosim_results(
-    '<path/to/save/dir>', ["Variables", "to", "save"], save_monthly, be_quiet
+ecotracer_param_names = ewe_int.get_fg_param_names()
+ecotracer_env_params = [
+    "env_init_c",
+    "env_base_inflow_r",
+    "env_decay_r",
+    "base_vol_ex_loss"
+]
+scen_df = ewe_int.get_empty_scenarios_df(
+    ecotracer_env_params, # environmental parameters
+    ecotracer_param_names # functional group parameters
+    100, # number of scenarios
 )
-core.save_all_ecosim_results("ecosim/save/dir")
 
-core.save_ecotracer_results()
+# ... setup scenarios
 
-core.close_model()
+ewe_int.run_scenarios(scen_df, "path to save dir")
 ```
 
 ### Testing
