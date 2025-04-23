@@ -14,12 +14,9 @@ Outputs/
 site/
 
 sandbox/
-<<<<<<< HEAD
 test/resources/test_outputs/tmp/*.csv
-=======
 
 # local dev
 .env
 /.vscode
 /.idea
->>>>>>> f51d89f (Add info about pytest and VSCode test runner to README)
