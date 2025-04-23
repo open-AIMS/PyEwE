@@ -349,14 +349,17 @@ class EcotracerStateManager(EwEScenarioModel, EwEParameterManager):
     be controlled via this class.
     """
 
+    # See file gridEcotracerInput.vb in the ScientificInterface directory of Ecopath6.
+    # Direct Absorption rates -> CEnvironment
+    # excretion rates -> AssimilationProp
     _GROUP_PARAM_CONTAINER_NAME = "get_EcotracerGroupInputs"
     _GROUP_PARAM_NAMES = {
         "initial_concentrations": ("get_CZero", "set_CZero"),
         "immigration_concentrations": ("get_CImmig", "set_CImmig"),
-        "direct_absorption_rates": ("get_CAssimilationProp", "set_CAssimilationProp"),
+        "direct_absorption_rates": ("get_CEnvironment", "set_CEnvironment"),
         "physical_decay_rates": ("get_CDecay", "set_CDecay"),
         "metabolic_decay_rates": ("get_CMetablismRate", "set_CMetablismRate"),
-        "excretion_rates": ("get_CEnvironment", "set_CEnvironment"),
+        "excretion_rates": ("get_CAssimilationProp", "set_CAssimilationProp"),
     }
 
     _ENV_PARAM_CONTAINER_NAME = "get_EcotracerModelParameters"
