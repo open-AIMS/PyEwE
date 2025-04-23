@@ -318,7 +318,7 @@ class EwEScenarioInterface:
                 self._temp_dir.name, os.path.basename(model_path)
             )
         else:
-            os.makedirs(os.path.dirname(os.path.abspath(temp_model_path)), exists_ok=True)
+            os.makedirs(os.path.dirname(os.path.abspath(temp_model_path)), exist_ok=True)
             self._temp_model_path = temp_model_path
             raise 
 
