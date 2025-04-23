@@ -305,20 +305,24 @@ class ParameterManager:
 class EwEScenarioInterface:
     """Interface for running Ecopath with Ecosim scenarios"""
 
-    def __init__(self, model_path: str):
+    def __init__(self, model_path: str, temp_model_path: Optional[str]=None):
         self._model_path = model_path
         mod_path_obj = Path(model_path)
         if not mod_path_obj.exists():
             raise FileNotFoundError(model_path)
 
         # The temporary directory should clean itself up
-        self._temp_dir = TemporaryDirectory()
-        self._temp_model_path = os.path.join(
-            self._temp_dir.name, os.path.basename(model_path)
-        )
+        if temp_model_path is None:
+            self._temp_dir = TemporaryDirectory()
+            self._temp_model_path = os.path.join(
+                self._temp_dir.name, os.path.basename(model_path)
+            )
+        else:
+            os.makedirs(os.path.dirname(os.path.abspath(temp_model_path)), exists_ok=True)
+            self._temp_model_path = temp_model_path
+            raise 
 
         # Create a copy to avoid modifying the original model file
-        self._temp_model_path = "Outputs/testing.eweaccdb"
         shutil.copy2(model_path, self._temp_model_path)
 
         # Initialize core interface
