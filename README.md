@@ -111,6 +111,7 @@ tests still pass.*
 **Powershell**
 ```Powershell
 $env:EWE_BIN_DIR_PATH="Path to EwE binaries"
+```
 
 **bash**
 ```bash
