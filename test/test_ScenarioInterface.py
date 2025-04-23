@@ -162,3 +162,8 @@ class TestScenarioInterface:
         expected = ewe_df_to_arr(TARGET_MORTALITY_PATH)
         produced = ewe_df_to_arr(os.path.join(OUTDIR, "mortality_annual.csv"))
         assert_arrays_close(expected, produced, context="for mortality_annual.csv")
+
+    def test_ecotracer_output(self, scenario_run_results):
+        expected = ewe_df_to_arr(TARGET_ECOTRACER_OUT_PATH)
+        produced = ewe_df_to_arr(os.path.join(OUTDIR, "ecotracer_res_scen_0.csv"))
+        assert_arrays_close(expected, produced, context="for ecotracer_res_scen_0.csv")
