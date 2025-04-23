@@ -5,11 +5,13 @@ from .ResultsInterface import ResultsInterface
 import xarray as xr
 import polars as pl
 
+
 class XarrayCSV(ResultsInterface):
     """A results interface based on Xarray for CSV-like datasets.
 
     Polars is used for fast CSV parsing, and collated data passed to an Xarray dataset.
     """
+
     def __init__(self, result_dir):
         self._result_dir = Path(result_dir)
 
@@ -28,14 +30,16 @@ class XarrayCSV(ResultsInterface):
         """
         metadata = {}
         current_section = None
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             for line in file:
                 line = line.strip()
 
                 # Check if this is a header definition line
-                if line.startswith('"<HEADER') and line.endswith('/>\"'):
+                if line.startswith('"<HEADER') and line.endswith('/>"'):
                     # Extract section name
-                    section_name = line.replace('"<HEADER', '').replace('/>"', '').strip()
+                    section_name = (
+                        line.replace('"<HEADER', "").replace('/>"', "").strip()
+                    )
 
                     # Check if this is the end marker
                     if section_name == "end":
@@ -49,7 +53,7 @@ class XarrayCSV(ResultsInterface):
                 elif current_section is not None:
                     # Parse the key-value pair
                     line = line.strip('"')
-                    parts = line.split(',', 1)  # Split only on the first comma
+                    parts = line.split(",", 1)  # Split only on the first comma
                     if len(parts) == 2:
                         key, value = parts
                         metadata[current_section][key] = value.strip('"')

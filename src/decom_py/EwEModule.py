@@ -11,6 +11,7 @@ from System import Array
 _ewe_core_module = None
 _ewe_util_module = None
 
+
 def initialise(ewe_binary_dir: str) -> None:
     """Initialise the EwE Core binaries.
 
@@ -23,14 +24,15 @@ def initialise(ewe_binary_dir: str) -> None:
     if not ewe_bin_dir.exists():
         raise FileNotFoundError(ewe_bin_dir)
 
-    ewe_core_path = ewe_bin_dir.joinpath('EwECore.dll')
+    ewe_core_path = ewe_bin_dir.joinpath("EwECore.dll")
     if not ewe_core_path.exists():
         raise FileNotFoundError(ewe_core_path)
 
     clr.AddReference(str(ewe_core_path))
 
-    _ewe_core_module = import_module('EwECore')
-    _ewe_util_module = import_module('EwEUtils')
+    _ewe_core_module = import_module("EwECore")
+    _ewe_util_module = import_module("EwEUtils")
+
 
 def get_ewe_core_module():
     """Get the EwE Core module."""
@@ -40,6 +42,7 @@ def get_ewe_core_module():
 
     return _ewe_core_module
 
+
 def get_ewe_util_module():
     """Get the EwE Util module."""
     global _ewe_util_module
@@ -48,7 +51,9 @@ def get_ewe_util_module():
 
     return _ewe_util_module
 
+
 _ewe_ecosim_res_types = None
+
 
 def initialise_ecosim_result_types():
     """Initialise global dictionary that maps between ecosim result types names and the enum"""
@@ -73,8 +78,9 @@ def initialise_ecosim_result_types():
         "TotalCatch": type_enum.TotalCatch,
         "CatchFleetGroup": type_enum.CatchFleetGroup,
         "MortFleetGroup": type_enum.MortFleetGroup,
-        "ValueFleetGroup": type_enum.ValueFleetGroup
+        "ValueFleetGroup": type_enum.ValueFleetGroup,
     }
+
 
 def get_ecosim_result_type_enum(type_name: str):
     """Convert a ecosim result type name to the visual basic enumeration"""
@@ -85,11 +91,13 @@ def get_ecosim_result_type_enum(type_name: str):
 
     return _ewe_ecosim_res_types[type_name]
 
+
 def result_type_enum_array(type_names: Iterable[str]):
     core_module = get_ewe_core_module()
-    
+
     el_type = core_module.Ecosim.cEcosimResultWriter.eResultTypes
     return Array[el_type]([get_ecosim_result_type_enum(nm) for nm in type_names])
+
 
 def py_bool_to_ewe_tristate(flag: bool):
     """Concert bool to TriState.bool"""

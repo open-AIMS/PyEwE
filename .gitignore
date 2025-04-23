@@ -14,3 +14,4 @@ Outputs/
 site/
 
 sandbox/
+test/resources/test_outputs/tmp/*.csv

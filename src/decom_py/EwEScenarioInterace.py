@@ -12,11 +12,14 @@ from tqdm.auto import tqdm
 from decom_py import CoreInterface
 from .Exceptions import EwEError, EcotracerError, EcosimError, EcopathError
 
+
 class ParameterType:
     """Enum-like class for parameter types"""
+
     CONSTANT = "constant"
     VARIABLE = "variable"
     UNSET = "unset"
+
 
 class Parameter:
     """Representation of a single parameter.
@@ -30,6 +33,7 @@ class Parameter:
         group_idx: The index of the group in the underlying core instance. If the the
             parameter is an environmental parameter,this will be -1.
     """
+
     def __init__(
         self,
         name: str,
@@ -38,7 +42,7 @@ class Parameter:
         group_idx: int = -1,
         param_type: str = ParameterType.UNSET,
         value: float = math.nan,
-        df_idx: int = -1
+        df_idx: int = -1,
     ):
         self.name = name
         self.param_type = param_type
@@ -62,6 +66,7 @@ class Parameter:
     def is_set(self) -> bool:
         return self.param_type != ParameterType.UNSET
 
+
 class ParameterManager:
     """Class to manage all parameters for an EwE model module.
 
@@ -82,7 +87,7 @@ class ParameterManager:
         fg_param_prefixes: List[str],
         fg_param_to_setters: Dict[int, str],
         env_param_names: List[str],
-        env_param_to_setters: Dict[int, str]
+        env_param_to_setters: Dict[int, str],
     ):
         """Initialize parameter manager with functional group names"""
         self.fg_names = fg_names
@@ -107,7 +112,7 @@ class ParameterManager:
             "direct_abs_r",
             "phys_decay_r",
             "meta_decay_r",
-            "excretion_r"
+            "excretion_r",
         ]
         fg_param_to_setter = {
             0: "set_initial_concentrations",
@@ -115,26 +120,26 @@ class ParameterManager:
             2: "set_direct_absorption_rates",
             3: "set_physical_decay_rates",
             4: "set_metabolic_decay_rates",
-            5: "set_excretion_rates"
+            5: "set_excretion_rates",
         }
         env_param_names = [
             "env_init_c",
             "env_base_inflow_r",
             "env_decay_r",
-            "base_vol_ex_loss"
+            "base_vol_ex_loss",
         ]
         env_param_to_setter = {
             0: "set_initial_env_concentration",
             1: "set_base_inflow_rate",
             2: "set_env_decay_rate",
-            3: "set_env_volume_exchange_loss"
+            3: "set_env_volume_exchange_loss",
         }
         return ParameterManager(
             core.get_functional_group_names(),
             fg_param_prefixes,
             fg_param_to_setter,
             env_param_names,
-            env_param_to_setter
+            env_param_to_setter,
         )
 
     def _initialize_params(self) -> None:
@@ -157,14 +162,16 @@ class ParameterManager:
     @staticmethod
     def _format_param_name(prefix: str, index: int, n_chars: int, name: str) -> str:
         """Format functional group parameter names"""
-        idx_str = str(index).rjust(n_chars, '0')
+        idx_str = str(index).rjust(n_chars, "0")
         return f"{prefix}_{idx_str}_{name}"
 
     def get_all_param_names(self) -> List[str]:
         """Get list of all parameter names"""
         return list(self.params.keys())
 
-    def get_fg_param_names(self, param_prefixes: Union[str, List[str]] = "all") -> List[str]:
+    def get_fg_param_names(
+        self, param_prefixes: Union[str, List[str]] = "all"
+    ) -> List[str]:
         """Get functional group parameter names for given prefixes"""
         if isinstance(param_prefixes, str) and param_prefixes == "all":
             param_prefixes = self._fg_param_prefixes
@@ -175,11 +182,14 @@ class ParameterManager:
         for prefix in param_prefixes:
             if prefix not in self._fg_param_prefixes:
                 raise ValueError(f"Invalid parameter prefix: {prefix}")
-            names.extend([name for name in self.params.keys()
-                         if name.startswith(prefix + "_")])
+            names.extend(
+                [name for name in self.params.keys() if name.startswith(prefix + "_")]
+            )
         return names
 
-    def set_constant_params(self, param_names: List[str], param_values: List[float]) -> None:
+    def set_constant_params(
+        self, param_names: List[str], param_values: List[float]
+    ) -> None:
         """Set parameters as constant with given values"""
         for name, value in zip(param_names, param_values):
             if name not in self.params:
@@ -188,8 +198,11 @@ class ParameterManager:
 
     def get_unset_params(self) -> List[str]:
         """Get names of parameters that haven't been set"""
-        return [name for name, param in self.params.items()
-                if param.param_type == ParameterType.UNSET]
+        return [
+            name
+            for name, param in self.params.items()
+            if param.param_type == ParameterType.UNSET
+        ]
 
     def get_conflicting_params(self) -> List[str]:
         """Get empty list - this implementation prevents conflicts"""
@@ -203,9 +216,11 @@ class ParameterManager:
             group_indices = []
 
             for param in self.params.values():
-                if (param.param_type == ParameterType.CONSTANT and
-                    not param.is_env_param and
-                    param.category_idx == cat_idx):
+                if (
+                    param.param_type == ParameterType.CONSTANT
+                    and not param.is_env_param
+                    and param.category_idx == cat_idx
+                ):
                     values.append(param.value)
                     group_indices.append(param.group_idx)
 
@@ -221,7 +236,9 @@ class ParameterManager:
                 setter = getattr(core.Ecotracer, setter_name)
                 setter(param.value)
 
-    def set_variable_params(self, param_names: List[str], df_indices: List[int]) -> None:
+    def set_variable_params(
+        self, param_names: List[str], df_indices: List[int]
+    ) -> None:
         """Set parameters as variable with dataframe column indices"""
         for name, idx in zip(param_names, df_indices):
             if name not in self.params:
@@ -247,15 +264,23 @@ class ParameterManager:
                 if param.is_env_param:
                     # Store (env_param_index, df_index, setter_name)
                     setter_name = self._env_param_to_setter[param.category_idx]
-                    self._variable_env_params.append((param.category_idx, param.df_idx, setter_name))
+                    self._variable_env_params.append(
+                        (param.category_idx, param.df_idx, setter_name)
+                    )
                 else:
                     # Group by category
-                    self._variable_fg_indices[param.category_idx].append(param.group_idx)
-                    self._variable_fg_df_indices[param.category_idx].append(param.df_idx)
+                    self._variable_fg_indices[param.category_idx].append(
+                        param.group_idx
+                    )
+                    self._variable_fg_df_indices[param.category_idx].append(
+                        param.df_idx
+                    )
 
         self._variable_params_processed = True
 
-    def apply_variable_params(self, core: CoreInterface, scenario_values: List[float]) -> None:
+    def apply_variable_params(
+        self, core: CoreInterface, scenario_values: List[float]
+    ) -> None:
         """Apply variable parameters for a scenario to the core interface efficiently"""
         # Process variable params if not already done
         self._process_variable_params()
@@ -263,7 +288,10 @@ class ParameterManager:
         # Apply functional group parameters
         for cat_idx in range(len(self._fg_param_prefixes)):
             if self._variable_fg_indices[cat_idx]:
-                values = [scenario_values[df_idx] for df_idx in self._variable_fg_df_indices[cat_idx]]
+                values = [
+                    scenario_values[df_idx]
+                    for df_idx in self._variable_fg_df_indices[cat_idx]
+                ]
                 setter_name = self._fg_param_to_setters[cat_idx]
                 setter = getattr(core.Ecotracer, setter_name)
                 setter(values, self._variable_fg_indices[cat_idx])
@@ -272,6 +300,7 @@ class ParameterManager:
         for env_idx, df_idx, setter_name in self._variable_env_params:
             setter = getattr(core.Ecotracer, setter_name)
             setter(scenario_values[df_idx])
+
 
 class EwEScenarioInterface:
     """Interface for running Ecopath with Ecosim scenarios"""
@@ -284,14 +313,17 @@ class EwEScenarioInterface:
 
         # The temporary directory should clean itself up
         self._temp_dir = TemporaryDirectory()
-        self._temp_model_path = os.path.join(self._temp_dir.name, os.path.basename(model_path))
+        self._temp_model_path = os.path.join(
+            self._temp_dir.name, os.path.basename(model_path)
+        )
 
         # Create a copy to avoid modifying the original model file
+        self._temp_model_path = "Outputs/testing.eweaccdb"
         shutil.copy2(model_path, self._temp_model_path)
 
         # Initialize core interface
         self._core_instance = CoreInterface()
-        if not self._core_instance.load_model(model_path):
+        if not self._core_instance.load_model(self._temp_model_path):
             msg = "Failed to load EwE model. Check that the model file is loadable via the GUI."
             raise EwEError(self._core_instance.get_state(), msg)
 
@@ -299,8 +331,8 @@ class EwEScenarioInterface:
         if not self._core_instance.Ecosim.new_scenario(
             "tmp_ecosim_scen",
             "temporary ecosim scenario used by decom_py",
-            "", # author
-            ""  # contact
+            "",  # author
+            "",  # contact
         ):
             msg = "Failed to create and load temporary ecosim scenario."
             raise EcosimError(self._core_instance.get_state(), msg)
@@ -308,8 +340,8 @@ class EwEScenarioInterface:
         if not self._core_instance.Ecotracer.new_scenario(
             "tmp_ecotracer_scen",
             "temporary ecosim scenario used by decom_py",
-            "", # author
-            ""  # contact
+            "",  # author
+            "",  # contact
         ):
             msg = "Failed to create and load temporary ecotracer scenario."
             raise EcotracerError(self._core_instance.get_state(), msg)
@@ -317,11 +349,19 @@ class EwEScenarioInterface:
         # Initialize parameter manager
         self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
 
-    def get_ecotracer_fg_param_names(self, param_names: Union[str, List[str]] = "all") -> List[str]:
+    def get_ecotracer_fg_param_names(
+        self, param_names: Union[str, List[str]] = "all"
+    ) -> List[str]:
         """Get functional group parameter names for given parameter prefixes"""
         return self._param_manager.get_fg_param_names(param_names)
 
-    def set_constant_params(self, param_names: List[str], param_values: List[float]) -> None:
+    def set_simulation_duration(self, n_years: int):
+        """Set the number of years to run ecosim for."""
+        return self._core_instance.Ecosim.set_n_years(n_years)
+
+    def set_constant_params(
+        self, param_names: List[str], param_values: List[float]
+    ) -> None:
         """Set parameters that are constant across scenarios"""
         self._param_manager.set_constant_params(param_names, param_values)
 
@@ -338,7 +378,9 @@ class EwEScenarioInterface:
         col_names = [str(nm) for nm in scenarios.columns]
 
         # Set variable parameters from dataframe columns (excluding scenario column)
-        self._param_manager.set_variable_params(col_names[1:], list(range(1, len(col_names))))
+        self._param_manager.set_variable_params(
+            col_names[1:], list(range(1, len(col_names)))
+        )
 
         # Apply constant parameters
         self._param_manager.apply_constant_params(self._core_instance)
@@ -350,7 +392,9 @@ class EwEScenarioInterface:
         os.makedirs(save_dir, exist_ok=True)
 
         # Run each scenario
-        for idx, row in tqdm(scenarios.iterrows(), desc="Running scenarios", total=scenarios.shape[0]):
+        for idx, row in tqdm(
+            scenarios.iterrows(), desc="Running scenarios", total=scenarios.shape[0]
+        ):
             # Apply variable parameters for this scenario
             self._param_manager.apply_variable_params(self._core_instance, list(row))
 
@@ -360,50 +404,55 @@ class EwEScenarioInterface:
             # Save results
             output_path = os.path.join(save_dir, f"ecotracer_res_scen_{idx}.csv")
             self._core_instance.save_ecotracer_results(output_path)
+            self._core_instance.save_ecosim_results(
+                save_dir,
+                ["Biomass", "Catch", "CatchFleetGroup", "Mortality"],
+                True,
+                False,
+            )
 
         return None
 
     def set_ecosim_group_info(self, group_info: DataFrame) -> None:
         """Set Ecosim group information"""
         # Implementation needed
-        fg_names: list[str] = self._core_instance.get_functional_group_names()
         n_consumers = self._core_instance.n_consumers()
-        cons_range = list(range(1, n_consumers + 1))
+        cons_list = list(range(1, n_consumers + 1))
 
         n_producers = self._core_instance.n_producers()
-        prod_range = list(range(n_consumers + 1, n_consumers + n_producers + 1))
-
+        prod_list = list(range(n_consumers + 1, n_consumers + n_producers + 1))
         self._core_instance.Ecosim.set_density_dep_catchability(
             list(group_info["Density-dep. catchability: Qmax/Qo [>=1]"])[:n_consumers],
-            cons_list
+            cons_list,
         )
         self._core_instance.Ecosim.set_feeding_time_adj_rate(
-            list(group_info["Feeding time adjust rate [0,1]"])[:n_consumers],
-            cons_list
+            list(group_info["Feeding time adjust rate [0,1]"])[:n_consumers], cons_list
         )
         self._core_instance.Ecosim.set_max_rel_feeding_time(
-            list(group_info["Max rel. feeding time"])[:n_consumers],
-            cons_list
+            list(group_info["Max rel. feeding time"])[:n_consumers], cons_list
         )
-        self._core_instance.set_pref_effect_feeding_time(
-            list(group_info["Predator effect on feeding time [0,1]"]),
-            cons_list
+        self._core_instance.Ecosim.set_pred_effect_feeding_time(
+            list(group_info["Predator effect on feeding time [0,1]"])[:n_consumers],
+            cons_list,
         )
-        self._core_instance.set_other_mort_feeding_time(
-            list(group_info["Fraction of other mortality sens. to changes in feeding time"]),
-            cons_list
+        self._core_instance.Ecosim.set_other_mort_feeding_time(
+            list(
+                group_info[
+                    "Fraction of other mortality sens. to changes in feeding time"
+                ]
+            )[:n_consumers],
+            cons_list,
         )
-        self._core_instance.set_qbmax_qbio(
-            list(group_info["QBmax/QBo (for handling time) [>1]"]),
-            cons_list
+        self._core_instance.Ecosim.set_qbmax_qbio(
+            list(group_info["QBmax/QBo (for handling time) [>1]"])[:n_consumers],
+            cons_list,
         )
-        self._core_instance.set_switching_power(
-            list(group_info["Switching power parameter [0,2]"]),
-            cons_list
+        self._core_instance.Ecosim.set_switching_power(
+            list(group_info["Switching power parameter [0,2]"])[:n_consumers], cons_list
         )
-        self._core_instance.set_max_rel_pb(
-            list(group_info["Max rel. P/B"])[n_consumers:n_consumers+n_producers],
-            prod_range
+        self._core_instance.Ecosim.set_max_rel_pb(
+            list(group_info["Max rel. P/B"])[n_consumers : n_consumers + n_producers],
+            prod_list,
         )
         warn("Additive prop. of predation mortality [0, 1]. Not yet supported.")
 
@@ -423,21 +472,26 @@ class EwEScenarioInterface:
         else:
             raise ValueError("Unable to find Prey \\ Predator column in Dataframe.")
 
-        first_col_idx = list(vulnerabilities.columns).index('1')
-        arr_vuln = np.array(vulnerabilities.iloc[0:, first_col_idx])
+        first_col_idx = list(vulnerabilities.columns).index("1")
+        arr_vuln = np.array(vulnerabilities.iloc[0:, first_col_idx:])
 
         n_groups = self._core_instance.n_groups()
         n_consumers = self._core_instance.n_consumers()
 
         if arr_vuln.shape != (n_groups, n_consumers):
-            msg = f"Expected vulnerabilities matrix of shape {(n_groups, n_consumers)}. "
+            msg = (
+                f"Expected vulnerabilities matrix of shape {(n_groups, n_consumers)}. "
+            )
             msg += f"but got matrix of shape {arr_vuln.shape}."
             raise ValueError(msg)
 
         return self._core_instance.Ecosim.set_vulnerabilities(arr_vuln)
 
     def get_empty_scenarios_df(
-            self, env_param_names: List[str], fg_param_names: List[str], n_scenarios: int = 1
+        self,
+        env_param_names: List[str],
+        fg_param_names: List[str],
+        n_scenarios: int = 1,
     ) -> DataFrame:
         """Create empty scenarios dataframe for specified parameters"""
         # Validate environmental parameter names

@@ -1,4 +1,11 @@
-from .EwEExceptions import EwEError, EcopathError, EcosimError, EcotracerError, EcotracerNoScenarioError, EcosimNoScenarioError
+from .EwEExceptions import (
+    EwEError,
+    EcopathError,
+    EcosimError,
+    EcotracerError,
+    EcotracerNoScenarioError,
+    EcosimNoScenarioError,
+)
 
 __all__ = [
     "EwEError",

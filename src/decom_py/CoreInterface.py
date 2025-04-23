@@ -6,11 +6,15 @@ from typing import Iterable, Union, Union
 from warnings import warn
 from .EwEState import EwEState
 from .Results import XarrayCSV
-from .EwEModule import get_ewe_core_module, result_type_enum_array, py_bool_to_ewe_tristate
+from .EwEModule import (
+    get_ewe_core_module,
+    result_type_enum_array,
+    py_bool_to_ewe_tristate,
+)
 from .EwEModels import EcosimStateManager, EcotracerStateManager
 
 
-class CoreInterface():
+class CoreInterface:
     """Interface to update the state of the underlying EwECore.
 
     CoreInterface provides a thin wrapper over the original cCore object defined in the EwE
@@ -73,28 +77,32 @@ class CoreInterface():
 
     def n_producers(self) -> int:
         """Get the number of producers in the loaded model"""
-        return sum([
-            self._core.get_EcopathGroupInputs(i).IsProducer
-            for i in range(1, self.n_groups() + 1)
-        ])
+        return sum(
+            [
+                self._core.get_EcopathGroupInputs(i).IsProducer
+                for i in range(1, self.n_groups() + 1)
+            ]
+        )
 
     def n_consumers(self) -> int:
         """Get the number of consumers in the loaded model."""
-        return sum([
-            self._core.get_EcopathGroupInputs(i).IsConsumer
-            for i in range(1, self.n_groups() + 1)
-        ])
+        return sum(
+            [
+                self._core.get_EcopathGroupInputs(i).IsConsumer
+                for i in range(1, self.n_groups() + 1)
+            ]
+        )
 
     def save_ecopath_results(self):
         # Missing use monthly enum type to pass to write results.
         return self._ecopath_result_writer.WriteResults()
 
     def save_ecosim_results(
-            self,
-            dir: str,
-            result_types: Iterable[str],
-            monthly: bool=True,
-            quiet: bool=True
+        self,
+        dir: str,
+        result_types: Iterable[str],
+        monthly: bool = True,
+        quiet: bool = True,
     ) -> bool:
         """Save ecosim results for a given setup of result variables.
 
@@ -121,7 +129,6 @@ class CoreInterface():
     def save_all_ecosim_results(self, dir: str):
         """Save all ecosim result variables to the given directory."""
         # Missing use monthly enum type to pass to write results.
-        self._core.m_EcoSimData
         if not self._ecosim_result_writer.WriteResults(dir):
             warn("Failed to save ecosim results. Make sure target directory is empty.")
             return False

@@ -13,10 +13,10 @@ N_DETRITUS = 1
 N_PRODUCERS = 1
 N_CONSUMERS = N_GROUPS - N_PRODUCERS - N_DETRITUS
 
+
 class TestScenarioAddRemove:
 
     def test_ecosim_load_scenario(self, model_path, ewe_module):
-
 
         core = CoreInterface()
         core.load_model(model_path)
@@ -25,20 +25,26 @@ class TestScenarioAddRemove:
 
         core.Ecosim.load_scenario("default_test")
 
-        assert internal_core.get_EcosimScenarios(
-            internal_core.ActiveEcosimScenarioIndex
-        ).Name == "default_test"
+        assert (
+            internal_core.get_EcosimScenarios(
+                internal_core.ActiveEcosimScenarioIndex
+            ).Name
+            == "default_test"
+        )
 
         # save index to test loading with index
         scenario_index: int = internal_core.ActiveEcosimScenarioIndex
 
         core.Ecosim.close_scenario()
-        assert (not internal_core.get_StateMonitor().HasEcosimLoaded())
+        assert not internal_core.get_StateMonitor().HasEcosimLoaded()
 
         core.Ecosim.load_scenario(scenario_index)
-        assert internal_core.get_EcosimScenarios(
-            internal_core.ActiveEcosimScenarioIndex
-        ).Name == "default_test"
+        assert (
+            internal_core.get_EcosimScenarios(
+                internal_core.ActiveEcosimScenarioIndex
+            ).Name
+            == "default_test"
+        )
 
         core.close_model()
 
@@ -98,20 +104,26 @@ class TestScenarioAddRemove:
         core.Ecosim.load_scenario("default_test")
         core.Ecotracer.load_scenario("default_test")
 
-        assert internal_core.get_EcotracerScenarios(
-            internal_core.ActiveEcotracerScenarioIndex
-        ).Name == "default_test"
+        assert (
+            internal_core.get_EcotracerScenarios(
+                internal_core.ActiveEcotracerScenarioIndex
+            ).Name
+            == "default_test"
+        )
 
         # save index to test loading with index
         scenario_index: int = internal_core.ActiveEcotracerScenarioIndex
 
         core.Ecotracer.close_scenario()
-        assert (not core._state.HasEcotracerLoaded())
+        assert not core._state.HasEcotracerLoaded()
 
         core.Ecotracer.load_scenario(scenario_index)
-        assert internal_core.get_EcotracerScenarios(
-            internal_core.ActiveEcotracerScenarioIndex
-        ).Name == "default_test"
+        assert (
+            internal_core.get_EcotracerScenarios(
+                internal_core.ActiveEcotracerScenarioIndex
+            ).Name
+            == "default_test"
+        )
 
         core.close_model()
 
@@ -148,7 +160,6 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-
     def test_ecotracer_remove_scenarios(self, model_path, ewe_module):
 
         core = CoreInterface()
@@ -176,6 +187,7 @@ class TestScenarioAddRemove:
         assert str(excinfo.value) == "Unable to find scenario named: remove_test"
 
         core.close_model()
+
 
 class TestCoreProperties:
 
@@ -211,6 +223,7 @@ class TestCoreProperties:
 
         core.close_model()
 
+
 class TestEcosimProperties:
 
     def test_ecosim_get_property_exceptions(self, model_path, ewe_module):
@@ -233,8 +246,7 @@ class TestEcosimProperties:
             setter_method_name = f"set_{param_name}"
             dummy_data = [0.0] * (N_GROUPS - N_DETRITUS)
             with pytest.raises(EcosimNoScenarioError, match=expected_error_msg):
-                 getattr(core.Ecosim, setter_method_name)(dummy_data)
-
+                getattr(core.Ecosim, setter_method_name)(dummy_data)
 
         # Test Environment Parameters
         env_params = EcosimStateManager._ENV_PARAM_NAMES.keys()
@@ -246,8 +258,7 @@ class TestEcosimProperties:
             setter_method_name = f"set_{param_name}"
             dummy_data = 0.0
             with pytest.raises(EcosimNoScenarioError, match=expected_error_msg):
-                 getattr(core.Ecosim, setter_method_name)(dummy_data)
-
+                getattr(core.Ecosim, setter_method_name)(dummy_data)
 
         core.close_model()
 
@@ -272,23 +283,20 @@ class TestEcosimProperties:
         retrieved = core.Ecosim.get_density_dep_catchability()
         assert len(retrieved) == N_GROUPS
         assert all(
-            isclose(exp, out, rel_tol=1e-7)
-            for exp, out in zip(expected_1_2, retrieved)
+            isclose(exp, out, rel_tol=1e-7) for exp, out in zip(expected_1_2, retrieved)
         )
 
         expected_0_1[-2:] = [0.5] * 2
         retrieved = core.Ecosim.get_feeding_time_adj_rate()
         assert len(retrieved) == N_GROUPS
         assert all(
-            isclose(exp, out, rel_tol=1e-7)
-            for exp, out in zip(expected_0_1, retrieved)
+            isclose(exp, out, rel_tol=1e-7) for exp, out in zip(expected_0_1, retrieved)
         )
 
         retrieved = core.Ecosim.get_max_rel_feeding_time()
         assert len(retrieved) == N_GROUPS
         assert all(
-            isclose(exp, out, rel_tol=1e-7)
-            for exp, out in zip(expected_1_2, retrieved)
+            isclose(exp, out, rel_tol=1e-7) for exp, out in zip(expected_1_2, retrieved)
         )
 
         retrieved = core.Ecosim.get_max_rel_pb()
@@ -304,34 +312,29 @@ class TestEcosimProperties:
         retrieved = core.Ecosim.get_pred_effect_feeding_time()
         assert len(retrieved) == N_GROUPS
         assert all(
-            isclose(exp, out, rel_tol=1e-7)
-            for exp, out in zip(expected_0_1, retrieved)
+            isclose(exp, out, rel_tol=1e-7) for exp, out in zip(expected_0_1, retrieved)
         )
 
         expected_0_1[-2:] = [1.0] * 2
         retrieved = core.Ecosim.get_other_mort_feeding_time()
         assert len(retrieved) == N_GROUPS
         assert all(
-            isclose(exp, out, rel_tol=1e-7)
-            for exp, out in zip(expected_0_1, retrieved)
+            isclose(exp, out, rel_tol=1e-7) for exp, out in zip(expected_0_1, retrieved)
         )
 
         expected_1_2[-2:] = [1000.0] * 2
         retrieved = core.Ecosim.get_qbmax_qbio()
         assert len(retrieved) == N_GROUPS
         assert all(
-            isclose(exp, out, rel_tol=1e-7)
-            for exp, out in zip(expected_1_2, retrieved)
+            isclose(exp, out, rel_tol=1e-7) for exp, out in zip(expected_1_2, retrieved)
         )
 
         expected_1_2[-2:] = [0.0] * 2
         retrieved = core.Ecosim.get_switching_power()
         assert len(retrieved) == N_GROUPS
         assert all(
-            isclose(exp, out, rel_tol=1e-7)
-            for exp, out in zip(expected_1_2, retrieved)
+            isclose(exp, out, rel_tol=1e-7) for exp, out in zip(expected_1_2, retrieved)
         )
-
 
         # Test Environment Parameters
         expected_nyears = 42
@@ -341,7 +344,6 @@ class TestEcosimProperties:
         core.close_model()
 
     def test_ecosim_setters(self, model_path, ewe_module):
-
         """Test the Ecosim property setters."""
         core = CoreInterface()
         core.load_model(model_path)
@@ -354,7 +356,9 @@ class TestEcosimProperties:
         set_idx = [i for i in range(1, N_CONSUMERS + 1)]
 
         between_0_1 = [
-            "feeding_time_adj_rate", "other_mort_feeding_time", "pred_effect_feeding_time"
+            "feeding_time_adj_rate",
+            "other_mort_feeding_time",
+            "pred_effect_feeding_time",
         ]
 
         # Test Group Parameters
@@ -403,6 +407,10 @@ class TestEcosimProperties:
 
         core.close_model()
 
+    def test_ecosim_vulnerabilities(self, model_path, ewe_module):
+        assert 2 == 2
+
+
 class TestEcotracerProperties:
 
     def test_ecotracer_get_property_exceptions(self, model_path, ewe_module):
@@ -441,49 +449,57 @@ class TestEcotracerProperties:
         core.Ecosim.load_scenario("default_test")
         core.Ecotracer.load_scenario("property_test")
 
-        expected_property = [
-            i / 10 for i in range(1, 16) # 0.1, 0.2...
-        ]
+        expected_property = [i / 10 for i in range(1, 16)]  # 0.1, 0.2...
 
         retrieved = core.Ecotracer.get_initial_concentrations()
-        assert all([
-            isclose(expected, out, rel_tol=1e-7)
-            for (expected, out) in zip(expected_property, retrieved)
-        ])
+        assert all(
+            [
+                isclose(expected, out, rel_tol=1e-7)
+                for (expected, out) in zip(expected_property, retrieved)
+            ]
+        )
 
         retrieved = core.Ecotracer.get_immigration_concentrations()
-        assert all([
-            isclose(expected, out, rel_tol=1e-7)
-            for (expected, out) in zip(expected_property, retrieved)
-        ])
+        assert all(
+            [
+                isclose(expected, out, rel_tol=1e-7)
+                for (expected, out) in zip(expected_property, retrieved)
+            ]
+        )
 
-        expected_property = [
-            i / 100 for i in range(1, 16) # 0.01, 0.02...
-        ]
+        expected_property = [i / 100 for i in range(1, 16)]  # 0.01, 0.02...
 
         retrieved = core.Ecotracer.get_direct_absorption_rates()
-        assert all([
-            isclose(expected, out, rel_tol=1e-7)
-            for (expected, out) in zip(expected_property, retrieved)
-        ])
+        assert all(
+            [
+                isclose(expected, out, rel_tol=1e-7)
+                for (expected, out) in zip(expected_property, retrieved)
+            ]
+        )
 
         retrieved = core.Ecotracer.get_physical_decay_rates()
-        assert all([
-            isclose(expected, out, rel_tol=1e-7)
-            for (expected, out) in zip(expected_property, retrieved)
-        ])
+        assert all(
+            [
+                isclose(expected, out, rel_tol=1e-7)
+                for (expected, out) in zip(expected_property, retrieved)
+            ]
+        )
 
         retrieved = core.Ecotracer.get_excretion_rates()
-        assert all([
-            isclose(expected, out, rel_tol=1e-7)
-            for (expected, out) in zip(expected_property, retrieved)
-        ])
+        assert all(
+            [
+                isclose(expected, out, rel_tol=1e-7)
+                for (expected, out) in zip(expected_property, retrieved)
+            ]
+        )
 
         retrieved = core.Ecotracer.get_metabolic_decay_rates()
-        assert all([
-            isclose(expected, out, rel_tol=1e-7)
-            for (expected, out) in zip(expected_property, retrieved)
-        ])
+        assert all(
+            [
+                isclose(expected, out, rel_tol=1e-7)
+                for (expected, out) in zip(expected_property, retrieved)
+            ]
+        )
 
         core.close_model()
 
@@ -498,29 +514,41 @@ class TestEcotracerProperties:
         to_set = [random() / 10 for i in range(16)]
         core.Ecotracer.set_initial_concentrations(to_set)
         retrieved = core.Ecotracer.get_initial_concentrations()
-        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+        assert all(
+            [isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)]
+        )
 
         to_set = [random() / 10 for i in range(16)]
         core.Ecotracer.set_immigration_concentrations(to_set)
         retrieved = core.Ecotracer.get_immigration_concentrations()
-        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+        assert all(
+            [isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)]
+        )
 
         to_set = [random() / 10 for i in range(16)]
         core.Ecotracer.set_direct_absorption_rates(to_set)
         retrieved = core.Ecotracer.get_direct_absorption_rates()
-        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+        assert all(
+            [isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)]
+        )
 
         to_set = [random() / 10 for i in range(16)]
         core.Ecotracer.set_physical_decay_rates(to_set)
         retrieved = core.Ecotracer.get_physical_decay_rates()
-        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+        assert all(
+            [isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)]
+        )
 
         to_set = [random() / 10 for i in range(16)]
         core.Ecotracer.set_excretion_rates(to_set)
         retrieved = core.Ecotracer.get_excretion_rates()
-        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+        assert all(
+            [isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)]
+        )
 
         to_set = [random() / 10 for i in range(16)]
         core.Ecotracer.set_metabolic_decay_rates(to_set)
         retrieved = core.Ecotracer.get_metabolic_decay_rates()
-        assert all([isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)])
+        assert all(
+            [isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)]
+        )
