@@ -11,6 +11,7 @@ from tqdm.auto import tqdm
 
 from decom_py import CoreInterface
 from .Exceptions import EwEError, EcotracerError, EcosimError, EcopathError
+from .Results import ResultManager
 
 
 class ParameterType:
@@ -376,7 +377,9 @@ class EwEScenarioInterface:
             msg += "They will be the default EwE parameters."
             warn(msg)
 
-    def run_scenarios(self, scenarios: DataFrame, save_dir: str) -> None:
+    def run_scenarios(
+            self, scenarios: DataFrame, save_dir: str, raw_save_format: bool=False
+    ) -> None:
         """Run all scenarios and save results"""
         col_names = [str(nm) for nm in scenarios.columns]
 
@@ -390,6 +393,7 @@ class EwEScenarioInterface:
 
         # Warn user about unset parameters if there are any
         self._warn_unset_params()
+        result_manager = ResultManager(self._core_instance, scenarios, save_dir)
 
         # Create output directory if it doesn't exist
         os.makedirs(save_dir, exist_ok=True)
@@ -405,14 +409,21 @@ class EwEScenarioInterface:
             self._core_instance.Ecotracer.run()
 
             # Save results
-            output_path = os.path.join(save_dir, f"ecotracer_res_scen_{idx}.csv")
-            self._core_instance.save_ecotracer_results(output_path)
-            self._core_instance.save_ecosim_results(
-                save_dir,
-                ["Biomass", "Catch", "CatchFleetGroup", "Mortality"],
-                True,
-                False,
-            )
+            if raw_save_format:
+                ecosim_save_dir = os.path.join(save_dir, f"ecosim_scenario_{idx}")
+                os.makedirs(ecosim_save_dir)
+                ecotracer_output_path = os.path.join(save_dir, f"ecotracer_res_scen_{idx}.csv")
+                self._core_instance.save_all_ecosim_results(
+                    ecosim_save_dir
+                )
+                self._core_instance.save_ecotracer_results(
+                    ecotracer_output_path
+                )
+            else:
+                result_manager.collect_results(idx)
+
+        if not raw_save_format:
+            result_manager.write_results()
 
         return None
 

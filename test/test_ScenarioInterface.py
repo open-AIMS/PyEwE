@@ -12,6 +12,7 @@ RESOURCES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources"
 OUTDIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "resources", "test_outputs", "tmp"
 )
+ECOSIM_OUTDIR = os.path.join(OUTDIR, "ecosim_scenario_0")
 
 ECOTRACER_GROUP_INFO_PATH = os.path.join(
     RESOURCES, "test_inputs", "BlackSea-Ecotracer input.csv"
@@ -49,18 +50,10 @@ def ewe_df_to_arr(df_path):
     return csv_data.to_numpy()
 
 
-def remove_csv_files(directory_path):
+def remove_files(directory_path):
     # Iterate through files in the directory (excluding nested directories)
-    for file_name in os.listdir(directory_path):
-        # Get the full path of the file
-        file_path = os.path.join(directory_path, file_name)
-
-        # Check if it's a file (not a directory) and ends with '.csv'
-        if os.path.isfile(file_path) and file_name.endswith(".csv"):
-            # Remove the file using shutil
-            shutil.os.remove(file_path)
-            print(f"Removed: {file_name}")
-
+    shutil.rmtree(directory_path)
+    os.makedirs(directory_path, exist_ok=True)
 
 @pytest.fixture(scope="session")
 def cleanup():
@@ -70,7 +63,7 @@ def cleanup():
     yield  # The test runs after this point
 
     # Cleanup code (runs after the test)
-    remove_csv_files(OUTDIR)
+    remove_files(OUTDIR)
 
 @pytest.fixture(scope="class")
 def scenario_run_results(model_path, ewe_module, cleanup):
@@ -109,9 +102,11 @@ def scenario_run_results(model_path, ewe_module, cleanup):
 
     # Run scenarios
     print(f"Running scenario once for fixture in {OUTDIR}...")
-    ewe_int.run_scenarios(scen_df, OUTDIR) # Run into the dedicated fixture dir
+    ewe_int.run_scenarios(scen_df, OUTDIR, raw_save_format=True) # Run into the dedicated fixture dir
 
-    return OUTDIR # Provide the output directory to tests
+    yield OUTDIR # Provide the output directory to tests
+
+    ewe_int._core_instance.close_model()
 
 def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):
     """
@@ -145,22 +140,22 @@ class TestScenarioInterface:
 
     def test_biomass_output(self, scenario_run_results):
         expected = ewe_df_to_arr(TARGET_BIOMASS_PATH)
-        produced = ewe_df_to_arr(os.path.join(OUTDIR, "biomass_annual.csv"))
+        produced = ewe_df_to_arr(os.path.join(ECOSIM_OUTDIR, "biomass_annual.csv"))
         assert_arrays_close(expected, produced, context="for biomass_annual.csv")
 
     def test_catch_output(self, scenario_run_results):
         expected = ewe_df_to_arr(TARGET_CATCH_PATH)
-        produced = ewe_df_to_arr(os.path.join(OUTDIR, "catch_annual.csv"))
+        produced = ewe_df_to_arr(os.path.join(ECOSIM_OUTDIR, "catch_annual.csv"))
         assert_arrays_close(expected, produced, context="for catch_annual.csv")
 
     def test_catch_fleet_output(self, scenario_run_results):
         expected = ewe_df_to_arr(TARGET_CATCH_FLEET_PATH)
-        produced = ewe_df_to_arr(os.path.join(OUTDIR, "catch-fleet-group_annual.csv"))
+        produced = ewe_df_to_arr(os.path.join(ECOSIM_OUTDIR, "catch-fleet-group_annual.csv"))
         assert_arrays_close(expected, produced, context="for catch-fleet-group_annual.csv")
 
     def test_mortality_output(self, scenario_run_results):
         expected = ewe_df_to_arr(TARGET_MORTALITY_PATH)
-        produced = ewe_df_to_arr(os.path.join(OUTDIR, "mortality_annual.csv"))
+        produced = ewe_df_to_arr(os.path.join(ECOSIM_OUTDIR, "mortality_annual.csv"))
         assert_arrays_close(expected, produced, context="for mortality_annual.csv")
 
     def test_ecotracer_output(self, scenario_run_results):
