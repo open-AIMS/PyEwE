@@ -1,10 +1,10 @@
 # Net arrays to numpy arrays was taken from the following discussion on github
 # https://github.com/pythonnet/pythonnet/issues/514#issuecomment-350375105
 
-from System.Reflection import BindingFlags
 import numpy as np
-import ctypes
 import clr, System
+import ctypes
+from System.Reflection import BindingFlags
 from System import Array, Int32
 from System.Runtime.InteropServices import GCHandle, GCHandleType
 from .Exceptions import EcopathError, EcotracerError, EcosimError
