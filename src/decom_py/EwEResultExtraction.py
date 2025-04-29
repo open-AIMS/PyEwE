@@ -40,10 +40,10 @@ _MAP_NET_NP = {
 }
 
 def intoNumpyArray(netArray, buffer):
-    '''
+    """
     Given a CLR `System.Array` returns a `numpy.ndarray`.  See _MAP_NET_NP for
     the mapping of CLR types to Numpy dtypes.
-    '''
+    """
     dims = np.empty(netArray.Rank, dtype=int)
     for I in range(netArray.Rank):
         dims[I] = netArray.GetLength(I)
@@ -86,7 +86,7 @@ def asNumpyArray(netArray):
     return npArray
 
 class DropEnum:
-
+    """Enumeration describing which slices should be dropped from result extraction."""
     NO_DROP: int = 0
     DROP_FIRST: int = 1
     DROP_LAST: int = 2
@@ -186,9 +186,10 @@ class SingleResultsExtractor(ResultExtractor):
     """A result extraction class that handles the extraction of a single variable.
 
     Attributes:
-        core: Instance of the EwE core to extract results from.
-        private_field: name of the private field to access.
-        array_name: name of the array in the private field to access.
+        _core: Instance of the EwE core to extract results from.
+        _private_field: name of the private field to access.
+        _array_name: name of the array in the private field to access.
+        _drop_flags: Indicating which slices of the raw dot net array to drop.
     """
 
     def __init__(
@@ -206,6 +207,19 @@ class SingleResultsExtractor(ResultExtractor):
         return self._get_buffer()[self._drop_flags]
 
 class PackedResultsExtractor(ResultExtractor):
+    """Results extractor for variables that are stored in the underling array.
+
+    EwE stored Ecosim group statistics in the same array, where the first dimension is
+    indexed by variable according a given enum. This class allows those variables to
+    extracted given a variable name.
+
+    Attributes:
+        _core: Instance of the EwE core to extract results from.
+        _private_field: name of the private_field to access from the core.
+        _array_name: name of the array in the private_field to access.
+        _drop_flags: Indicating which slices of the raw dot net array to drop.
+        _variable_map: Map from variable name to index mirroring the enumeration in EwE.
+    """
 
     def __init__(
         self,
@@ -235,7 +249,7 @@ def create_ecosim_group_stats_extractors(core, monitor):
         ResultStoreEnum.ECOSIM,
         "ResultsOvertime",
         {
-            "Biomass":         0,
+            "Biomass":         0, # See cEcoSimDatastructures and eEcosimResults enum
             "BiomassRel":      1,
             "Yield":           2,
             "YieldRel":        3,
