@@ -304,7 +304,14 @@ class ParameterManager:
 
 
 class EwEScenarioInterface:
-    """Interface for running Ecopath with Ecosim scenarios"""
+    """Interface for running Ecopath with Ecosim scenarios.
+
+    Attributes:
+        _model_path (str): Path to EwE model database file.
+        _temp_model_path (str): Path to temporary model database file.
+        _param_manager (ParameterManager): Parameter manager object to manage variable and
+            constant params.
+    """
 
     def __init__(self, model_path: str, temp_model_path: Optional[str] = None):
         self._model_path = model_path
