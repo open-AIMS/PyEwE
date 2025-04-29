@@ -71,7 +71,7 @@ for more information.
 ## Example
 
 ```python
-from decom_py import CoreInterface, EwEState, initialise
+from decom_py import EwEScenarioInterface
 
 initialise(r'path/to/EwE/binaries/directory')
 
@@ -103,9 +103,6 @@ ewe_int.run_scenarios(scen_df, "path to save dir")
 ```
 
 ### Testing
-
-*There is currently an issue with access violation for temporary directories. However the
-tests still pass.*
 
 1. Define an environment variable pointing to the EwE binaries.
 
@@ -156,50 +153,4 @@ For VSCode test runner, go through pytest setup in the Testing left panel, or se
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
 }
-```
-
-
-### Debugging
-
-```python
-from decom_py import CoreInterfacea, EwEState
-
-initialise("path to EwE binary directory")
-
-core = CoreInterface()
-
-# ... code running models
-
-core.print_summary()
-
-# Possible output
-# ---- Complate State Summary ----
-#
-# ---- EwE State ----
-# CanEcopathLoad: True
-# CanEcosimLoad: True
-# CanEcospaceLoad: True
-# CanEcotracerLoad: True
-#
-# ---- Ecopath State ----
-# HasEcopathInitialized: True
-# HasEcopathLoaded: True
-# HasEcopathRan: True
-# IsEcopathRunning: False
-# IsEcopathModified: False
-#
-# ---- Ecosim State ----
-# HasEcosimInitialized: False
-# HasEcosimLoaded: True
-# HasEcosimRan: False
-# IsEcosimRunning: False
-# IsEcosimModified: False
-#
-# ---- EcoTracer State ----
-# HasEcotracerLoaded: True
-# HasEcotracerRanForEcosim: False
-# HasEcotracerRanForEcospace: False
-# IsEcotracerModified: False
-
-# ... more code running models
 ```
