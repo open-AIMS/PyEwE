@@ -5,19 +5,15 @@ STD_DIM_NAMES = {
     "scenario": "Scenario",
     "fleet": "Fleet",
     "prey": "Prey",
-    "predator": "Predator"
+    "predator": "Predator",
 }
 
 CATEGORY_CONFIG = {
-    "ECOSYSTEM_STATS": {
-        "dims": [STD_DIM_NAMES[s] for s in ["scenario", "time"]]
-    },
-    "GROUP_STATS": {
-        "dims": [STD_DIM_NAMES[s] for s in ["scenario", "group", "time"]]
-    },
+    "ECOSYSTEM_STATS": {"dims": [STD_DIM_NAMES[s] for s in ["scenario", "time"]]},
+    "GROUP_STATS": {"dims": [STD_DIM_NAMES[s] for s in ["scenario", "group", "time"]]},
     "FISHING_STATS": {
         "dims": [STD_DIM_NAMES[s] for s in ["scenario", "fleet", "group", "time"]]
-    }
+    },
 }
 
 VARIABLE_CONFIG = {
@@ -27,8 +23,8 @@ VARIABLE_CONFIG = {
         "category": "GROUP_STATS",
         "unit": "t/t",
         "extractor_name": "create_conc_extractor",
-        "extractor_input": "", # only for packed variables
-        "save_filename": "Concentration"
+        "extractor_input": "",  # only for packed variables
+        "save_filename": "Concentration",
     },
     "Concentration Biomass": {
         "variable_name": "Concentration_Biomass",
@@ -37,6 +33,6 @@ VARIABLE_CONFIG = {
         "unit": "unknown",
         "extractor_name": "create_conc_biomass_extractor",
         "extractor_input": "",
-        "save_filename": "Concentration_Biomass"
+        "save_filename": "Concentration_Biomass",
     },
 }

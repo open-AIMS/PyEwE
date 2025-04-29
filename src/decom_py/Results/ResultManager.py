@@ -9,12 +9,16 @@ from typing import Optional
 from .config import STD_DIM_NAMES, CATEGORY_CONFIG, VARIABLE_CONFIG
 from .. import EwEResultExtraction
 
+
 def variable_arr_to_flat_df(var_arr):
     """Convert an xarray to a flattened dataframe with the correct variable name."""
     var_name = var_arr.attrs["name"]
     return var_arr.to_dataframe(name=var_name).reset_index()
 
-def select_dim_len(dim_name: str, n_scenarios: int, n_groups: int, n_months: int) -> int:
+
+def select_dim_len(
+    dim_name: str, n_scenarios: int, n_groups: int, n_months: int
+) -> int:
     """Given the dimension name, select the len of the dimension."""
     if dim_name == "scenario":
         return n_scenarios
@@ -25,6 +29,7 @@ def select_dim_len(dim_name: str, n_scenarios: int, n_groups: int, n_months: int
     elif dim_name == "env_group":
         return n_groups + 1
     raise ValueError(f"Dimension {dim_name} not supported.")
+
 
 def select_dim_values(dim_name: str, n_scenarios: int, group_names, n_months: int):
     """Given a dimension name, construct the values for the coordinates."""
@@ -44,7 +49,7 @@ def construct_xarray(
     n_scenarios: int,
     group_names: list[str],
     n_months: int,
-    first_year: int
+    first_year: int,
 ):
     """Given a variable name and the size of dimensions, construct an empty xarray."""
     # Get variable specification
@@ -59,8 +64,8 @@ def construct_xarray(
     # Construct dimensions for xarray
     # Get standard dimension names
     var_dims_names = CATEGORY_CONFIG[var_cat]["dims"]
-    coords  = [
-        select_dim_values(dim_n, n_scenarios, group_names, n_months) 
+    coords = [
+        select_dim_values(dim_n, n_scenarios, group_names, n_months)
         for dim_n in var_dims
     ]
     data = np.empty(tuple(var_shape), dtype=float)
@@ -73,12 +78,11 @@ def construct_xarray(
 
     return empty_xr
 
+
 def construct_extraction_objects(var_names, py_core):
     """Construct results extractors."""
     # Get the name of all extractor constructors
-    extractor_names = [
-        VARIABLE_CONFIG[var_n]["extractor_name"] for var_n in var_names
-    ]
+    extractor_names = [VARIABLE_CONFIG[var_n]["extractor_name"] for var_n in var_names]
     # Get unique names and so duplicate objects are not constructed
     uniq_names = list(set(extractor_names))
     extr_index = [uniq_names.index(var_n) for var_n in extractor_names]
@@ -88,6 +92,7 @@ def construct_extraction_objects(var_names, py_core):
     ]
     # Get unique names and so duplicate objects are not constructed
     return uniq_extractor_objs, [uniq_extractor_objs[i] for i in extr_index]
+
 
 class ResultManager:
     """A result manager collects, formats and writes results.
@@ -109,13 +114,7 @@ class ResultManager:
             are packaed into the same array in visual basic.
     """
 
-    def __init__(
-        self,
-        py_core,
-        var_names,
-        scenarios: pd.DataFrame,
-        save_dir: str
-    ):
+    def __init__(self, py_core, var_names, scenarios: pd.DataFrame, save_dir: str):
         self._py_core = py_core
         self._var_names = var_names
         self._scenarios = scenarios
@@ -133,8 +132,8 @@ class ResultManager:
             for vn in var_names
         ]
         # Get the result extractors and a list of extractors aligned with variables
-        self._unique_extractors, self._variable_extractors = construct_extraction_objects(
-            var_names, py_core
+        self._unique_extractors, self._variable_extractors = (
+            construct_extraction_objects(var_names, py_core)
         )
         # Get the inputs needed for the extracts get_result function.
         self._packed_input = [
@@ -149,32 +148,27 @@ class ResultManager:
     def collect_results(self, scenario_idx: int):
         """Load the ecosim results into the _variable_stores."""
         self.refresh_result_stores()
-        for (var_arr, var_extr, ex_in) in zip(
-            self._variable_stores,
-            self._variable_extractors,
-            self._packed_input
+        for var_arr, var_extr, ex_in in zip(
+            self._variable_stores, self._variable_extractors, self._packed_input
         ):
-            var_arr[
-                {STD_DIM_NAMES["scenario"]: scenario_idx}
-            ] = var_extr.get_result() if ex_in == "" else var_extr.get_result(ex_in)
+            var_arr[{STD_DIM_NAMES["scenario"]: scenario_idx}] = (
+                var_extr.get_result() if ex_in == "" else var_extr.get_result(ex_in)
+            )
 
     def _write_netcdfs(self):
         """Write all variables to netcdf files."""
-        for (var_nm, var_arr) in zip(self._var_names, self._variable_stores):
+        for var_nm, var_arr in zip(self._var_names, self._variable_stores):
             filename = VARIABLE_CONFIG[var_nm]["save_filename"] + ".nc"
             ds = var_arr.to_dataset(name=var_nm)
             ds.to_netcdf(os.path.join(self._save_dir, filename))
 
-
     def _write_dataframes(self):
         """Write all variables to csv files."""
-        categories = [
-            VARIABLE_CONFIG[var_n]["category"] for var_n in self._var_names
-        ]
+        categories = [VARIABLE_CONFIG[var_n]["category"] for var_n in self._var_names]
         unique_cats = list(set(categories))
         dfs: list[Optional[pd.DataFrame]] = [None] * len(unique_cats)
-        for (idx, uni_categ) in enumerate(unique_cats):
-            for (var_cat, var_arr) in zip(categories, self._variable_stores):
+        for idx, uni_categ in enumerate(unique_cats):
+            for var_cat, var_arr in zip(categories, self._variable_stores):
                 if var_cat != uni_categ:
                     continue
                 df_arr = variable_arr_to_flat_df(var_arr)
@@ -182,13 +176,13 @@ class ResultManager:
                     dfs[idx] = df_arr
                 else:
                     dfs[idx] = pd.merge(
-                        dfs[idx], 
-                        df_arr, 
+                        dfs[idx],
+                        df_arr,
                         on=CATEGORY_CONFIG[uni_categ]["dims"],
-                        how="outer"
+                        how="outer",
                     )
 
-        for (df, cat_name) in zip(dfs, unique_cats):
+        for df, cat_name in zip(dfs, unique_cats):
             df.to_csv(os.path.join(self._save_dir, cat_name + ".csv"), index=False)
 
     def write_results(self, formats: list[str]):

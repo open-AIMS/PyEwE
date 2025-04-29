@@ -37,6 +37,7 @@ TARGET_ECOTRACER_OUT_PATH = os.path.join(
     TARGET_ECOTRACER_DIR, "target_ecotracer_outputs.csv"
 )
 
+
 def ewe_df_to_arr(df_path):
     with open(df_path, "r") as file:
         # Skip lines until you reach the CSV header
@@ -55,6 +56,7 @@ def remove_files(directory_path):
     shutil.rmtree(directory_path)
     os.makedirs(directory_path, exist_ok=True)
 
+
 @pytest.fixture(scope="session")
 def cleanup():
     # Setup code (runs before the test)
@@ -64,6 +66,7 @@ def cleanup():
 
     # Cleanup code (runs after the test)
     remove_files(OUTDIR)
+
 
 @pytest.fixture(scope="class")
 def scenario_run_results(model_path, ewe_module, cleanup):
@@ -102,11 +105,14 @@ def scenario_run_results(model_path, ewe_module, cleanup):
 
     # Run scenarios
     print(f"Running scenario once for fixture in {OUTDIR}...")
-    ewe_int.run_scenarios(scen_df, OUTDIR, raw_save_format=True) # Run into the dedicated fixture dir
+    ewe_int.run_scenarios(
+        scen_df, OUTDIR, raw_save_format=True
+    )  # Run into the dedicated fixture dir
 
-    yield OUTDIR # Provide the output directory to tests
+    yield OUTDIR  # Provide the output directory to tests
 
     ewe_int._core_instance.close_model()
+
 
 def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):
     """
@@ -114,7 +120,9 @@ def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):
     Provides detailed failure message if they are not.
     """
     if expected.shape != produced.shape:
-        pytest.fail(f"Shape mismatch {context}: Expected {expected.shape}, Got {produced.shape}")
+        pytest.fail(
+            f"Shape mismatch {context}: Expected {expected.shape}, Got {produced.shape}"
+        )
 
     are_close = np.allclose(expected, produced, rtol=rtol, atol=atol)
 
@@ -150,8 +158,12 @@ class TestScenarioInterface:
 
     def test_catch_fleet_output(self, scenario_run_results):
         expected = ewe_df_to_arr(TARGET_CATCH_FLEET_PATH)
-        produced = ewe_df_to_arr(os.path.join(ECOSIM_OUTDIR, "catch-fleet-group_annual.csv"))
-        assert_arrays_close(expected, produced, context="for catch-fleet-group_annual.csv")
+        produced = ewe_df_to_arr(
+            os.path.join(ECOSIM_OUTDIR, "catch-fleet-group_annual.csv")
+        )
+        assert_arrays_close(
+            expected, produced, context="for catch-fleet-group_annual.csv"
+        )
 
     def test_mortality_output(self, scenario_run_results):
         expected = ewe_df_to_arr(TARGET_MORTALITY_PATH)

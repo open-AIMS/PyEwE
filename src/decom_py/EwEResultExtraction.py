@@ -13,31 +13,32 @@ from typing import Optional
 from .EwEState import EwEState
 
 _MAP_NP_NET = {
-    np.dtype('float32'): System.Single,
-    np.dtype('float64'): System.Double,
-    np.dtype('int8')   : System.SByte,
-    np.dtype('int16')  : System.Int16,
-    np.dtype('int32')  : System.Int32,
-    np.dtype('int64')  : System.Int64,
-    np.dtype('uint8')  : System.Byte,
-    np.dtype('uint16') : System.UInt16,
-    np.dtype('uint32') : System.UInt32,
-    np.dtype('uint64') : System.UInt64,
-    np.dtype('bool')   : System.Boolean,
+    np.dtype("float32"): System.Single,
+    np.dtype("float64"): System.Double,
+    np.dtype("int8"): System.SByte,
+    np.dtype("int16"): System.Int16,
+    np.dtype("int32"): System.Int32,
+    np.dtype("int64"): System.Int64,
+    np.dtype("uint8"): System.Byte,
+    np.dtype("uint16"): System.UInt16,
+    np.dtype("uint32"): System.UInt32,
+    np.dtype("uint64"): System.UInt64,
+    np.dtype("bool"): System.Boolean,
 }
 _MAP_NET_NP = {
-    'Single' : np.dtype('float32'),
-    'Double' : np.dtype('float64'),
-    'SByte'  : np.dtype('int8'),
-    'Int16'  : np.dtype('int16'),
-    'Int32'  : np.dtype('int32'),
-    'Int64'  : np.dtype('int64'),
-    'Byte'   : np.dtype('uint8'),
-    'UInt16' : np.dtype('uint16'),
-    'UInt32' : np.dtype('uint32'),
-    'UInt64' : np.dtype('uint64'),
-    'Boolean': np.dtype('bool'),
+    "Single": np.dtype("float32"),
+    "Double": np.dtype("float64"),
+    "SByte": np.dtype("int8"),
+    "Int16": np.dtype("int16"),
+    "Int32": np.dtype("int32"),
+    "Int64": np.dtype("int64"),
+    "Byte": np.dtype("uint8"),
+    "UInt16": np.dtype("uint16"),
+    "UInt32": np.dtype("uint32"),
+    "UInt64": np.dtype("uint64"),
+    "Boolean": np.dtype("bool"),
 }
+
 
 def intoNumpyArray(netArray, buffer):
     """
@@ -53,14 +54,16 @@ def intoNumpyArray(netArray, buffer):
         msg += f"into a numpy.ndarray of shape {buffer.shape}"
         raise RuntimeError(msg)
 
-    try: # Memmove
+    try:  # Memmove
         sourceHandle = GCHandle.Alloc(netArray, GCHandleType.Pinned)
         sourcePtr = sourceHandle.AddrOfPinnedObject().ToInt64()
-        destPtr = buffer.__array_interface__['data'][0]
+        destPtr = buffer.__array_interface__["data"][0]
         ctypes.memmove(destPtr, sourcePtr, buffer.nbytes)
     finally:
-        if sourceHandle.IsAllocated: sourceHandle.Free()
+        if sourceHandle.IsAllocated:
+            sourceHandle.Free()
     return buffer
+
 
 def asNumpyArray(netArray):
     """
@@ -72,24 +75,30 @@ def asNumpyArray(netArray):
         dims[I] = netArray.GetLength(I)
     netType = netArray.GetType().GetElementType().Name
     try:
-        npArray = np.empty(dims, order='C', dtype=_MAP_NET_NP[netType])
+        npArray = np.empty(dims, order="C", dtype=_MAP_NET_NP[netType])
     except KeyError:
-        raise NotImplementedError("asNumpyArray does not yet support System type {}".format(netType) )
+        raise NotImplementedError(
+            "asNumpyArray does not yet support System type {}".format(netType)
+        )
 
-    try: # Memmove
+    try:  # Memmove
         sourceHandle = GCHandle.Alloc(netArray, GCHandleType.Pinned)
         sourcePtr = sourceHandle.AddrOfPinnedObject().ToInt64()
-        destPtr = npArray.__array_interface__['data'][0]
+        destPtr = npArray.__array_interface__["data"][0]
         ctypes.memmove(destPtr, sourcePtr, npArray.nbytes)
     finally:
-        if sourceHandle.IsAllocated: sourceHandle.Free()
+        if sourceHandle.IsAllocated:
+            sourceHandle.Free()
     return npArray
+
 
 class DropEnum:
     """Enumeration describing which slices should be dropped from result extraction."""
+
     NO_DROP: int = 0
     DROP_FIRST: int = 1
     DROP_LAST: int = 2
+
 
 def get_drop_slice(drop_flag: int):
     """Constuct the array slice given the drop flag."""
@@ -104,6 +113,7 @@ def get_drop_slice(drop_flag: int):
 
 class ResultStoreEnum:
     """Enum for Core result private fields."""
+
     ECOPATH: str = "m_EcopathData"
     ECOSIM: str = "m_EcoSimData"
     ECOTRACER: str = "m_tracerData"
@@ -111,8 +121,11 @@ class ResultStoreEnum:
     @staticmethod
     def is_valid(private_field_name: str) -> bool:
         return private_field_name in [
-            ResultStoreEnum.ECOPATH, ResultStoreEnum.ECOSIM, ResultStoreEnum.ECOTRACER
+            ResultStoreEnum.ECOPATH,
+            ResultStoreEnum.ECOSIM,
+            ResultStoreEnum.ECOTRACER,
         ]
+
 
 class ResultExtractor:
     """A base class to extract result variables from private core result objects.
@@ -134,7 +147,7 @@ class ResultExtractor:
         monitor: EwEState,
         private_field: str,
         array_name: str,
-        drop_flags: Optional[tuple] = None
+        drop_flags: Optional[tuple] = None,
     ):
         self._core = core
         self._monitor = monitor
@@ -150,7 +163,9 @@ class ResultExtractor:
 
     def _has_run_check(self):
         if not ResultStoreEnum.is_valid(self._private_field):
-            raise ValueError(f"{self._private_field} is not a valid non-public field name.")
+            raise ValueError(
+                f"{self._private_field} is not a valid non-public field name."
+            )
 
         if not self._monitor.HasEcopathRan():
             raise EcopathError(
@@ -178,9 +193,12 @@ class ResultExtractor:
 
     def _get_buffer(self):
         if self._buffer is None:
-            raise RuntimeError("Buffer has not been allocated prior to result extraction.")
+            raise RuntimeError(
+                "Buffer has not been allocated prior to result extraction."
+            )
 
         return self._buffer
+
 
 class SingleResultsExtractor(ResultExtractor):
     """A result extraction class that handles the extraction of a single variable.
@@ -198,13 +216,14 @@ class SingleResultsExtractor(ResultExtractor):
         monitor: EwEState,
         private_field: str,
         array_name: str,
-        drop_flags: Optional[tuple] = None
+        drop_flags: Optional[tuple] = None,
     ):
         super().__init__(core, monitor, private_field, array_name, drop_flags)
 
     def get_result(self):
         """Get the numpy.ndarray containing the results."""
         return self._get_buffer()[self._drop_flags]
+
 
 class PackedResultsExtractor(ResultExtractor):
     """Results extractor for variables that are stored in the underling array.
@@ -228,7 +247,7 @@ class PackedResultsExtractor(ResultExtractor):
         private_field: str,
         array_name: str,
         variable_map: dict[str, int],
-        drop_flags: Optional[tuple] = None
+        drop_flags: Optional[tuple] = None,
     ):
         super().__init__(core, monitor, private_field, array_name, drop_flags)
         self._variable_map = variable_map
@@ -241,6 +260,7 @@ class PackedResultsExtractor(ResultExtractor):
             slices = (self._variable_map[variable_name], *self._drop_flags)
             return self._get_buffer()[slices]
 
+
 def create_ecosim_group_stats_extractors(core, monitor):
     """Create an extractor for the EcoSim group statistics results."""
     return PackedResultsExtractor(
@@ -249,23 +269,24 @@ def create_ecosim_group_stats_extractors(core, monitor):
         ResultStoreEnum.ECOSIM,
         "ResultsOvertime",
         {
-            "Biomass":         0, # See cEcoSimDatastructures and eEcosimResults enum
-            "BiomassRel":      1,
-            "Yield":           2,
-            "YieldRel":        3,
-            "FeedingTime":     4,
-            "ConsumpBiomass":  5,
-            "TotalMort":       6,
-            "PredMort":        7,
-            "FishMort":        8,
-            "ProdConsump":     9,
-            "AvgWeight":       10,
-            "MortVPred":       11,
-            "MortVFishing":    12,
+            "Biomass": 0,  # See cEcoSimDatastructures and eEcosimResults enum
+            "BiomassRel": 1,
+            "Yield": 2,
+            "YieldRel": 3,
+            "FeedingTime": 4,
+            "ConsumpBiomass": 5,
+            "TotalMort": 6,
+            "PredMort": 7,
+            "FishMort": 8,
+            "ProdConsump": 9,
+            "AvgWeight": 10,
+            "MortVPred": 11,
+            "MortVFishing": 12,
             "EcoSysStructure": 13,
-            "TL":              14
-        }
+            "TL": 14,
+        },
     )
+
 
 def create_conc_extractor(core, monitor):
     """Create an extractor for the Ecotracer concentration results."""
@@ -274,8 +295,9 @@ def create_conc_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOTRACER,
         "TracerConc",
-        (DropEnum.DROP_LAST, DropEnum.DROP_FIRST)
+        (DropEnum.DROP_LAST, DropEnum.DROP_FIRST),
     )
+
 
 def create_conc_biomass_extractor(core, monitor):
     """Create an extractor for the Ecotracer concentration overbiomass results."""
@@ -284,21 +306,27 @@ def create_conc_biomass_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOTRACER,
         "TracerCB",
-        (DropEnum.DROP_LAST, DropEnum.DROP_FIRST)
+        (DropEnum.DROP_LAST, DropEnum.DROP_FIRST),
     )
+
 
 def create_TL_catch_extractor(core, monitor):
     """Create an extractor for the Ecosim trophic level catch results."""
     return SingleResultsExtractor(core, monitor, ResultStoreEnum.ECOSIM, "TLC")
 
+
 def create_FIB_extractor(core, monitor):
     """Create an extractor for the Ecosim FIB results."""
     return SingleResultsExtractor(core, monitor, ResultStoreEnum.ECOSIM, "FIB")
+
 
 def create_Kemptons_extractor(core, monitor):
     """Create an extractor for the Ecosim Kempton results."""
     return SingleResultsExtractor(core, monitor, ResultStoreEnum.ECOSIM, "Kemptons")
 
+
 def create_shannon_diversity_extractor(core, monitor):
     """Create an extractor for the Ecosim Shannon Diversity results."""
-    return SingleResultsExtractor(core, monitor, ResultStoreEnum.ECOSIM, "ShannonDiversity")
+    return SingleResultsExtractor(
+        core, monitor, ResultStoreEnum.ECOSIM, "ShannonDiversity"
+    )

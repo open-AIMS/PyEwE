@@ -306,7 +306,7 @@ class ParameterManager:
 class EwEScenarioInterface:
     """Interface for running Ecopath with Ecosim scenarios"""
 
-    def __init__(self, model_path: str, temp_model_path: Optional[str]=None):
+    def __init__(self, model_path: str, temp_model_path: Optional[str] = None):
         self._model_path = model_path
         mod_path_obj = Path(model_path)
         if not mod_path_obj.exists():
@@ -319,7 +319,9 @@ class EwEScenarioInterface:
                 self._temp_dir.name, os.path.basename(model_path)
             )
         else:
-            os.makedirs(os.path.dirname(os.path.abspath(temp_model_path)), exist_ok=True)
+            os.makedirs(
+                os.path.dirname(os.path.abspath(temp_model_path)), exist_ok=True
+            )
             self._temp_model_path = temp_model_path
 
         # Create a copy to avoid modifying the original model file
@@ -378,7 +380,7 @@ class EwEScenarioInterface:
             warn(msg)
 
     def run_scenarios(
-            self, scenarios: DataFrame, save_dir: str, raw_save_format: bool=False
+        self, scenarios: DataFrame, save_dir: str, raw_save_format: bool = False
     ) -> None:
         """Run all scenarios and save results"""
         col_names = [str(nm) for nm in scenarios.columns]
@@ -394,10 +396,10 @@ class EwEScenarioInterface:
         # Warn user about unset parameters if there are any
         self._warn_unset_params()
         result_manager = ResultManager(
-            self._core_instance, 
+            self._core_instance,
             ["Concentration", "Concentration Biomass"],
-            scenarios, 
-            save_dir
+            scenarios,
+            save_dir,
         )
 
         # Create output directory if it doesn't exist
@@ -417,13 +419,11 @@ class EwEScenarioInterface:
             if raw_save_format:
                 ecosim_save_dir = os.path.join(save_dir, f"ecosim_scenario_{idx}")
                 os.makedirs(ecosim_save_dir)
-                ecotracer_output_path = os.path.join(save_dir, f"ecotracer_res_scen_{idx}.csv")
-                self._core_instance.save_all_ecosim_results(
-                    ecosim_save_dir
+                ecotracer_output_path = os.path.join(
+                    save_dir, f"ecotracer_res_scen_{idx}.csv"
                 )
-                self._core_instance.save_ecotracer_results(
-                    ecotracer_output_path
-                )
+                self._core_instance.save_all_ecosim_results(ecosim_save_dir)
+                self._core_instance.save_ecotracer_results(ecotracer_output_path)
             else:
                 result_manager.collect_results(idx)
 
