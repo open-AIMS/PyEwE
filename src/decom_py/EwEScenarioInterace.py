@@ -380,9 +380,22 @@ class EwEScenarioInterface:
             warn(msg)
 
     def run_scenarios(
-        self, scenarios: DataFrame, save_dir: str, raw_save_format: bool = False
+        self,
+        scenarios: DataFrame,
+        save_dir: str,
+        save_format: Optional[list[str]]=None
     ) -> None:
-        """Run all scenarios and save results"""
+        """Run scenarios in given dataframe.
+
+        Run all scenarios in the given dataframe and save results in the given formats to
+        the given directory.
+
+        Arguments:
+            scenarios: Scenario dataframe listing parameter values for each scenario.
+            save_dir: Path to directory where results will be saved.
+            save_format: Formats to save results in. Raw seperate csvs if None. Supported
+                formats are "netcdf" and "csv"
+        """
         col_names = [str(nm) for nm in scenarios.columns]
 
         # Set variable parameters from dataframe columns (excluding scenario column)
@@ -395,12 +408,16 @@ class EwEScenarioInterface:
 
         # Warn user about unset parameters if there are any
         self._warn_unset_params()
+
+        # Setup result manager
         result_manager = ResultManager(
             self._core_instance,
             ["Concentration", "Concentration Biomass"],
             scenarios,
             save_dir,
         )
+
+        raw_save_format = save_format is None
 
         # Create output directory if it doesn't exist
         os.makedirs(save_dir, exist_ok=True)
@@ -428,7 +445,7 @@ class EwEScenarioInterface:
                 result_manager.collect_results(idx)
 
         if not raw_save_format:
-            result_manager.write_results(["netcdf", "csv"])
+            result_manager.write_results(save_format)
 
         return None
 
