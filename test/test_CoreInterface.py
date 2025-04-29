@@ -16,10 +16,10 @@ N_CONSUMERS = N_GROUPS - N_PRODUCERS - N_DETRITUS
 
 class TestScenarioAddRemove:
 
-    def test_ecosim_load_scenario(self, model_path, ewe_module):
+    def test_ecosim_load_scenario(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
         # Keep reference to internal core to test state directly
         internal_core = core.get_core()
 
@@ -48,10 +48,10 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecosim_add_scenarios(self, model_path, ewe_module):
+    def test_ecosim_add_scenarios(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
         # Keep reference to internal core to test state directly
         internal_core = core.get_core()
 
@@ -71,10 +71,10 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecosim_remove_scenarios(self, model_path, ewe_module):
+    def test_ecosim_remove_scenarios(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
         # Keep reference to internal core to test state directly
         internal_core = core.get_core()
 
@@ -94,10 +94,10 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecotracer_load_scenarios(self, model_path, ewe_module):
+    def test_ecotracer_load_scenarios(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
         # Keep reference to internal core to test state directly
         internal_core = core.get_core()
 
@@ -127,10 +127,10 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecotracer_add_scenarios(self, model_path, ewe_module):
+    def test_ecotracer_add_scenarios(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
         # Keep reference to internal core to test state directly
         internal_core = core.get_core()
 
@@ -160,10 +160,10 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecotracer_remove_scenarios(self, model_path, ewe_module):
+    def test_ecotracer_remove_scenarios(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
         # Keep reference to internal core to test state directly
         internal_core = core.get_core()
 
@@ -191,10 +191,10 @@ class TestScenarioAddRemove:
 
 class TestCoreProperties:
 
-    def test_get_functional_group_names(self, model_path, ewe_module):
+    def test_get_functional_group_names(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
 
         expected_names = [
             "Large pelagics",
@@ -226,13 +226,13 @@ class TestCoreProperties:
 
 class TestEcosimProperties:
 
-    def test_ecosim_get_property_exceptions(self, model_path, ewe_module):
+    def test_ecosim_get_property_exceptions(self, tmp_model_path, ewe_module):
         """
         Test that accessing Ecosim properties raises an error
         if no Ecosim scenario is loaded.
         """
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
 
         expected_error_msg = "No Ecosim scenario loaded.*"
 
@@ -262,12 +262,12 @@ class TestEcosimProperties:
 
         core.close_model()
 
-    def test_ecosim_getters(self, model_path, ewe_module):
+    def test_ecosim_getters(self, tmp_model_path, ewe_module):
         """
         Test the Ecosim property getters after loading a scenario.
         """
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
 
         # Expected values in ecosim scenario
         expected_0_1 = [i / 100 for i in range(1, N_GROUPS + 1)]
@@ -343,10 +343,10 @@ class TestEcosimProperties:
 
         core.close_model()
 
-    def test_ecosim_setters(self, model_path, ewe_module):
+    def test_ecosim_setters(self, tmp_model_path, ewe_module):
         """Test the Ecosim property setters."""
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
 
         core.Ecosim.load_scenario("property_set_test")
 
@@ -407,16 +407,16 @@ class TestEcosimProperties:
 
         core.close_model()
 
-    def test_ecosim_vulnerabilities(self, model_path, ewe_module):
+    def test_ecosim_vulnerabilities(self, tmp_model_path, ewe_module):
         assert 2 == 2
 
 
 class TestEcotracerProperties:
 
-    def test_ecotracer_get_property_exceptions(self, model_path, ewe_module):
+    def test_ecotracer_get_property_exceptions(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
         # Keep reference to internal core to test state directly
         internal_core = core.get_core()
 
@@ -441,10 +441,10 @@ class TestEcotracerProperties:
         with pytest.raises(EcotracerNoScenarioError, match=expected_error_msg):
             core.Ecotracer.get_metabolic_decay_rates()
 
-    def test_ecotracer_getters(self, model_path, ewe_module):
+    def test_ecotracer_getters(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
 
         core.Ecosim.load_scenario("default_test")
         core.Ecotracer.load_scenario("property_test")
@@ -503,10 +503,10 @@ class TestEcotracerProperties:
 
         core.close_model()
 
-    def test_ecotracer_setters(self, model_path, ewe_module):
+    def test_ecotracer_setters(self, tmp_model_path, ewe_module):
 
         core = CoreInterface()
-        core.load_model(model_path)
+        core.load_model(tmp_model_path)
 
         core.Ecosim.load_scenario("default_test")
         core.Ecotracer.load_scenario("property_set_test")

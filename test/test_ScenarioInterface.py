@@ -106,7 +106,7 @@ def scenario_run_results(model_path, ewe_module, cleanup):
     # Run scenarios
     print(f"Running scenario once for fixture in {OUTDIR}...")
     ewe_int.run_scenarios(
-        scen_df, OUTDIR, raw_save_format=True
+        scen_df, OUTDIR
     )  # Run into the dedicated fixture dir
 
     yield OUTDIR  # Provide the output directory to tests
