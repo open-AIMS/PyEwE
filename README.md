@@ -18,6 +18,40 @@ uv sync
 
 This will install needed dependencies.
 
+## Example
+
+```python
+from decom_py import EwEScenarioInterface
+
+initialise(r'path/to/EwE/binaries/directory')
+
+model_file = r'path/to/model/file'
+ewe_int = EwEScenarioInterface(model_file)
+
+ecosim_group_info = pd.read_csv('path to ecosim group info.csv')
+ecosim_vulnerabilities = pd.read_csv('path to ecosim vulnerabilities.csv')
+
+ewe_int.set_ecosim_group_info(ecosim_group_info)
+ewe_int.set_ecosim_vulnerabilities(ecosim_vulnerabilities)
+
+ecotracer_param_names = ewe_int.get_fg_param_names()
+ecotracer_env_params = [
+    "env_init_c",
+    "env_base_inflow_r",
+    "env_decay_r",
+    "base_vol_ex_loss"
+]
+scen_df = ewe_int.get_empty_scenarios_df(
+    ecotracer_env_params, # environmental parameters
+    ecotracer_param_names # functional group parameters
+    100, # number of scenarios
+)
+
+# ... setup scenarios
+
+ewe_int.run_scenarios(scen_df, "path to save dir")
+```
+
 ## Developer setup
 
 Additional packages for a development environment can be added:
@@ -28,6 +62,14 @@ uv add --dev <name of package>
 
 These packages will not be included in the package dependencies and are only installed
 locally.
+
+### Documentation
+
+Documentation can be build and read using 
+
+```bash
+mkdocs serve
+```
 
 ### Docstrings
 
@@ -67,40 +109,6 @@ The number `2` in the example above autoreloads all modules.
 
 See [here](https://ipython.readthedocs.io/en/stable/config/extensions/autoreload.html#magic-autoreload)
 for more information.
-
-## Example
-
-```python
-from decom_py import EwEScenarioInterface
-
-initialise(r'path/to/EwE/binaries/directory')
-
-model_file = r'path/to/model/file'
-ewe_int = EwEScenarioInterface(model_file)
-
-ecosim_group_info = pd.read_csv('path to ecosim group info.csv')
-ecosim_vulnerabilities = pd.read_csv('path to ecosim vulnerabilities.csv')
-
-ewe_int.set_ecosim_group_info(ecosim_group_info)
-ewe_int.set_ecosim_vulnerabilities(ecosim_vulnerabilities)
-
-ecotracer_param_names = ewe_int.get_fg_param_names()
-ecotracer_env_params = [
-    "env_init_c",
-    "env_base_inflow_r",
-    "env_decay_r",
-    "base_vol_ex_loss"
-]
-scen_df = ewe_int.get_empty_scenarios_df(
-    ecotracer_env_params, # environmental parameters
-    ecotracer_param_names # functional group parameters
-    100, # number of scenarios
-)
-
-# ... setup scenarios
-
-ewe_int.run_scenarios(scen_df, "path to save dir")
-```
 
 ### Testing
 
