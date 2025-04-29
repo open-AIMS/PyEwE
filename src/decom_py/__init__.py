@@ -4,7 +4,7 @@ from .core import (
     initialise,
     get_ewe_core_module,
     EcosimStateManager,
-    EcotracerStateManager
+    EcotracerStateManager,
 )
 
 from .scenario_interface import (
@@ -31,5 +31,5 @@ __all__ = [
     "EcotracerStateManager",
     "XarrayCSV",
     "exceptions",
-    "core"
+    "core",
 ]

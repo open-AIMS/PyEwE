@@ -28,11 +28,13 @@ def ewe_module():
 
     return get_ewe_core_module()
 
+
 @pytest.fixture(scope="session")
 def model_path():
     return path.join(
         path.dirname(path.abspath(__file__)), "resources", "BlackSea.EwEaccdb"
     )
+
 
 @pytest.fixture(scope="session")
 def tmp_model_path(tmpdir_factory) -> str:

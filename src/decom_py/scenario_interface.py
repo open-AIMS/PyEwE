@@ -390,7 +390,7 @@ class EwEScenarioInterface:
         self,
         scenarios: DataFrame,
         save_dir: str,
-        save_format: Optional[list[str]]=None
+        save_format: Optional[list[str]] = None,
     ) -> None:
         """Run scenarios in given dataframe.
 

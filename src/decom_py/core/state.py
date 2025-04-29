@@ -1,5 +1,6 @@
 from functools import partial
 
+
 def _format_property_line(property_name: str, val) -> str:
     return "{}: {}\n".format(property_name, val)
 

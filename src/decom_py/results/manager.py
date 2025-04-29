@@ -10,7 +10,6 @@ from .config import STD_DIM_NAMES, CATEGORY_CONFIG, VARIABLE_CONFIG
 from ..core import results_extraction
 
 
-
 def variable_arr_to_flat_df(var_arr):
     """Convert an xarray to a flattened dataframe with the correct variable name."""
     var_name = var_arr.attrs["name"]
