@@ -1,13 +1,20 @@
-from .EwEState import EwEState
-from .CoreInterface import CoreInterface
-from .EwEModule import initialise, get_ewe_core_module
-from .EwEModels import EcosimStateManager, EcotracerStateManager
-from .EwEScenarioInterace import (
+from .core import (
+    EwEState,
+    CoreInterface,
+    initialise,
+    get_ewe_core_module,
+    EcosimStateManager,
+    EcotracerStateManager
+)
+
+from .scenario_interface import (
     EwEScenarioInterface,
     ParameterManager,
     Parameter,
     ParameterType,
 )
+
+from . import exceptions
 
 from .Results import XarrayCSV
 
@@ -20,4 +27,9 @@ __all__ = [
     "ParameterManager",
     "Parameter",
     "ParameterType",
+    "EcosimStateManager",
+    "EcotracerStateManager",
+    "XarrayCSV",
+    "exceptions",
+    "core"
 ]

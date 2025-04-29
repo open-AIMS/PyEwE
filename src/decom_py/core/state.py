@@ -1,7 +1,4 @@
-import importlib
-from types import MethodType
-from functools import wraps, partial
-
+from functools import partial
 
 def _format_property_line(property_name: str, val) -> str:
     return "{}: {}\n".format(property_name, val)

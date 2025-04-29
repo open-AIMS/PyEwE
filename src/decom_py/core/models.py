@@ -1,15 +1,16 @@
 from abc import abstractmethod
 import numpy as np
 from math import isnan
-from typing import Union, Iterable, Callable
+from typing import Union
 from warnings import warn
-import functools
 
-from decom_py.Exceptions.EwEExceptions import (
+from ..exceptions import (
+    EcopathError,
+    EcosimError,
+    EcotracerError,
     EcosimNoScenarioError,
     EcotracerNoScenarioError,
 )
-from .Exceptions import EwEError, EcopathError, EcosimError, EcotracerError
 
 
 def _generate_group_getter(param_container_name: str, name: str):

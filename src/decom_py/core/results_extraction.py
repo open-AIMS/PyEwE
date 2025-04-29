@@ -7,10 +7,10 @@ import ctypes
 from System.Reflection import BindingFlags
 from System import Array, Int32
 from System.Runtime.InteropServices import GCHandle, GCHandleType
-from .Exceptions import EcopathError, EcotracerError, EcosimError
 from typing import Optional
 
-from .EwEState import EwEState
+from ..exceptions import EcopathError, EcotracerError, EcosimError
+from .state import EwEState
 
 _MAP_NP_NET = {
     np.dtype("float32"): System.Single,

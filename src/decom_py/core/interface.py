@@ -4,14 +4,13 @@ from pathlib import Path
 from typing import Iterable, Union, Union
 
 from warnings import warn
-from .EwEState import EwEState
-from .Results import XarrayCSV
-from .EwEModule import (
+from .state import EwEState
+from .module import (
     get_ewe_core_module,
     result_type_enum_array,
     py_bool_to_ewe_tristate,
 )
-from .EwEModels import EcosimStateManager, EcotracerStateManager
+from .models import EcosimStateManager, EcotracerStateManager
 
 
 class CoreInterface:

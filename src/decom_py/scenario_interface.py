@@ -10,7 +10,7 @@ import math
 from tqdm.auto import tqdm
 
 from decom_py import CoreInterface
-from .Exceptions import EwEError, EcotracerError, EcosimError, EcopathError
+from .exceptions import EwEError, EcotracerError, EcosimError, EcopathError
 from .Results import ResultManager
 
 
@@ -31,7 +31,7 @@ class Parameter:
         value: Parameter value. If variable the parameter value will be nan if constant it will be set.
         df_idx: Column index of parameter in scenario dataframe. If
         is_env_param: A boolean indicating if it in environmental parameter.
-        group_idx: The index of the group in the underlying core instance. If the the
+        group_idx: The index of the group in the underlying core instance. If the
             parameter is an environmental parameter,this will be -1.
     """
 

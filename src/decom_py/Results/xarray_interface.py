@@ -1,7 +1,7 @@
 import warnings
 from pathlib import Path
 
-from .ResultsInterface import ResultsInterface
+from .results_interface import ResultsInterface
 import xarray as xr
 import polars as pl
 

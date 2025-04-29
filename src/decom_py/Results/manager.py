@@ -7,7 +7,8 @@ from datetime import datetime
 from typing import Optional
 
 from .config import STD_DIM_NAMES, CATEGORY_CONFIG, VARIABLE_CONFIG
-from .. import EwEResultExtraction
+from ..core import results_extraction
+
 
 
 def variable_arr_to_flat_df(var_arr):
@@ -87,7 +88,7 @@ def construct_extraction_objects(var_names, py_core):
     uniq_names = list(set(extractor_names))
     extr_index = [uniq_names.index(var_n) for var_n in extractor_names]
     uniq_extractor_objs = [
-        getattr(EwEResultExtraction, extr)(py_core.get_core(), py_core.get_state())
+        getattr(results_extraction, extr)(py_core.get_core(), py_core.get_state())
         for extr in uniq_names
     ]
     # Get unique names and so duplicate objects are not constructed

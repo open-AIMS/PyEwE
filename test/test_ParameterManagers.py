@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import Mock, call
 
-from decom_py import EwEScenarioInterace, ParameterManager, Parameter, ParameterType
+from decom_py import EwEScenarioInterface, ParameterManager, Parameter, ParameterType
 
 # Test globals outputs
 FG_NAMES = ["Detritus", "Phytoplankton", "Mackerel", "Baleen Whale"]
