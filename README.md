@@ -65,7 +65,7 @@ locally.
 
 ### Documentation
 
-Documentation can be build and read using 
+Documentation can be built and read using
 
 ```bash
 mkdocs serve

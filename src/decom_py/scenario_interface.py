@@ -11,7 +11,7 @@ from tqdm.auto import tqdm
 
 from decom_py import CoreInterface
 from .exceptions import EwEError, EcotracerError, EcosimError, EcopathError
-from .Results import ResultManager
+from .results import ResultManager
 
 
 class ParameterType:

@@ -16,7 +16,7 @@ from .scenario_interface import (
 
 from . import exceptions
 
-from .Results import XarrayCSV
+from .results import XarrayCSV
 
 __all__ = [
     "CoreInterface",
