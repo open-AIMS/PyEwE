@@ -393,7 +393,12 @@ class EwEScenarioInterface:
 
         # Warn user about unset parameters if there are any
         self._warn_unset_params()
-        result_manager = ResultManager(self._core_instance, scenarios, save_dir)
+        result_manager = ResultManager(
+            self._core_instance, 
+            ["Concentration", "Concentration Biomass"],
+            scenarios, 
+            save_dir
+        )
 
         # Create output directory if it doesn't exist
         os.makedirs(save_dir, exist_ok=True)
@@ -423,7 +428,7 @@ class EwEScenarioInterface:
                 result_manager.collect_results(idx)
 
         if not raw_save_format:
-            result_manager.write_results()
+            result_manager.write_results(["netcdf", "csv"])
 
         return None
 

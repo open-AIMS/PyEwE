@@ -65,7 +65,7 @@ class CoreInterface:
 
     def get_first_year(self):
         """Get the first year for which ecosim is run."""
-        return self._core.get_EcosimFirstYear()
+        return self._core.EcosimFirstYear()
 
     def n_groups(self) -> int:
         """Get the number of functional groups in the loaded model."""

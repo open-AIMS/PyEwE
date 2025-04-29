@@ -8,6 +8,7 @@ from System.Reflection import BindingFlags
 from System import Array, Int32
 from System.Runtime.InteropServices import GCHandle, GCHandleType
 from .Exceptions import EcopathError, EcotracerError, EcosimError
+from typing import Optional
 
 from .EwEState import EwEState
 
@@ -70,7 +71,6 @@ def asNumpyArray(netArray):
     for I in range(netArray.Rank):
         dims[I] = netArray.GetLength(I)
     netType = netArray.GetType().GetElementType().Name
-
     try:
         npArray = np.empty(dims, order='C', dtype=_MAP_NET_NP[netType])
     except KeyError:
@@ -85,11 +85,34 @@ def asNumpyArray(netArray):
         if sourceHandle.IsAllocated: sourceHandle.Free()
     return npArray
 
+class DropEnum:
+
+    NO_DROP: int = 0
+    DROP_FIRST: int = 1
+    DROP_LAST: int = 2
+
+def get_drop_slice(drop_flag: int):
+    """Constuct the array slice given the drop flag."""
+    if drop_flag == DropEnum.NO_DROP:
+        return slice(None, None)
+    elif drop_flag == DropEnum.DROP_FIRST:
+        return slice(1, None)
+    elif drop_flag == DropEnum.DROP_LAST:
+        return slice(None, -1)
+    raise ValueError(f"Drop flag {drop_flag} is not valid.")
+
+
 class ResultStoreEnum:
     """Enum for Core result private fields."""
     ECOPATH: str = "m_EcopathData"
     ECOSIM: str = "m_EcoSimData"
     ECOTRACER: str = "m_tracerData"
+
+    @staticmethod
+    def is_valid(private_field_name: str) -> bool:
+        return private_field_name in [
+            ResultStoreEnum.ECOPATH, ResultStoreEnum.ECOSIM, ResultStoreEnum.ECOTRACER
+        ]
 
 class ResultExtractor:
     """A base class to extract result variables from private core result objects.
@@ -99,9 +122,10 @@ class ResultExtractor:
     underlying net array to a numpy array buffer that is reused during its lifetime.
 
     Attributes:
-        core: EwE core instance to extract data from.
-        private_field: name of the non-public field to access.
-        array_name: name of the array in the non-public field.
+        _core: EwE core instance to extract data from.
+        _private_field: name of the non-public field to access.
+        _array_name: name of the array in the non-public field.
+        _drop_flags: indicating whether to drop the first or last slice of each dimension
     """
 
     def __init__(
@@ -109,7 +133,8 @@ class ResultExtractor:
         core,
         monitor: EwEState,
         private_field: str,
-        array_name: str
+        array_name: str,
+        drop_flags: Optional[tuple] = None
     ):
         self._core = core
         self._monitor = monitor
@@ -121,22 +146,24 @@ class ResultExtractor:
         obj_type = self._core.GetType()
         self._private_field_info = obj_type.GetField(private_field, flags)
 
+        self._drop_flags = tuple(get_drop_slice(fl) for fl in drop_flags)
+
     def _has_run_check(self):
-        if self._private_field == ResultStoreEnum.ECOPATH:
+        if not ResultStoreEnum.is_valid(self._private_field):
+            raise ValueError(f"{self._private_field} is not a valid non-public field name.")
+
+        if not self._monitor.HasEcopathRan():
             raise EcopathError(
                 self._monitor, "Ecopath must be run before accessing results."
             )
-        elif self._private_field == ResultStoreEnum.ECOSIM:
+        elif not self._monitor.HasEcosimRan():
             raise EcosimError(
                 self._monitor, "Ecosim must be run before accessing results."
             )
-        elif self._private_field == ResultStoreEnum.ECOTRACER:
+        elif not self._monitor.HasEcotracerRanForEcosim():
             raise EcotracerError(
                 self._monitor, "Ecotracer must be run before accessing results."
             )
-        else:
-            raise ValueError(f"{self._private_field} is not a valid non-public field name.")
-
 
     def _get_dot_net_array(self):
         return getattr(self._private_field_info.GetValue(self._core), self._array_name)
@@ -156,7 +183,7 @@ class ResultExtractor:
         return self._buffer
 
 class SingleResultsExtractor(ResultExtractor):
-    """A result extraction class that handles the extraction of a single variable. 
+    """A result extraction class that handles the extraction of a single variable.
 
     Attributes:
         core: Instance of the EwE core to extract results from.
@@ -169,13 +196,14 @@ class SingleResultsExtractor(ResultExtractor):
         core,
         monitor: EwEState,
         private_field: str,
-        array_name: str
+        array_name: str,
+        drop_flags: Optional[tuple] = None
     ):
-        super().__init__(core, monitor, private_field, array_name)
+        super().__init__(core, monitor, private_field, array_name, drop_flags)
 
     def get_result(self):
         """Get the numpy.ndarray containing the results."""
-        return self._get_buffer()
+        return self._get_buffer()[self._drop_flags]
 
 class PackedResultsExtractor(ResultExtractor):
 
@@ -185,14 +213,19 @@ class PackedResultsExtractor(ResultExtractor):
         monitor,
         private_field: str,
         array_name: str,
-        variable_map: dict[str, int]
+        variable_map: dict[str, int],
+        drop_flags: Optional[tuple] = None
     ):
-        super().__init__(core, monitor, private_field, array_name)
+        super().__init__(core, monitor, private_field, array_name, drop_flags)
         self._variable_map = variable_map
 
     def get_result(self, variable_name: str):
         """Get the numpy.ndarray containing the results of the given variable."""
-        return self._get_buffer()[self._variable_map[variable_name]]
+        if self._drop_flags is None:
+            return self._get_buffer()[self._variable_map[variable_name]]
+        else:
+            slices = (self._variable_map[variable_name], *self._drop_flags)
+            return self._get_buffer()[slices]
 
 def create_ecosim_group_stats_extractors(core, monitor):
     """Create an extractor for the EcoSim group statistics results."""
@@ -222,11 +255,23 @@ def create_ecosim_group_stats_extractors(core, monitor):
 
 def create_conc_extractor(core, monitor):
     """Create an extractor for the Ecotracer concentration results."""
-    return SingleResultsExtractor(core, monitor, ResultStoreEnum.ECOTRACER, "TracerConc")
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOTRACER,
+        "TracerConc",
+        (DropEnum.DROP_LAST, DropEnum.DROP_FIRST)
+    )
 
 def create_conc_biomass_extractor(core, monitor):
     """Create an extractor for the Ecotracer concentration overbiomass results."""
-    return SingleResultsExtractor(core, monitor, ResultStoreEnum.ECOTRACER, "TracerCB")
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOTRACER,
+        "TracerCB",
+        (DropEnum.DROP_LAST, DropEnum.DROP_FIRST)
+    )
 
 def create_TL_catch_extractor(core, monitor):
     """Create an extractor for the Ecosim trophic level catch results."""
