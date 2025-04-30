@@ -389,9 +389,7 @@ class EwEScenarioInterface:
     def run_scenarios(
         self,
         scenarios: DataFrame,
-        save_dir: str,
-        save_format: Optional[list[str]] = None,
-    ) -> None:
+    ) -> ResultManager:
         """Run scenarios in given dataframe.
 
         Run all scenarios in the given dataframe and save results in the given formats to
@@ -399,9 +397,9 @@ class EwEScenarioInterface:
 
         Arguments:
             scenarios: Scenario dataframe listing parameter values for each scenario.
-            save_dir: Path to directory where results will be saved.
-            save_format: Formats to save results in. Raw seperate csvs if None. Supported
-                formats are "netcdf" and "csv"
+
+        Returns: 
+            results (ResultManager): Containing results
         """
         col_names = [str(nm) for nm in scenarios.columns]
 
@@ -421,13 +419,7 @@ class EwEScenarioInterface:
             self._core_instance,
             ["Concentration", "Concentration Biomass"],
             scenarios,
-            save_dir,
         )
-
-        raw_save_format = save_format is None
-
-        # Create output directory if it doesn't exist
-        os.makedirs(save_dir, exist_ok=True)
 
         # Run each scenario
         for idx, row in tqdm(
@@ -440,21 +432,9 @@ class EwEScenarioInterface:
             self._core_instance.Ecotracer.run()
 
             # Save results
-            if raw_save_format:
-                ecosim_save_dir = os.path.join(save_dir, f"ecosim_scenario_{idx}")
-                os.makedirs(ecosim_save_dir)
-                ecotracer_output_path = os.path.join(
-                    save_dir, f"ecotracer_res_scen_{idx}.csv"
-                )
-                self._core_instance.save_all_ecosim_results(ecosim_save_dir)
-                self._core_instance.save_ecotracer_results(ecotracer_output_path)
-            else:
-                result_manager.collect_results(idx)
+            result_manager.collect_results(idx)
 
-        if not raw_save_format:
-            result_manager.write_results(save_format)
-
-        return None
+        return result_manager
 
     def set_ecosim_group_info(self, group_info: DataFrame) -> None:
         """Set Ecosim group information"""

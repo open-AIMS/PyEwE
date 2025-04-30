@@ -105,7 +105,6 @@ class ResultManager:
         _py_core: EwE python core wrapper instance.
         _var_names: The names of variables to save. Should match those found in config.py
         _scenarios: Scenario dataframe for the corresponding model runs.
-        _save_dir: Directory to save all results to.
         _variable_stores: List of xarrays, one for each variable being recorded.
         _unique_extractors: Result extractors used to get results from the core. Unique.
         _variable_extractors: Same underlying objects as _unique_extractors but aligned with
@@ -114,11 +113,10 @@ class ResultManager:
             are packaed into the same array in visual basic.
     """
 
-    def __init__(self, py_core, var_names, scenarios: pd.DataFrame, save_dir: str):
+    def __init__(self, py_core, var_names, scenarios: pd.DataFrame):
         self._py_core = py_core
         self._var_names = var_names
         self._scenarios = scenarios
-        self._save_dir = save_dir
 
         self._n_months = py_core.Ecosim.get_n_years() * 12
         self._n_scenarios = len(scenarios)
@@ -155,14 +153,14 @@ class ResultManager:
                 var_extr.get_result() if ex_in == "" else var_extr.get_result(ex_in)
             )
 
-    def _write_netcdfs(self):
+    def _write_netcdfs(self, save_dir: str):
         """Write all variables to netcdf files."""
         for var_nm, var_arr in zip(self._var_names, self._variable_stores):
             filename = VARIABLE_CONFIG[var_nm]["save_filename"] + ".nc"
             ds = var_arr.to_dataset(name=var_nm)
-            ds.to_netcdf(os.path.join(self._save_dir, filename))
+            ds.to_netcdf(os.path.join(save_dir, filename))
 
-    def _write_dataframes(self):
+    def _write_dataframes(self, save_dir: str):
         """Write all variables to csv files."""
         categories = [VARIABLE_CONFIG[var_n]["category"] for var_n in self._var_names]
         unique_cats = list(set(categories))
@@ -183,9 +181,9 @@ class ResultManager:
                     )
 
         for df, cat_name in zip(dfs, unique_cats):
-            df.to_csv(os.path.join(self._save_dir, cat_name + ".csv"), index=False)
+            df.to_csv(os.path.join(save_dir, cat_name + ".csv"), index=False)
 
-    def write_results(self, formats: list[str]):
+    def write_results(self, save_dir: str, formats: list[str]):
         """Write results to all formats given.
 
         Only NetCDF4, "netcdf", and CSV, "csv", are currently supported.
@@ -195,6 +193,6 @@ class ResultManager:
 
         """
         if "netcdf" in formats:
-            self._write_netcdfs()
+            self._write_netcdfs(save_dir)
         if "csv" in formats:
-            self._write_dataframes()
+            self._write_dataframes(save_dir)
