@@ -148,13 +148,13 @@ class TestScenarioInterface:
         scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_BIOMASS_PATH)
         produced = scenario_run_results["Biomass"][scen_index].values
-        assert_arrays_close(expected[:, 1:].T, produced, context="for biomass_annual.csv")
+        assert_arrays_close(expected[:, 1:].T, produced, context="for biomass_monthly.csv")
 
     def test_catch_output(self, scenario_run_results):
         scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_CATCH_PATH)
         produced = scenario_run_results["Catch"][scen_index].values
-        assert_arrays_close(expected[:, 1:].T, produced, context="for catch_annual.csv")
+        assert_arrays_close(expected[:, 1:].T, produced, context="for catch_monthly.csv")
 
     def test_catch_fleet_output(self, scenario_run_results):
         scen_index = {'Scenario': 0}
@@ -162,14 +162,14 @@ class TestScenarioInterface:
         expected = ewe_df_to_arr(TARGET_CATCH_FLEET_PATH)
         produced =  scenario_run_results["todo"][scen_index].values
         assert_arrays_close(
-            expected, produced, context="for catch-fleet-group_annual.csv"
+            expected, produced, context="for catch-fleet-group_monthly.csv"
         )
 
     def test_mortality_output(self, scenario_run_results):
         scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_MORTALITY_PATH)
         produced = scenario_run_results["Mortality"][scen_index].values
-        assert_arrays_close(expected[:, 1:].T, produced, context="for mortality_annual.csv")
+        assert_arrays_close(expected[:, 1:].T, produced, context="for mortality_monthly.csv")
 
     def test_ecotracer_output(self, scenario_run_results):
         scen_index = {'Scenario': 0}
