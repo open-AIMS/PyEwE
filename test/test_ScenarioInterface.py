@@ -148,12 +148,14 @@ class TestScenarioInterface:
         scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_BIOMASS_PATH)
         produced = scenario_run_results["Biomass"][scen_index].values
+        # Remove timestep column from array
         assert_arrays_close(expected[:, 1:].T, produced, context="for biomass_monthly.csv")
 
     def test_catch_output(self, scenario_run_results):
         scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_CATCH_PATH)
         produced = scenario_run_results["Catch"][scen_index].values
+        # Remove timestep column from array
         assert_arrays_close(expected[:, 1:].T, produced, context="for catch_monthly.csv")
 
     def test_catch_fleet_output(self, scenario_run_results):
@@ -169,10 +171,12 @@ class TestScenarioInterface:
         scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_MORTALITY_PATH)
         produced = scenario_run_results["Mortality"][scen_index].values
+        # Remove timestep column from array
         assert_arrays_close(expected[:, 1:].T, produced, context="for mortality_monthly.csv")
 
     def test_ecotracer_output(self, scenario_run_results):
         scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_ECOTRACER_OUT_PATH)
         produced = scenario_run_results["Concentration"][scen_index].values
+        # Remove timestep column from array
         assert_arrays_close(expected[:, 1:].T, produced, context="for ecotracer_res_scen_0.csv")

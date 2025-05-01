@@ -42,8 +42,8 @@ _MAP_NET_NP = {
 
 def intoNumpyArray(netArray, buffer):
     """
-    Given a CLR `System.Array` returns a `numpy.ndarray`.  See _MAP_NET_NP for
-    the mapping of CLR types to Numpy dtypes.
+    Given a CLR `System.Array` and a `numpy.ndarray`, copy CLR `System.Array` into
+    `numpy.ndarray`.
     """
     dims = np.empty(netArray.Rank, dtype=int)
     for I in range(netArray.Rank):
@@ -95,14 +95,14 @@ def asNumpyArray(netArray):
 class DropEnum:
     """Enumeration describing which slices should be dropped from result extraction."""
 
-    NO_DROP: int = 0
+    DROP_NONE: int = 0
     DROP_FIRST: int = 1
     DROP_LAST: int = 2
 
 
 def get_drop_slice(drop_flag: int):
     """Constuct the array slice given the drop flag."""
-    if drop_flag == DropEnum.NO_DROP:
+    if drop_flag == DropEnum.DROP_NONE:
         return slice(None, None)
     elif drop_flag == DropEnum.DROP_FIRST:
         return slice(1, None)
