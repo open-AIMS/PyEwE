@@ -53,6 +53,10 @@ class CoreInterface:
         """Load model from a EwE access database file into the EwE core."""
         return self._core.LoadModel(path)
 
+    def get_country(self) -> str:
+        """Get the country that the model is based on."""
+        return self._core.get_EwEModel().get_Country()
+
     def get_functional_group_names(self):
         """Get the name of all functional groups in the EwE model."""
         n_groups: int = self._core.nGroups

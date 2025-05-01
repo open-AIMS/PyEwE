@@ -1,20 +1,11 @@
-import warnings
 import pandas as pd
 import numpy as np
 import xarray as xr
-import os
 from datetime import datetime
-from typing import Optional
 
 from .config import STD_DIM_NAMES, CATEGORY_CONFIG, VARIABLE_CONFIG
+from .results_set import ResultSet
 from ..core import results_extraction
-
-
-def variable_arr_to_flat_df(var_arr):
-    """Convert an xarray to a flattened dataframe with the correct variable name."""
-    var_name = var_arr.attrs["name"]
-    return var_arr.to_dataframe(name=var_name).reset_index()
-
 
 def select_dim_len(
     dim_name: str, n_scenarios: int, n_groups: int, n_months: int
@@ -163,47 +154,6 @@ class ResultManager:
                 var_extr.get_result() if get_input == "" else var_extr.get_result(get_input)
             )
 
-    def _write_netcdfs(self, save_dir: str):
-        """Write all variables to netcdf files."""
-        for var_name in self._var_names:
-            filename = VARIABLE_CONFIG[var_name]["save_filename"] + ".nc"
-            ds = self._variable_stores[var_name].to_dataset(name=var_name)
-            ds.to_netcdf(os.path.join(save_dir, filename))
-
-    def _write_dataframes(self, save_dir: str):
-        """Write all variables to csv files."""
-        categories = [VARIABLE_CONFIG[var_n]["category"] for var_n in self._var_names]
-        unique_cats = list(set(categories))
-        dfs: list[Optional[pd.DataFrame]] = [None] * len(unique_cats)
-
-        # Create a data frame for each category and add variables to each category.
-        for var_name, var_cat in zip(self._var_names, categories):
-            cat_idx = unique_cats.index(var_cat)
-            df_arr = variable_arr_to_flat_df(self._variable_stores[var_name])
-
-            dfs[cat_idx] = df_arr if dfs[cat_idx] is None else pd.merge(
-                dfs[cat_idx],
-                df_arr,
-                on=CATEGORY_CONFIG[var_cat]["dims"],
-                how="outer",
-            )
-
-        for df, cat_name in zip(dfs, unique_cats):
-            if df is None:
-                raise ValueError("Category data frame is None and was not initialised.")
-
-            df.to_csv(os.path.join(save_dir, cat_name + ".csv"), index=False)
-
-    def write_results(self, save_dir: str, formats: list[str]):
-        """Write results to all formats given.
-
-        Only NetCDF4, "netcdf", and CSV, "csv", are currently supported.
-
-        Args:
-            formats list[str]: list of formats to save results in.
-
-        """
-        if "netcdf" in formats:
-            self._write_netcdfs(save_dir)
-        if "csv" in formats:
-            self._write_dataframes(save_dir)
+    def to_result_set(self):
+        """Construct a results set from a result manager."""
+        return ResultSet(self._py_core, self._scenarios, self._variable_stores)

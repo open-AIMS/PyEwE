@@ -11,7 +11,7 @@ from tqdm.auto import tqdm
 
 from decom_py import CoreInterface
 from .exceptions import EwEError, EcotracerError, EcosimError, EcopathError
-from .results import ResultManager
+from .results import ResultManager, ResultSet
 
 
 class ParameterType:
@@ -389,7 +389,7 @@ class EwEScenarioInterface:
     def run_scenarios(
         self,
         scenarios: DataFrame,
-    ) -> ResultManager:
+    ) -> ResultSet:
         """Run scenarios in given dataframe.
 
         Run all scenarios in the given dataframe and save results in the given formats to
@@ -399,7 +399,7 @@ class EwEScenarioInterface:
             scenarios: Scenario dataframe listing parameter values for each scenario.
 
         Returns: 
-            results (ResultManager): Containing results
+            results (ResultSet): Containing results
         """
         col_names = [str(nm) for nm in scenarios.columns]
 
@@ -438,7 +438,7 @@ class EwEScenarioInterface:
             # Save results
             result_manager.collect_results(idx)
 
-        return result_manager
+        return result_manager.to_result_set()
 
     def set_ecosim_group_info(self, group_info: DataFrame) -> None:
         """Set Ecosim group information"""

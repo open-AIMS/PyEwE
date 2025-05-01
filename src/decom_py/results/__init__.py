@@ -1,5 +1,5 @@
 from .xarray_interface import XarrayCSV
-from .manager import ResultManager
+from .manager import ResultManager, ResultSet
 
 
-__all__ = ["XarrayCSV", "ResultManager"]
+__all__ = ["XarrayCSV", "ResultManager", "ResultSet"]
