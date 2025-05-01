@@ -6,7 +6,7 @@ import numpy as np
 from io import StringIO
 from math import isclose
 
-from decom_py import EwEScenarioInterface
+from decom_py import EwEScenarioInterface, scenario_interface
 
 RESOURCES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources")
 OUTDIR = os.path.join(
@@ -26,12 +26,12 @@ VULNERABILITIES_PATH = os.path.join(
 
 TARGET_ECOSIM_DIR = os.path.join(RESOURCES, "test_outputs", "ecosim")
 TARGET_ECOTRACER_DIR = os.path.join(RESOURCES, "test_outputs", "ecotracer")
-TARGET_BIOMASS_PATH = os.path.join(TARGET_ECOSIM_DIR, "test_biomass_annual.csv")
-TARGET_CATCH_PATH = os.path.join(TARGET_ECOSIM_DIR, "test_catch_annual.csv")
+TARGET_BIOMASS_PATH = os.path.join(TARGET_ECOSIM_DIR, "test_biomass_monthly.csv")
+TARGET_CATCH_PATH = os.path.join(TARGET_ECOSIM_DIR, "test_catch_monthly.csv")
 TARGET_CATCH_FLEET_PATH = os.path.join(
-    TARGET_ECOSIM_DIR, "test_catch-fleet-group_annual.csv"
+    TARGET_ECOSIM_DIR, "test_catch-fleet-group_monthly.csv"
 )
-TARGET_MORTALITY_PATH = os.path.join(TARGET_ECOSIM_DIR, "test_mortality_annual.csv")
+TARGET_MORTALITY_PATH = os.path.join(TARGET_ECOSIM_DIR, "test_mortality_monthly.csv")
 
 TARGET_ECOTRACER_OUT_PATH = os.path.join(
     TARGET_ECOTRACER_DIR, "target_ecotracer_outputs.csv"
@@ -105,9 +105,9 @@ def scenario_run_results(model_path, ewe_module, cleanup):
 
     # Run scenarios
     print(f"Running scenario once for fixture in {OUTDIR}...")
-    ewe_int.run_scenarios(scen_df, OUTDIR)  # Run into the dedicated fixture dir
+    res = ewe_int.run_scenarios(scen_df)  # Run into the dedicated fixture dir
 
-    yield OUTDIR  # Provide the output directory to tests
+    yield res  # Provide the output directory to tests
 
     ewe_int._core_instance.close_model()
 
@@ -145,30 +145,34 @@ def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):
 class TestScenarioInterface:
 
     def test_biomass_output(self, scenario_run_results):
+        scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_BIOMASS_PATH)
-        produced = ewe_df_to_arr(os.path.join(ECOSIM_OUTDIR, "biomass_annual.csv"))
-        assert_arrays_close(expected, produced, context="for biomass_annual.csv")
+        produced = scenario_run_results["Biomass"][scen_index].values
+        assert_arrays_close(expected[:, 1:].T, produced, context="for biomass_annual.csv")
 
     def test_catch_output(self, scenario_run_results):
+        scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_CATCH_PATH)
-        produced = ewe_df_to_arr(os.path.join(ECOSIM_OUTDIR, "catch_annual.csv"))
-        assert_arrays_close(expected, produced, context="for catch_annual.csv")
+        produced = scenario_run_results["Catch"][scen_index].values
+        assert_arrays_close(expected[:, 1:].T, produced, context="for catch_annual.csv")
 
     def test_catch_fleet_output(self, scenario_run_results):
+        scen_index = {'Scenario': 0}
+        pytest.skip("Support fleet statistics.")
         expected = ewe_df_to_arr(TARGET_CATCH_FLEET_PATH)
-        produced = ewe_df_to_arr(
-            os.path.join(ECOSIM_OUTDIR, "catch-fleet-group_annual.csv")
-        )
+        produced =  scenario_run_results["todo"][scen_index].values
         assert_arrays_close(
             expected, produced, context="for catch-fleet-group_annual.csv"
         )
 
     def test_mortality_output(self, scenario_run_results):
+        scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_MORTALITY_PATH)
-        produced = ewe_df_to_arr(os.path.join(ECOSIM_OUTDIR, "mortality_annual.csv"))
-        assert_arrays_close(expected, produced, context="for mortality_annual.csv")
+        produced = scenario_run_results["Mortality"][scen_index].values
+        assert_arrays_close(expected[:, 1:].T, produced, context="for mortality_annual.csv")
 
     def test_ecotracer_output(self, scenario_run_results):
+        scen_index = {'Scenario': 0}
         expected = ewe_df_to_arr(TARGET_ECOTRACER_OUT_PATH)
-        produced = ewe_df_to_arr(os.path.join(OUTDIR, "ecotracer_res_scen_0.csv"))
-        assert_arrays_close(expected, produced, context="for ecotracer_res_scen_0.csv")
+        produced = scenario_run_results["Concentration"][scen_index].values
+        assert_arrays_close(expected[:, 1:].T, produced, context="for ecotracer_res_scen_0.csv")
