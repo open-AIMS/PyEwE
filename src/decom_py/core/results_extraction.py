@@ -267,7 +267,7 @@ def create_ecosim_group_stats_extractors(core, monitor):
         core,
         monitor,
         ResultStoreEnum.ECOSIM,
-        "ResultsOvertime",
+        "ResultsOverTime",
         {
             "Biomass": 0,  # See cEcoSimDatastructures and eEcosimResults enum
             "BiomassRel": 1,
@@ -285,6 +285,8 @@ def create_ecosim_group_stats_extractors(core, monitor):
             "EcoSysStructure": 13,
             "TL": 14,
         },
+        # See cEcosimResultWriter.vb, array copy starts from 1 in on a 0-indexed array.
+        (DropEnum.DROP_FIRST, DropEnum.DROP_FIRST),
     )
 
 
@@ -295,6 +297,7 @@ def create_conc_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOTRACER,
         "TracerConc",
+        # See cEcotracerRusultWriter, array copy start from 0 for group and 1 for time.
         (DropEnum.DROP_LAST, DropEnum.DROP_FIRST),
     )
 
@@ -312,21 +315,42 @@ def create_conc_biomass_extractor(core, monitor):
 
 def create_TL_catch_extractor(core, monitor):
     """Create an extractor for the Ecosim trophic level catch results."""
-    return SingleResultsExtractor(core, monitor, ResultStoreEnum.ECOSIM, "TLC")
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOSIM,
+        "TLC",
+        (DropEnum.DROP_LAST,),
+    )
 
 
 def create_FIB_extractor(core, monitor):
     """Create an extractor for the Ecosim FIB results."""
-    return SingleResultsExtractor(core, monitor, ResultStoreEnum.ECOSIM, "FIB")
-
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOSIM,
+        "FIB",
+        (DropEnum.DROP_LAST,),
+    )
 
 def create_Kemptons_extractor(core, monitor):
     """Create an extractor for the Ecosim Kempton results."""
-    return SingleResultsExtractor(core, monitor, ResultStoreEnum.ECOSIM, "Kemptons")
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOSIM,
+        "Kemptons",
+        (DropEnum.DROP_FIRST,),
+    )
 
 
 def create_shannon_diversity_extractor(core, monitor):
     """Create an extractor for the Ecosim Shannon Diversity results."""
     return SingleResultsExtractor(
-        core, monitor, ResultStoreEnum.ECOSIM, "ShannonDiversity"
+        core,
+        monitor,
+        ResultStoreEnum.ECOSIM,
+        "ShannonDiversity",
+        (DropEnum.DROP_LAST,),
     )

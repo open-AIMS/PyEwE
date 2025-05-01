@@ -417,7 +417,11 @@ class EwEScenarioInterface:
         # Setup result manager
         result_manager = ResultManager(
             self._core_instance,
-            ["Concentration", "Concentration Biomass"],
+            [
+                "Concentration", "Concentration Biomass", "Biomass", "Catch",
+                "Consumption Biomass", "Mortality", "Trophic Level", "Trophic Level Catch",
+                "FIB", "KemptonsQ", "Shannon Diversity"
+            ],
             scenarios,
         )
 
