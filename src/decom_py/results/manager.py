@@ -79,19 +79,25 @@ def construct_xarray(
     return empty_xr
 
 
-def construct_extraction_objects(var_names, py_core):
+def construct_extraction_objects(var_names, py_core) -> tuple[list, dict]:
     """Construct results extractors."""
     # Get the name of all extractor constructors
     extractor_names = [VARIABLE_CONFIG[var_n]["extractor_name"] for var_n in var_names]
     # Get unique names and so duplicate objects are not constructed
     uniq_names = list(set(extractor_names))
+    # For each variable, get an index for each unique extractor
     extr_index = [uniq_names.index(var_n) for var_n in extractor_names]
+    # Construct the extractors for each variable.
     uniq_extractor_objs = [
         getattr(results_extraction, extr)(py_core.get_core(), py_core.get_state())
         for extr in uniq_names
     ]
+    # Construct a dictionary of variable names to variable extractors
+    variable_extractors = {
+        var_name: uniq_extractor_objs[i] for (var_name, i) in zip(var_names, extr_index)
+    }
     # Get unique names and so duplicate objects are not constructed
-    return uniq_extractor_objs, [uniq_extractor_objs[i] for i in extr_index]
+    return uniq_extractor_objs, variable_extractors
 
 
 class ResultManager:
@@ -105,11 +111,12 @@ class ResultManager:
         _py_core: EwE python core wrapper instance.
         _var_names: The names of variables to save. Should match those found in config.py
         _scenarios: Scenario dataframe for the corresponding model runs.
-        _variable_stores: List of xarrays, one for each variable being recorded.
-        _unique_extractors: Result extractors used to get results from the core. Unique.
-        _variable_extractors: Same underlying objects as _unique_extractors but aligned with
-            variable_ordering
-        _packed_input: name of variables to query result extractors when multiple variables
+        _variable_stores (dict): Dictionary of xarrays, one for each variable being recorded.
+        _unique_extractors (list): Result extractors used to get results from the core. 
+            Unique.
+        _variable_extractors (dict): Same underlying objects as _unique_extractors but 
+            aligned with variable_ordering
+        _packed_input (dict): name of variables to query result extractors when multiple variables
             are packaed into the same array in visual basic.
     """
 
@@ -123,20 +130,20 @@ class ResultManager:
         self._group_names = py_core.get_functional_group_names()
 
         first_year = self._py_core.get_first_year()
-        self._variable_stores = [
-            construct_xarray(
+        self._variable_stores = {
+            vn : construct_xarray(
                 vn, self._n_scenarios, self._group_names, self._n_months, first_year
             )
             for vn in var_names
-        ]
+        }
         # Get the result extractors and a list of extractors aligned with variables
         self._unique_extractors, self._variable_extractors = (
             construct_extraction_objects(var_names, py_core)
         )
         # Get the inputs needed for the extracts get_result function.
-        self._packed_input = [
-            VARIABLE_CONFIG[nm]["extractor_input"] for nm in var_names
-        ]
+        self._packed_input = {
+            nm: VARIABLE_CONFIG[nm]["extractor_input"] for nm in var_names
+        }
 
     def refresh_result_stores(self):
         """Load the ecosim results into the Result Extraction Buffers."""
@@ -146,18 +153,21 @@ class ResultManager:
     def collect_results(self, scenario_idx: int):
         """Load the ecosim results into the _variable_stores."""
         self.refresh_result_stores()
-        for var_arr, var_extr, ex_in in zip(
-            self._variable_stores, self._variable_extractors, self._packed_input
-        ):
-            var_arr[{STD_DIM_NAMES["scenario"]: scenario_idx}] = (
-                var_extr.get_result() if ex_in == "" else var_extr.get_result(ex_in)
+        dim_index = {STD_DIM_NAMES["scenario"]: scenario_idx}
+        for var_name in self._var_names:
+            get_input = self._packed_input[var_name]
+            var_arr = self._variable_stores[var_name]
+            var_extr = self._variable_extractors[var_name]
+
+            var_arr[dim_index] = (
+                var_extr.get_result() if get_input == "" else var_extr.get_result(get_input)
             )
 
     def _write_netcdfs(self, save_dir: str):
         """Write all variables to netcdf files."""
-        for var_nm, var_arr in zip(self._var_names, self._variable_stores):
-            filename = VARIABLE_CONFIG[var_nm]["save_filename"] + ".nc"
-            ds = var_arr.to_dataset(name=var_nm)
+        for var_name in self._var_names:
+            filename = VARIABLE_CONFIG[var_name]["save_filename"] + ".nc"
+            ds = self._variable_stores[var_name].to_dataset(name=var_name)
             ds.to_netcdf(os.path.join(save_dir, filename))
 
     def _write_dataframes(self, save_dir: str):
@@ -165,22 +175,23 @@ class ResultManager:
         categories = [VARIABLE_CONFIG[var_n]["category"] for var_n in self._var_names]
         unique_cats = list(set(categories))
         dfs: list[Optional[pd.DataFrame]] = [None] * len(unique_cats)
-        for idx, uni_categ in enumerate(unique_cats):
-            for var_cat, var_arr in zip(categories, self._variable_stores):
-                if var_cat != uni_categ:
-                    continue
-                df_arr = variable_arr_to_flat_df(var_arr)
-                if dfs[idx] is None:
-                    dfs[idx] = df_arr
-                else:
-                    dfs[idx] = pd.merge(
-                        dfs[idx],
-                        df_arr,
-                        on=CATEGORY_CONFIG[uni_categ]["dims"],
-                        how="outer",
-                    )
+
+        # Create a data frame for each category and add variables to each category.
+        for var_name, var_cat in zip(self._var_names, categories):
+            cat_idx = unique_cats.index(var_cat)
+            df_arr = variable_arr_to_flat_df(self._variable_stores[var_name])
+
+            dfs[cat_idx] = df_arr if dfs[cat_idx] is None else pd.merge(
+                dfs[cat_idx],
+                df_arr,
+                on=CATEGORY_CONFIG[var_cat]["dims"],
+                how="outer",
+            )
 
         for df, cat_name in zip(dfs, unique_cats):
+            if df is None:
+                raise ValueError("Category data frame is None and was not initialised.")
+
             df.to_csv(os.path.join(save_dir, cat_name + ".csv"), index=False)
 
     def write_results(self, save_dir: str, formats: list[str]):
