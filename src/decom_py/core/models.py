@@ -404,19 +404,24 @@ class EcotracerStateManager(EwEScenarioModel, EwEParameterManager):
         Raises:
             EwEError: No forcing function with index: {forcing_index} contained in core.
         """
-        # Get .net shape object from the Forcing Function Manager
-        shape_obj = self._core.get_ForcingShapeManager().get_Item(forcing_index)
-        if shape_obj is None:
+        forcing_index = int(forcing_index)
+        # Get .net shape object from the Forcing Function Manager, forcing is zero based
+        # But the ConForcingNumber is
+        shape_obj = self._core.get_ForcingShapeManager().get_Item(
+            int(forcing_index - 1)
+        )
+        if shape_obj is None and forcing_index != 0:
             msg = f"No forcing function with index: {forcing_index} contained in the core."
             raise EwEError(self._state, msg)
 
-        return self._core.get_EcotracerModelParameters().set_ConForceManager(forcing_index)
+        ecotracer_mod_params = self._core.get_EcotracerModelParameters()
+        return ecotracer_mod_params.set_ConForceNumber(int(forcing_index))
 
     def get_contaminant_forcing_number(self) -> int:
         """Get the index of the Contaminant forcing function.
 
         Get the index of the contaminant forcing function in the core contaminant forcing
-        function manager.
+        function manager. A return a one based index.
         """
         return self._core.get_EcotracerModelParameters().get_ConForceNumber()
 

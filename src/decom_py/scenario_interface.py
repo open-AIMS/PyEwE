@@ -128,12 +128,14 @@ class ParameterManager:
             "env_base_inflow_r",
             "env_decay_r",
             "base_vol_ex_loss",
+            "env_inflow_forcing_idx",
         ]
         env_param_to_setter = {
             0: "set_initial_env_concentration",
             1: "set_base_inflow_rate",
             2: "set_env_decay_rate",
             3: "set_env_volume_exchange_loss",
+            4: "set_contaminant_forcing_number",
         }
         return ParameterManager(
             core.get_functional_group_names(),
@@ -564,4 +566,3 @@ class EwEScenarioInterface:
             msg = f"Temporary directory and model file at {self._temp_dir.name}"
             msg += " has been removed."
             print(msg)
-

@@ -2,6 +2,7 @@ class EwEError(Exception):
 
     def __init__(self, core_state, message):
         self._core_summary = core_state.non_model_summary()
+        self.message = message
         super().__init__(message)
 
     def get_state(self):

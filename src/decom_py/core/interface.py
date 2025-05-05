@@ -108,14 +108,15 @@ class CoreInterface:
 
 
         Arguments:
-            name (str): Name of the forcing function. 
+            name (str): Name of the forcing function.
             values (list[str]): List of values for the forcing function.
 
         Returns:
             int: Index of the forcing function in the forcing manager.
 
         """
-        return self._core.get_ForcinShapeManager().CreateNewShape(name, values).Index
+        values = [1.0] + values
+        return self._core.get_ForcingShapeManager().CreateNewShape(name, values).Index
 
     def save_ecopath_results(self):
         # Missing use monthly enum type to pass to write results.
