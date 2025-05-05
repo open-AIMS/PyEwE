@@ -319,8 +319,10 @@ class EwEScenarioInterface:
         if not mod_path_obj.exists():
             raise FileNotFoundError(model_path)
 
+        self._debugged_model = temp_model_path is None
+
         # The temporary directory should clean itself up
-        if temp_model_path is None:
+        if not self._debugged_model:
             self._temp_dir = TemporaryDirectory()
             self._temp_model_path = os.path.join(
                 self._temp_dir.name, os.path.basename(model_path)
@@ -552,7 +554,10 @@ class EwEScenarioInterface:
 
     def cleanup(self):
         self._core_instance.close_model()
-        self._temp_dir.cleanup()
-        msg = f"Temporary directory and model file at {self._temp_dir.name}"
-        msg += " has been removed."
-        print(msg)
+        print("Closed model.")
+        if not self._debugged_model:
+            self._temp_dir.cleanup()
+            msg = f"Temporary directory and model file at {self._temp_dir.name}"
+            msg += " has been removed."
+            print(msg)
+
