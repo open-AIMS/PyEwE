@@ -2,13 +2,14 @@ from warnings import warn
 from pandas import DataFrame
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Union, Tuple, Dict, List, Optional, Any
+from typing import Union, Dict, List, Optional
 import numpy as np
 import shutil
 import os
 import math
 from tqdm.auto import tqdm
 
+import atexit
 from decom_py import CoreInterface
 from .exceptions import EwEError, EcotracerError, EcosimError, EcopathError
 from .results import ResultManager, ResultSet
@@ -366,6 +367,9 @@ class EwEScenarioInterface:
         # Initialize parameter manager
         self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
 
+        # Clean up in case the user doesn't clean up.
+        atexit.register(self.cleanup)
+
     def reset_parameters(self):
         self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
 
@@ -566,3 +570,6 @@ class EwEScenarioInterface:
             msg = f"Temporary directory and model file at {self._temp_dir.name}"
             msg += " has been removed."
             print(msg)
+
+        # If the user cleans up, no need to run at exit.
+        atexit.unregister(self.cleanup)
