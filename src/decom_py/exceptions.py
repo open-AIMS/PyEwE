@@ -2,10 +2,14 @@ class EwEError(Exception):
 
     def __init__(self, core_state, message):
         self._core_summary = core_state.non_model_summary()
+        self.message = message
         super().__init__(message)
 
     def get_state(self):
         return self._core_summary
+
+    def __str__(self):
+        return f"{self.message} \n\n{self._core_summary}"
 
 
 class EcopathError(EwEError):

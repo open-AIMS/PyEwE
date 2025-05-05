@@ -128,12 +128,14 @@ class ParameterManager:
             "env_base_inflow_r",
             "env_decay_r",
             "base_vol_ex_loss",
+            "env_inflow_forcing_idx",
         ]
         env_param_to_setter = {
             0: "set_initial_env_concentration",
             1: "set_base_inflow_rate",
             2: "set_env_decay_rate",
             3: "set_env_volume_exchange_loss",
+            4: "set_contaminant_forcing_number",
         }
         return ParameterManager(
             core.get_functional_group_names(),
@@ -319,7 +321,7 @@ class EwEScenarioInterface:
         if not mod_path_obj.exists():
             raise FileNotFoundError(model_path)
 
-        self._debugged_model = temp_model_path is None
+        self._debugged_model = not temp_model_path is None
 
         # The temporary directory should clean itself up
         if not self._debugged_model:
@@ -498,6 +500,10 @@ class EwEScenarioInterface:
 
         return None
 
+    def add_forcing_function(self, name: str, values: list[float]):
+        """Add/Register forcing function for use in scenario runs."""
+        return self._core_instance.add_forcing_function(name, values)
+
     def set_ecosim_vulnerabilities(self, vulnerabilities: DataFrame) -> None:
         """Set Ecosim vulnerabilities to use for all scenario runs"""
         # Implementation needed
@@ -560,4 +566,3 @@ class EwEScenarioInterface:
             msg = f"Temporary directory and model file at {self._temp_dir.name}"
             msg += " has been removed."
             print(msg)
-
