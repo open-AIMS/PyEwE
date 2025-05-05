@@ -43,4 +43,7 @@ res.save_dir("path to save dir", ["netcdf", "csv"])
 res["Biomass"]
 
 res["Concentration"]
+
+# Clean up temporary directory and model file
+ewe_int.cleanup()
 ```

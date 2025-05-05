@@ -21,11 +21,6 @@ VULNERABILITIES_PATH = os.path.join(
     RESOURCES, "test_inputs", "BlackSea-Vulnerabilities.csv"
 )
 
-def remove_files(directory_path):
-    # Iterate through files in the directory (excluding nested directories)
-    shutil.rmtree(directory_path)
-    os.makedirs(directory_path, exist_ok=True)
-
 @pytest.fixture(scope="class")
 def scenario_run_results(model_path, ewe_module):
     """Runs the scenario once and provides the output directory."""
@@ -74,7 +69,7 @@ def scenario_run_results(model_path, ewe_module):
 
     yield res, res_target
 
-    ewe_int._core_instance.close_model()
+    ewe_int.cleanup()
 
 
 def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):

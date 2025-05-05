@@ -549,3 +549,10 @@ class EwEScenarioInterface:
 
         cols.insert(0, "scenario")
         return DataFrame(empty, columns=cols)
+
+    def cleanup(self):
+        self._core_instance.close_model()
+        self._temp_dir.cleanup()
+        msg = f"Temporary directory and model file at {self._temp_dir.name}"
+        msg += " has been removed."
+        print(msg)

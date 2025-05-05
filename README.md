@@ -54,6 +54,8 @@ res = ewe_int.run_scenarios(scen_df)
 
 # save results to a given directory in the given formats
 res.save_results("path to save dir", ["netcdf", "csv"])
+
+ewe_int.cleanup()
 ```
 
 ## Developer setup
