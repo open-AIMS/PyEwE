@@ -5,6 +5,7 @@ from typing import Optional
 
 from .config import VARIABLE_CONFIG, CATEGORY_CONFIG
 
+
 def variable_arr_to_flat_df(var_arr):
     """Convert an xarray to a flattened dataframe with the correct variable name."""
     var_name = var_arr.attrs["name"]
@@ -60,7 +61,9 @@ Stored Results: {list(self.results.keys())}
 
     def _write_dataframes(self, save_dir: str):
         """Write all variables to csv files."""
-        categories = [VARIABLE_CONFIG[var_n]["category"] for var_n in self._variable_names]
+        categories = [
+            VARIABLE_CONFIG[var_n]["category"] for var_n in self._variable_names
+        ]
         unique_cats = list(set(categories))
         dfs: list[Optional[pd.DataFrame]] = [None] * len(unique_cats)
 
@@ -69,11 +72,15 @@ Stored Results: {list(self.results.keys())}
             cat_idx = unique_cats.index(var_cat)
             df_arr = variable_arr_to_flat_df(self.results[var_name])
 
-            dfs[cat_idx] = df_arr if dfs[cat_idx] is None else pd.merge(
-                dfs[cat_idx],
-                df_arr,
-                on=CATEGORY_CONFIG[var_cat]["dims"],
-                how="outer",
+            dfs[cat_idx] = (
+                df_arr
+                if dfs[cat_idx] is None
+                else pd.merge(
+                    dfs[cat_idx],
+                    df_arr,
+                    on=CATEGORY_CONFIG[var_cat]["dims"],
+                    how="outer",
+                )
             )
 
         for df, cat_name in zip(dfs, unique_cats):

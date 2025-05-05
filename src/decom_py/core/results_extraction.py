@@ -334,6 +334,7 @@ def create_FIB_extractor(core, monitor):
         (DropEnum.DROP_LAST,),
     )
 
+
 def create_Kemptons_extractor(core, monitor):
     """Create an extractor for the Ecosim Kempton results."""
     return SingleResultsExtractor(

@@ -107,7 +107,15 @@ def scenario_run_results(model_path, ewe_module, cleanup):
     print(f"Running scenario once for fixture in {OUTDIR}...")
     res = ewe_int.run_scenarios(scen_df)  # Run into the dedicated fixture dir
 
-    yield res  # Provide the output directory to tests
+    ewe_int.reset_parameters()
+
+    ewe_int._core_instance.Ecosim.load_scenario("test_outputs")
+    ewe_int._core_instance.Ecotracer.load_scenario("test_outputs")
+    scen_df = ewe_int.get_empty_scenarios_df([], [], 1)
+
+    res_target = ewe_int.run_scenarios(scen_df)
+
+    yield res, res_target  # Provide the output directory to tests
 
     ewe_int._core_instance.close_model()
 
@@ -141,42 +149,41 @@ def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):
         pytest.fail(fail_msg)
 
 
-@pytest.mark.filterwarnings("ignore:Additive prop")
 class TestScenarioInterface:
 
     def test_biomass_output(self, scenario_run_results):
-        scen_index = {'Scenario': 0}
-        expected = ewe_df_to_arr(TARGET_BIOMASS_PATH)
-        produced = scenario_run_results["Biomass"][scen_index].values
+        scen_index = {"Scenario": 0}
+        expected = scenario_run_results[1]["Biomass"][scen_index].values
+        produced = scenario_run_results[0]["Biomass"][scen_index].values
         # Remove timestep column from array
-        assert_arrays_close(expected[:, 1:].T, produced, context="for biomass_monthly.csv")
+        assert_arrays_close(expected, produced, context="for biomass_monthly.csv")
 
     def test_catch_output(self, scenario_run_results):
-        scen_index = {'Scenario': 0}
-        expected = ewe_df_to_arr(TARGET_CATCH_PATH)
-        produced = scenario_run_results["Catch"][scen_index].values
+        scen_index = {"Scenario": 0}
+        expected = scenario_run_results[1]["Catch"][scen_index].values
+        produced = scenario_run_results[0]["Catch"][scen_index].values
         # Remove timestep column from array
-        assert_arrays_close(expected[:, 1:].T, produced, context="for catch_monthly.csv")
+        assert_arrays_close(expected, produced, context="for catch_monthly.csv")
 
     def test_catch_fleet_output(self, scenario_run_results):
-        scen_index = {'Scenario': 0}
+        scen_index = {"Scenario": 0}
         pytest.skip("Support fleet statistics.")
-        expected = ewe_df_to_arr(TARGET_CATCH_FLEET_PATH)
-        produced =  scenario_run_results["todo"][scen_index].values
+        expected = scenario_run_results[1]["todo"][scen_index].values
+        produced = scenario_run_results[0]["todo"][scen_index].values
         assert_arrays_close(
             expected, produced, context="for catch-fleet-group_monthly.csv"
         )
 
     def test_mortality_output(self, scenario_run_results):
-        scen_index = {'Scenario': 0}
-        expected = ewe_df_to_arr(TARGET_MORTALITY_PATH)
-        produced = scenario_run_results["Mortality"][scen_index].values
+        scen_index = {"Scenario": 0}
+        expected = scenario_run_results[1]["Mortality"][scen_index].values
+        produced = scenario_run_results[0]["Mortality"][scen_index].values
         # Remove timestep column from array
-        assert_arrays_close(expected[:, 1:].T, produced, context="for mortality_monthly.csv")
+        assert_arrays_close(expected, produced, context="for mortality_monthly.csv")
 
     def test_ecotracer_output(self, scenario_run_results):
-        scen_index = {'Scenario': 0}
-        expected = ewe_df_to_arr(TARGET_ECOTRACER_OUT_PATH)
-        produced = scenario_run_results["Concentration"][scen_index].values
+        scen_index = {"Scenario": 0}
+        expected = scenario_run_results[1]["Concentration"][scen_index].values
+        produced = scenario_run_results[0]["Concentration"][scen_index].values
         # Remove timestep column from array
-        assert_arrays_close(expected[:, 1:].T, produced, context="for ecotracer_res_scen_0.csv")
+        assert_arrays_close(expected, produced, context="for ecotracer_res_scen_0.csv")

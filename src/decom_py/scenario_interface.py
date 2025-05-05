@@ -362,6 +362,9 @@ class EwEScenarioInterface:
         # Initialize parameter manager
         self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
 
+    def reset_parameters(self):
+        self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
+
     def get_ecotracer_fg_param_names(
         self, param_names: Union[str, List[str]] = "all"
     ) -> List[str]:
@@ -398,7 +401,7 @@ class EwEScenarioInterface:
         Arguments:
             scenarios: Scenario dataframe listing parameter values for each scenario.
 
-        Returns: 
+        Returns:
             results (ResultSet): Containing results
         """
         col_names = [str(nm) for nm in scenarios.columns]
@@ -418,9 +421,17 @@ class EwEScenarioInterface:
         result_manager = ResultManager(
             self._core_instance,
             [
-                "Concentration", "Concentration Biomass", "Biomass", "Catch",
-                "Consumption Biomass", "Mortality", "Trophic Level", "Trophic Level Catch",
-                "FIB", "KemptonsQ", "Shannon Diversity"
+                "Concentration",
+                "Concentration Biomass",
+                "Biomass",
+                "Catch",
+                "Consumption Biomass",
+                "Mortality",
+                "Trophic Level",
+                "Trophic Level Catch",
+                "FIB",
+                "KemptonsQ",
+                "Shannon Diversity",
             ],
             scenarios,
         )

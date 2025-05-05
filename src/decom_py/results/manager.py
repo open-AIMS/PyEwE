@@ -7,6 +7,7 @@ from .config import STD_DIM_NAMES, CATEGORY_CONFIG, VARIABLE_CONFIG
 from .results_set import ResultSet
 from ..core import results_extraction
 
+
 def select_dim_len(
     dim_name: str, n_scenarios: int, n_groups: int, n_months: int
 ) -> int:
@@ -103,9 +104,9 @@ class ResultManager:
         _var_names: The names of variables to save. Should match those found in config.py
         _scenarios: Scenario dataframe for the corresponding model runs.
         _variable_stores (dict): Dictionary of xarrays, one for each variable being recorded.
-        _unique_extractors (list): Result extractors used to get results from the core. 
+        _unique_extractors (list): Result extractors used to get results from the core.
             Unique.
-        _variable_extractors (dict): Same underlying objects as _unique_extractors but 
+        _variable_extractors (dict): Same underlying objects as _unique_extractors but
             aligned with variable_ordering
         _packed_input (dict): name of variables to query result extractors when multiple variables
             are packaed into the same array in visual basic.
@@ -122,7 +123,7 @@ class ResultManager:
 
         first_year = self._py_core.get_first_year()
         self._variable_stores = {
-            vn : construct_xarray(
+            vn: construct_xarray(
                 vn, self._n_scenarios, self._group_names, self._n_months, first_year
             )
             for vn in var_names
@@ -151,7 +152,9 @@ class ResultManager:
             var_extr = self._variable_extractors[var_name]
 
             var_arr[dim_index] = (
-                var_extr.get_result() if get_input == "" else var_extr.get_result(get_input)
+                var_extr.get_result()
+                if get_input == ""
+                else var_extr.get_result(get_input)
             )
 
     def to_result_set(self):

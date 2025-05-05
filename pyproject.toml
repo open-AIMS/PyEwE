@@ -46,3 +46,6 @@ test = [
 testpaths = ["test"]
 python_files = "*.py"
 addopts = "-p no:faulthandler"
+filterwarnings = [
+    "ignore::UserWarning",
+]

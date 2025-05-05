@@ -59,7 +59,7 @@ VARIABLE_CONFIG = {
         "category": "GROUP_STATS",
         "unit": "t",
         "extractor_name": "create_ecosim_group_stats_extractors",
-        "extractor_input": "Yield", # see cEcosimResultWriter.vb where catch is yield
+        "extractor_input": "Yield",  # see cEcosimResultWriter.vb where catch is yield
         "save_filename": "Catch",
     },
     "Consumption Biomass": {
