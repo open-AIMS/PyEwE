@@ -36,6 +36,7 @@ scen_df = ewe_int.get_empty_scenarios_df(
 
 res = ewe_int.run_scenarios(scen_df)
 
+# Save results to a given directory given the list of formats.
 res.save_dir("path to save dir", ["netcdf", "csv"])
 
 # Access result variables
