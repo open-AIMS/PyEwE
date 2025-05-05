@@ -5,6 +5,7 @@ from typing import Union
 from warnings import warn
 
 from ..exceptions import (
+    EwEError,
     EcopathError,
     EcosimError,
     EcotracerError,
@@ -396,6 +397,28 @@ class EcotracerStateManager(EwEScenarioModel, EwEParameterManager):
     def new_scenario(self, name: str, description: str, author: str, contact: str):
         """Create a new EcoTracer scenario."""
         return self._core.NewEcotracerScenario(name, description, author, contact)
+
+    def set_contaminant_forcing_number(self, forcing_index: int) -> None:
+        """Set the index of the contaminant forcing function.
+
+        Raises:
+            EwEError: No forcing function with index: {forcing_index} contained in core.
+        """
+        # Get .net shape object from the Forcing Function Manager
+        shape_obj = self._core.get_ForcingShapeManager().get_Item(forcing_index)
+        if shape_obj is None:
+            msg = f"No forcing function with index: {forcing_index} contained in the core."
+            raise EwEError(self._state, msg)
+
+        return self._core.get_EcotracerModelParameters().set_ConForceManager(forcing_index)
+
+    def get_contaminant_forcing_number(self) -> int:
+        """Get the index of the Contaminant forcing function.
+
+        Get the index of the contaminant forcing function in the core contaminant forcing
+        function manager.
+        """
+        return self._core.get_EcotracerModelParameters().get_ConForceNumber()
 
     def close_scenario(self):
         return self._core.CloseEcotracerScenario()

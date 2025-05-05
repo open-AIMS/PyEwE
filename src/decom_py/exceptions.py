@@ -7,6 +7,9 @@ class EwEError(Exception):
     def get_state(self):
         return self._core_summary
 
+    def __str__(self):
+        return f"{self.message} \n\n{self._core_summary}"
+
 
 class EcopathError(EwEError):
 

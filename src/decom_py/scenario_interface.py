@@ -319,7 +319,7 @@ class EwEScenarioInterface:
         if not mod_path_obj.exists():
             raise FileNotFoundError(model_path)
 
-        self._debugged_model = temp_model_path is None
+        self._debugged_model = not temp_model_path is None
 
         # The temporary directory should clean itself up
         if not self._debugged_model:
@@ -497,6 +497,10 @@ class EwEScenarioInterface:
         warn("Additive prop. of predation mortality [0, 1]. Not yet supported.")
 
         return None
+
+    def add_forcing_function(self, name: str, values: list[float]):
+        """Add/Register forcing function for use in scenario runs."""
+        return self._core_instance.add_forcing_function(name, values)
 
     def set_ecosim_vulnerabilities(self, vulnerabilities: DataFrame) -> None:
         """Set Ecosim vulnerabilities to use for all scenario runs"""

@@ -100,6 +100,23 @@ class CoreInterface:
             ]
         )
 
+    def add_forcing_function(self, name: str, values: list[float]) -> int:
+        """Add a forcing function to the core instance.
+
+        Add a forcing function to the forcing function manager given a list of values and a
+        name.
+
+
+        Arguments:
+            name (str): Name of the forcing function. 
+            values (list[str]): List of values for the forcing function.
+
+        Returns:
+            int: Index of the forcing function in the forcing manager.
+
+        """
+        return self._core.get_ForcinShapeManager().CreateNewShape(name, values).Index
+
     def save_ecopath_results(self):
         # Missing use monthly enum type to pass to write results.
         return self._ecopath_result_writer.WriteResults()
