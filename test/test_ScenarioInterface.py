@@ -6,14 +6,11 @@ import numpy as np
 from io import StringIO
 from math import isclose
 
-from decom_py import EwEScenarioInterface, scenario_interface
+from decom_py import EwEScenarioInterface
 
 RESOURCES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources")
-OUTDIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "resources", "test_outputs", "tmp"
-)
-ECOSIM_OUTDIR = os.path.join(OUTDIR, "ecosim_scenario_0")
 
+# Model parameter file paths
 ECOTRACER_GROUP_INFO_PATH = os.path.join(
     RESOURCES, "test_inputs", "BlackSea-Ecotracer input.csv"
 )
@@ -24,52 +21,13 @@ VULNERABILITIES_PATH = os.path.join(
     RESOURCES, "test_inputs", "BlackSea-Vulnerabilities.csv"
 )
 
-TARGET_ECOSIM_DIR = os.path.join(RESOURCES, "test_outputs", "ecosim")
-TARGET_ECOTRACER_DIR = os.path.join(RESOURCES, "test_outputs", "ecotracer")
-TARGET_BIOMASS_PATH = os.path.join(TARGET_ECOSIM_DIR, "test_biomass_monthly.csv")
-TARGET_CATCH_PATH = os.path.join(TARGET_ECOSIM_DIR, "test_catch_monthly.csv")
-TARGET_CATCH_FLEET_PATH = os.path.join(
-    TARGET_ECOSIM_DIR, "test_catch-fleet-group_monthly.csv"
-)
-TARGET_MORTALITY_PATH = os.path.join(TARGET_ECOSIM_DIR, "test_mortality_monthly.csv")
-
-TARGET_ECOTRACER_OUT_PATH = os.path.join(
-    TARGET_ECOTRACER_DIR, "target_ecotracer_outputs.csv"
-)
-
-
-def ewe_df_to_arr(df_path):
-    with open(df_path, "r") as file:
-        # Skip lines until you reach the CSV header
-        lines = file.readlines()
-        matches = [
-            i for i, line in enumerate(lines) if "year" in line or "time" in line
-        ][0]
-
-        csv_data = pd.read_csv(StringIO("".join(lines[matches:])))
-
-    return csv_data.to_numpy()
-
-
 def remove_files(directory_path):
     # Iterate through files in the directory (excluding nested directories)
     shutil.rmtree(directory_path)
     os.makedirs(directory_path, exist_ok=True)
 
-
-@pytest.fixture(scope="session")
-def cleanup():
-    # Setup code (runs before the test)
-    print("Setting up resources")
-
-    yield  # The test runs after this point
-
-    # Cleanup code (runs after the test)
-    remove_files(OUTDIR)
-
-
 @pytest.fixture(scope="class")
-def scenario_run_results(model_path, ewe_module, cleanup):
+def scenario_run_results(model_path, ewe_module):
     """Runs the scenario once and provides the output directory."""
     ewe_int = EwEScenarioInterface(model_path)
 
@@ -104,8 +62,7 @@ def scenario_run_results(model_path, ewe_module, cleanup):
     scen_df = pd.DataFrame([vals], columns=col_names)
 
     # Run scenarios
-    print(f"Running scenario once for fixture in {OUTDIR}...")
-    res = ewe_int.run_scenarios(scen_df)  # Run into the dedicated fixture dir
+    res = ewe_int.run_scenarios(scen_df)
 
     ewe_int.reset_parameters()
 
@@ -115,7 +72,7 @@ def scenario_run_results(model_path, ewe_module, cleanup):
 
     res_target = ewe_int.run_scenarios(scen_df)
 
-    yield res, res_target  # Provide the output directory to tests
+    yield res, res_target
 
     ewe_int._core_instance.close_model()
 
@@ -147,7 +104,6 @@ def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):
             f"  Total absolute difference sum: {sum_abs_diff:.4g}"
         )
         pytest.fail(fail_msg)
-
 
 class TestScenarioInterface:
 

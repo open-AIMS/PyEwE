@@ -14,7 +14,6 @@ Outputs/
 site/
 
 sandbox/
-test/resources/test_outputs/tmp/*.csv
 
 # local dev
 .env
