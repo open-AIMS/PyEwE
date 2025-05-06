@@ -407,6 +407,7 @@ class TestEcosimProperties:
 
         core.close_model()
 
+
 class TestEcotracerProperties:
 
     def test_ecotracer_get_property_exceptions(self, tmp_model_path):
