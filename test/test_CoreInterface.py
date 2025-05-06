@@ -16,7 +16,7 @@ N_CONSUMERS = N_GROUPS - N_PRODUCERS - N_DETRITUS
 
 class TestScenarioAddRemove:
 
-    def test_ecosim_load_scenario(self, tmp_model_path, ewe_module):
+    def test_ecosim_load_scenario(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -48,7 +48,7 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecosim_add_scenarios(self, tmp_model_path, ewe_module):
+    def test_ecosim_add_scenarios(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -71,7 +71,7 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecosim_remove_scenarios(self, tmp_model_path, ewe_module):
+    def test_ecosim_remove_scenarios(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -94,7 +94,7 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecotracer_load_scenarios(self, tmp_model_path, ewe_module):
+    def test_ecotracer_load_scenarios(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -127,7 +127,7 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecotracer_add_scenarios(self, tmp_model_path, ewe_module):
+    def test_ecotracer_add_scenarios(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -160,7 +160,7 @@ class TestScenarioAddRemove:
 
         core.close_model()
 
-    def test_ecotracer_remove_scenarios(self, tmp_model_path, ewe_module):
+    def test_ecotracer_remove_scenarios(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -191,7 +191,7 @@ class TestScenarioAddRemove:
 
 class TestCoreProperties:
 
-    def test_get_functional_group_names(self, tmp_model_path, ewe_module):
+    def test_get_functional_group_names(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -226,7 +226,7 @@ class TestCoreProperties:
 
 class TestEcosimProperties:
 
-    def test_ecosim_get_property_exceptions(self, tmp_model_path, ewe_module):
+    def test_ecosim_get_property_exceptions(self, tmp_model_path):
         """
         Test that accessing Ecosim properties raises an error
         if no Ecosim scenario is loaded.
@@ -262,7 +262,7 @@ class TestEcosimProperties:
 
         core.close_model()
 
-    def test_ecosim_getters(self, tmp_model_path, ewe_module):
+    def test_ecosim_getters(self, tmp_model_path):
         """
         Test the Ecosim property getters after loading a scenario.
         """
@@ -343,7 +343,7 @@ class TestEcosimProperties:
 
         core.close_model()
 
-    def test_ecosim_setters(self, tmp_model_path, ewe_module):
+    def test_ecosim_setters(self, tmp_model_path):
         """Test the Ecosim property setters."""
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -407,13 +407,9 @@ class TestEcosimProperties:
 
         core.close_model()
 
-    def test_ecosim_vulnerabilities(self, tmp_model_path, ewe_module):
-        assert 2 == 2
-
-
 class TestEcotracerProperties:
 
-    def test_ecotracer_get_property_exceptions(self, tmp_model_path, ewe_module):
+    def test_ecotracer_get_property_exceptions(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -441,7 +437,7 @@ class TestEcotracerProperties:
         with pytest.raises(EcotracerNoScenarioError, match=expected_error_msg):
             core.Ecotracer.get_metabolic_decay_rates()
 
-    def test_ecotracer_getters(self, tmp_model_path, ewe_module):
+    def test_ecotracer_getters(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)
@@ -503,7 +499,7 @@ class TestEcotracerProperties:
 
         core.close_model()
 
-    def test_ecotracer_setters(self, tmp_model_path, ewe_module):
+    def test_ecotracer_setters(self, tmp_model_path):
 
         core = CoreInterface()
         core.load_model(tmp_model_path)

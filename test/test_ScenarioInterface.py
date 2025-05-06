@@ -26,7 +26,7 @@ CONTAMINANT_FORCING_PATH = os.path.join(
 
 
 @pytest.fixture(scope="class")
-def scenario_run_results(model_path, ewe_module):
+def scenario_run_results(model_path):
     """Runs the scenario once and provides two result sets that should be equal."""
     ewe_int = EwEScenarioInterface(model_path)
 
@@ -77,7 +77,7 @@ def scenario_run_results(model_path, ewe_module):
 
 
 @pytest.fixture(scope="class")
-def scenario_run_results_w_forcing(model_path, ewe_module):
+def scenario_run_results_w_forcing(model_path):
     """
     Runs the scenario once with ecotracer contaminant forcing and returns two results sets
     that should be equal.
