@@ -44,6 +44,13 @@ else:
     initialise(_bin_dir)
 
 
+def get_ewe_bin_path() -> str:
+    path = os.getenv("EWE_BIN_PATH")
+    if path is None:
+        raise KeyError(f"Environment variablew 'EWE_BIN_PATH' not found.")
+    return path
+
+
 def get_ewe_core_module():
     """Get the EwE Core module."""
     global _ewe_core_module

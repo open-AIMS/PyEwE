@@ -204,6 +204,11 @@ class EwEScenarioModel(EwEModel):
         pass
 
     @abstractmethod
+    def save_scenario(self):
+        """Save the state of the current scenario to the underlying database."""
+        pass
+
+    @abstractmethod
     def close_scenario(self):
         """Close current ecotracer scenario."""
         pass
@@ -308,6 +313,11 @@ class EcosimStateManager(EwEScenarioModel, EwEParameterManager):
         """Create a new Ecosim scenario."""
         return self._core.NewEcosimScenario(name, description, author, contact)
 
+    def save_scenario(self):
+        """Save the current state of the ecosim scenario to the underlying database."""
+        self._assert_scenario_loaded()
+        return self._core.SaveEcosimScenario()
+
     def close_scenario(self):
         return self._core.CloseEcosimScenario()
 
@@ -397,6 +407,11 @@ class EcotracerStateManager(EwEScenarioModel, EwEParameterManager):
     def new_scenario(self, name: str, description: str, author: str, contact: str):
         """Create a new EcoTracer scenario."""
         return self._core.NewEcotracerScenario(name, description, author, contact)
+
+    def save_scenario(self):
+        """Save the state of the ecotracer scenario to the underlying database."""
+        self._assert_scenario_loaded()
+        return self._core.SaveEcotracerScenario()
 
     def set_contaminant_forcing_number(self, forcing_index: int) -> None:
         """Set the index of the contaminant forcing function.
