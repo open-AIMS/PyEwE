@@ -8,7 +8,8 @@ decomissioning scenarios.
 ```python
 from decom_py import EwEScenarioInterface
 
-initialise(r'path/to/EwE/binaries/directory')
+# If EWE_BIN_PATH is not an environmental variable, manually pass path to binaries.
+# initialise(r'path/to/EwE/binaries/directory')
 
 model_file = r'path/to/model/file'
 ewe_int = EwEScenarioInterface(model_file)

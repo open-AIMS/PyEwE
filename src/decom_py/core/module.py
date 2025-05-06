@@ -1,5 +1,6 @@
 import clr
 import sys
+import os
 from pathlib import Path
 from importlib import import_module
 from warnings import warn
@@ -32,6 +33,15 @@ def initialise(ewe_binary_dir: str) -> None:
 
     _ewe_core_module = import_module("EwECore")
     _ewe_util_module = import_module("EwEUtils")
+
+
+_bin_dir = os.getenv("EWE_BIN_PATH")
+if _bin_dir is None:
+    msg = "Unable to find environmental variable 'EWE_BIN_PATH'. "
+    msg += "Call 'initialise' to setup module."
+    warn(msg)
+else:
+    initialise(_bin_dir)
 
 
 def get_ewe_core_module():

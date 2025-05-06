@@ -19,4 +19,17 @@ Navigate to the project directory and run:
 uv sync
 ```
 
+Add a `EWE_BIN_PATH` environment variable with with a path to the directory of the EwE
+binaries.
+
+**Powershell**
+```Powershell
+$env:EWE_BIN_DIR_PATH="Path to EwE binaries"
+```
+
+**bash**
+```bash
+export ENV_BIN_DIR_PATH="Path to EwE binaries"
+```
+
 See [Usage](usage.md#usage) to understand how to use the library.
