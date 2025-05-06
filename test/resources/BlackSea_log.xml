@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <Platform>Microsoft Windows NT 10.0.22631.0</Platform>
+  <Is64BitOS>True</Is64BitOS>
+  <ModelName>BlackSea</ModelName>
+  <Created>4:17:04 PM Tuesday, 6 May 2025</Created>
+<Session_Started
+  Date="4:17:04 PM Tuesday, 6 May 2025">
+  <Model>BlackSea</Model>
+  <LogFile>C:\Users\dtan\repos\decom_py\test\resources\BlackSea_log.xml</LogFile>
+  <Is64BitExe>True</Is64BitExe>
+  <CultureOS>English (Australia)</CultureOS>
+  <CultureUI>English (United States)</CultureUI>
+  <DecimalSeparator>.</DecimalSeparator>
+</Session_Started>
+<Information_Message
+  Date="4:17:04 PM Tuesday, 6 May 2025">
+  <Message>Ecopath model 'C:\Users\dtan\repos\decom_py\test\resources\BlackSea.eweaccdb' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="4:17:28 PM Tuesday, 6 May 2025">
+  <Message>Ecopath run completed.</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="4:17:31 PM Tuesday, 6 May 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="4:17:31 PM Tuesday, 6 May 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="4:17:31 PM Tuesday, 6 May 2025">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Information_Message
+  Date="4:17:31 PM Tuesday, 6 May 2025">
+  <Message>Ecosim scenario 'test_outputs' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>EcoSimScenario</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="4:17:33 PM Tuesday, 6 May 2025">
+  <Message>Ecotracerscenario 'test_outputs' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Information_Message
+  Date="4:17:50 PM Tuesday, 6 May 2025">
+  <Message>Ecotracer scenario 'test_outputs_2' has been saved.</Message>
+  <Message_Type>DataModified</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="4:17:50 PM Tuesday, 6 May 2025">
+  <Message>Ecotracerscenario 'test_outputs_2' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Exception_Messages
+  Date="4:17:59 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Exception_Messages
+  Date="4:17:59 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Exception_Messages
+  Date="4:18:00 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Exception_Messages
+  Date="4:18:00 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Exception_Messages
+  Date="4:18:00 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Exception_Messages
+  Date="4:18:00 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Exception_Messages
+  Date="4:18:00 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Exception_Messages
+  Date="4:18:00 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Exception_Messages
+  Date="4:18:00 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Exception_Messages
+  Date="4:18:00 PM Tuesday, 6 May 2025">
+  <Detail>Grid m_grid::OnClipboardPaste failed on data type System.Single</Detail>
+  <Exception>
+    <Type>System.FormatException</Type>
+    <Source>mscorlib</Source>
+    <Message>Input string was not in a correct format.</Message>
+  </Exception>
+  <StackTrace>
+    <Method>
+      <Name>ParseSingle</Name>
+      <Line>0</Line>
+    </Method>
+    <Method>
+      <Name>OnClipboardPaste</Name>
+      <Line>0</Line>
+    </Method>
+  </StackTrace>
+</Exception_Messages>
+<Warning_Message
+  Date="4:18:00 PM Tuesday, 6 May 2025">
+  <Message>A number of formatting errors occured when integrating your data, and the attempt was aborted. Please check if your data is compatible with this grid and try again.</Message>
+  <Message_Type>DataImport</Message_Type>
+  <Message_Source>External</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Warning_Message>
+<Information_Message
+  Date="4:18:48 PM Tuesday, 6 May 2025">
+  <Message>Ecotracer scenario 'test_outputs_2' has been saved.</Message>
+  <Message_Type>DataModified</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="4:18:55 PM Tuesday, 6 May 2025">
+  <Message>Ecotracerscenario 'test_outputs' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="4:19:02 PM Tuesday, 6 May 2025">
+  <Message>Ecotracerscenario 'test_outputs_2' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecotracer</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="4:19:08 PM Tuesday, 6 May 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="4:19:08 PM Tuesday, 6 May 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="4:19:08 PM Tuesday, 6 May 2025">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="4:19:08 PM Tuesday, 6 May 2025">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="4:19:08 PM Tuesday, 6 May 2025">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="4:19:08 PM Tuesday, 6 May 2025">
+  <Message>Model closed</Message>
+</Log_Message>
+</doc>
