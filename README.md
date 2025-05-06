@@ -18,12 +18,27 @@ uv sync
 
 This will install needed dependencies.
 
+Add a `EWE_BIN_PATH` environment variable with with a path to the directory of the EwE
+binaries.
+
+**Powershell**
+```Powershell
+$env:EWE_BIN_DIR_PATH="Path to EwE binaries"
+```
+
+**bash**
+```bash
+export ENV_BIN_DIR_PATH="Path to EwE binaries"
+```
+
+
 ## Example
 
 ```python
 from decom_py import EwEScenarioInterface
 
-initialise(r'path/to/EwE/binaries/directory')
+# If EWE_BIN_PATH is not an environmental variable, manually pass path to binaries.
+# initialise(r'path/to/EwE/binaries/directory')
 
 model_file = r'path/to/model/file'
 ewe_int = EwEScenarioInterface(model_file)
@@ -119,15 +134,6 @@ for more information.
 ### Testing
 
 1. Define an environment variable pointing to the EwE binaries.
-
-**Powershell**
-```Powershell
-$env:EWE_BIN_DIR_PATH="Path to EwE binaries"
-```
-
-**bash**
-```bash
-export ENV_BIN_DIR_PATH="Path to EwE binaries"
 ```
 
 2. Run tests with `pytest`
