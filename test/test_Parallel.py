@@ -10,8 +10,9 @@ from test.utils import (
     ECOTRACER_GROUP_INFO_PATH2,
     ECOSIM_GROUP_INFO_PATH,
     VULNERABILITIES_PATH,
-    assert_arrays_close
+    assert_arrays_close,
 )
+
 
 def construct_ecotracer_df(ewe_int, filepath: str):
     """Construct a vector of params and names from a ecotracer group input file.
@@ -45,6 +46,7 @@ def construct_ecotracer_df(ewe_int, filepath: str):
     )
     return col_names, vals
 
+
 @pytest.fixture(scope="class")
 def multi_scen_res(model_path):
     """Runs the scenario once and provides two result sets that should be equal."""
@@ -69,6 +71,7 @@ def multi_scen_res(model_path):
 
     ewe_int.cleanup()
 
+
 @pytest.fixture(scope="class")
 def test_outputs_res(model_path):
     ewe_int = EwEScenarioInterface(model_path)
@@ -79,6 +82,7 @@ def test_outputs_res(model_path):
     yield res
 
     ewe_int.cleanup()
+
 
 @pytest.fixture(scope="class")
 def test_outputs_2_res(model_path):
@@ -91,17 +95,14 @@ def test_outputs_2_res(model_path):
 
     ewe_int.cleanup()
 
+
 class TestParallelExecution:
 
     @pytest.mark.parametrize(
         "variable", ["Biomass", "Catch", "Mortality", "Concentration"]
     )
     def test_output(
-        self,
-        variable,
-        multi_scen_res,
-        test_outputs_res,
-        test_outputs_2_res
+        self, variable, multi_scen_res, test_outputs_res, test_outputs_2_res
     ):
         scen_index = {"Scenario": 0}
         expected1 = test_outputs_res[variable][scen_index].values

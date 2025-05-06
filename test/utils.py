@@ -11,15 +11,14 @@ ECOTRACER_GROUP_INFO_PATH = path.join(
 ECOTRACER_GROUP_INFO_PATH2 = path.join(
     RESOURCES, "test_inputs", "BlackSea-Ecotracer input 2.csv"
 )
-ECOSIM_GROUP_INFO_PATH = path.join(
-    RESOURCES, "test_inputs", "BlackSea-Group info.csv"
-)
+ECOSIM_GROUP_INFO_PATH = path.join(RESOURCES, "test_inputs", "BlackSea-Group info.csv")
 VULNERABILITIES_PATH = path.join(
     RESOURCES, "test_inputs", "BlackSea-Vulnerabilities.csv"
 )
 CONTAMINANT_FORCING_PATH = path.join(
     RESOURCES, "test_inputs", "BlackSea-ContaminantForcing.csv"
 )
+
 
 def assert_arrays_close(expected, produced, rtol=1e-7, atol=1e-9, context=""):
     """

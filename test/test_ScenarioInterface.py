@@ -11,8 +11,9 @@ from .utils import (
     ECOSIM_GROUP_INFO_PATH,
     VULNERABILITIES_PATH,
     CONTAMINANT_FORCING_PATH,
-    assert_arrays_close
+    assert_arrays_close,
 )
+
 
 @pytest.fixture(scope="class")
 def scenario_run_results(model_path):
@@ -130,6 +131,7 @@ def scenario_run_results_w_forcing(model_path):
     yield res, res_target
 
     ewe_int.cleanup()
+
 
 class TestScenarioInterface:
 

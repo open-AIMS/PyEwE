@@ -245,6 +245,8 @@ class EwEScenarioInterface:
             ):
                 continue
 
+            print("Finished runs. Cleaning up workers.")
+
         return manager.to_result_set()
 
     def set_ecosim_group_info(self, group_info: DataFrame) -> None:
