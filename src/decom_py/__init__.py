@@ -7,8 +7,9 @@ from .core import (
     EcotracerStateManager,
 )
 
-from .scenario_interface import (
-    EwEScenarioInterface,
+from .scenario_interface import EwEScenarioInterface
+
+from .parameter_management import (
     ParameterManager,
     Parameter,
     ParameterType,

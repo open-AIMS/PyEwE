@@ -19,3 +19,5 @@ sandbox/
 .env
 /.vscode
 /.idea
+
+test/resources/*.xml

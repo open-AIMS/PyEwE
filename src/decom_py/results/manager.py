@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
 import xarray as xr
+import multiprocessing as mp
 from datetime import datetime
+from typing import Optional
+from numpy.ctypeslib import ctypes
 
 from .config import STD_DIM_NAMES, CATEGORY_CONFIG, VARIABLE_CONFIG
 from .results_set import ResultSet
@@ -36,12 +39,29 @@ def select_dim_values(dim_name: str, n_scenarios: int, group_names, n_months: in
     raise ValueError(f"Dimension {dim_name} not supported.")
 
 
+def construct_var_buffer(
+    variable_name: str, n_scenarios: int, n_groups: int, n_months: int
+):
+    """Given an variable names, construct a multiprocessor buffer."""
+    # Get variable specification
+    var_conf = VARIABLE_CONFIG[variable_name]
+    var_cat = var_conf["category"]
+    # Get dimensions spec
+    var_dims = var_conf["dims"]
+    var_shape = [
+        select_dim_len(dim_n, n_scenarios, n_groups, n_months) for dim_n in var_dims
+    ]
+    # Create an array with 64 bit float
+    return mp.Array("d", int(np.prod(var_shape)))
+
+
 def construct_xarray(
     variable_name: str,
     n_scenarios: int,
     group_names: list[str],
     n_months: int,
     first_year: int,
+    buffer=None,
 ):
     """Given a variable name and the size of dimensions, construct an empty xarray."""
     # Get variable specification
@@ -60,7 +80,13 @@ def construct_xarray(
         select_dim_values(dim_n, n_scenarios, group_names, n_months)
         for dim_n in var_dims
     ]
-    data = np.empty(tuple(var_shape), dtype=float)
+    if buffer is None:
+        data = np.empty(tuple(var_shape), dtype=float)
+    else:
+        data = np.frombuffer(buffer.get_obj(), dtype=np.float64).reshape(
+            tuple(var_shape)
+        )
+
     empty_xr = xr.DataArray(data, coords=coords, dims=var_dims_names)
     # Fill in attributes
     empty_xr.attrs["name"] = var_conf["variable_name"]
@@ -103,7 +129,7 @@ class ResultManager:
         _py_core: EwE python core wrapper instance.
         _var_names: The names of variables to save. Should match those found in config.py
         _scenarios: Scenario dataframe for the corresponding model runs.
-        _variable_stores (dict): Dictionary of xarrays, one for each variable being recorded.
+        variable_stores (dict): Dictionary of xarrays, one for each variable being recorded.
         _unique_extractors (list): Result extractors used to get results from the core.
             Unique.
         _variable_extractors (dict): Same underlying objects as _unique_extractors but
@@ -112,7 +138,13 @@ class ResultManager:
             are packaed into the same array in visual basic.
     """
 
-    def __init__(self, py_core, var_names, scenarios: pd.DataFrame):
+    def __init__(
+        self,
+        py_core,
+        var_names,
+        scenarios: pd.DataFrame,
+        shared_store: Optional[dict] = None,
+    ):
         self._py_core = py_core
         self._var_names = var_names
         self._scenarios = scenarios
@@ -122,12 +154,32 @@ class ResultManager:
         self._group_names = py_core.get_functional_group_names()
 
         first_year = self._py_core.get_first_year()
-        self._variable_stores = {
-            vn: construct_xarray(
-                vn, self._n_scenarios, self._group_names, self._n_months, first_year
-            )
-            for vn in var_names
-        }
+
+        if not shared_store is None:
+            if set(shared_store.keys()) != set(var_names):
+                msg = "Shared stores keys do not match variables names"
+                msg += f". Received {shared_store.keys} and {var_names}"
+                raise KeyError(msg)
+            # Construct variable stores from multiprocessing buffer
+            self.variable_stores = {
+                vn: construct_xarray(
+                    vn,
+                    self._n_scenarios,
+                    self._group_names,
+                    self._n_months,
+                    first_year,
+                    shared_store[vn],
+                )
+                for vn in var_names
+            }
+        else:
+            self.variable_stores = {
+                vn: construct_xarray(
+                    vn, self._n_scenarios, self._group_names, self._n_months, first_year
+                )
+                for vn in var_names
+            }
+
         # Get the result extractors and a list of extractors aligned with variables
         self._unique_extractors, self._variable_extractors = (
             construct_extraction_objects(var_names, py_core)
@@ -137,18 +189,33 @@ class ResultManager:
             nm: VARIABLE_CONFIG[nm]["extractor_input"] for nm in var_names
         }
 
+    @staticmethod
+    def construct_mp_result_manager(py_core, var_names, scenarios):
+        _n_months = py_core.Ecosim.get_n_years() * 12
+        _n_scenarios = len(scenarios)
+        _n_groups = len(py_core.get_functional_group_names())
+
+        mp_buffers = {
+            vn: construct_var_buffer(vn, _n_scenarios, _n_groups, _n_months)
+            for vn in var_names
+        }
+
+        manager = ResultManager(py_core, var_names, scenarios, mp_buffers)
+
+        return manager, mp_buffers
+
     def refresh_result_stores(self):
         """Load the ecosim results into the Result Extraction Buffers."""
         for extractor in self._unique_extractors:
             extractor.refresh_buffer()
 
     def collect_results(self, scenario_idx: int):
-        """Load the ecosim results into the _variable_stores."""
+        """Load the ecosim results into the variable_stores."""
         self.refresh_result_stores()
         dim_index = {STD_DIM_NAMES["scenario"]: scenario_idx}
         for var_name in self._var_names:
             get_input = self._packed_input[var_name]
-            var_arr = self._variable_stores[var_name]
+            var_arr = self.variable_stores[var_name]
             var_extr = self._variable_extractors[var_name]
 
             var_arr[dim_index] = (
@@ -159,4 +226,4 @@ class ResultManager:
 
     def to_result_set(self):
         """Construct a results set from a result manager."""
-        return ResultSet(self._py_core, self._scenarios, self._variable_stores)
+        return ResultSet(self._py_core, self._scenarios, self.variable_stores)
