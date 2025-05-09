@@ -96,8 +96,8 @@ class DropEnum:
     """Enumeration describing which slices should be dropped from result extraction."""
 
     DROP_NONE: int = 0
-    DROP_FIRST: int = 1
-    DROP_LAST: int = 2
+    DROP_FIRST: int = 1  # Drop the first slice of the given dimension
+    DROP_LAST: int = 2  # Drop the last slice of the given dimension
 
 
 def get_drop_slice(drop_flag: int):
