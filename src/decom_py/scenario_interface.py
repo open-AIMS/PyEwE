@@ -353,6 +353,25 @@ class EwEScenarioInterface:
         cols.insert(0, "scenario")
         return DataFrame(empty, columns=cols)
 
+    def get_long_scen_dataframe(self):
+        col_names: list[str] = ["Scenario", "Group", "Parameter", "Value"]
+        fg_names = self._core_instance.get_functional_group_names()
+        fg_params = self._param_manager._fg_param_prefixes
+        env_params = self._param_manager._env_param_names
+
+        data = []
+
+        for param in env_params:
+            data.append({"Scenario": 0, "Group": "Environment", "Parameter": param, "Value": None})
+
+        for group in fg_names:
+            for param in fg_params:
+                data.append({"Scenario": 0, "Group": group, "Parameter": param, "Value": None})
+
+        scen_df = pd.DataFrame(data, columns=col_names)
+
+        return scen_df
+
     def cleanup(self):
         self._core_instance.close_model()
         print("Closed model.")

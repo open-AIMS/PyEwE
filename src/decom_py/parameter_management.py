@@ -21,6 +21,7 @@ class Parameter:
         value: Parameter value. If variable the parameter value will be nan if constant it will be set.
         df_idx: Column index of parameter in scenario dataframe. If
         is_env_param: A boolean indicating if it in environmental parameter.
+        category_idx: Index into the type of function group parameter dictionary.
         group_idx: The index of the group in the underlying core instance. If the
             parameter is an environmental parameter,this will be -1.
     """
@@ -97,6 +98,8 @@ class ParameterManager:
 
     @staticmethod
     def EcotracerManager(core):
+        """Given a core instance, construct a Ecotracer parameter manager."""
+        # The names of parameters are derived from the EwE model.
         fg_param_prefixes = [
             "init_c",
             "immig_c",
@@ -105,6 +108,8 @@ class ParameterManager:
             "meta_decay_r",
             "excretion_r",
         ]
+        # The name of the setters can be found the in the definitions of the EwE models in
+        # core.models
         fg_param_to_setter = {
             0: "set_initial_concentrations",
             1: "set_immigration_concentrations",
@@ -136,10 +141,16 @@ class ParameterManager:
         )
 
     def _initialize_params(self) -> None:
-        """Create all possible parameters"""
+        """Create all possible parameters.
+
+        Create a list of parameter objects based on the list of known functional group names
+        and parameters prefixes. Includes environmental parameters.
+        """
         # Create functional group parameters
         for prefix in self._fg_param_prefixes:
             for i, fg_name in enumerate(self.fg_names, 1):
+                # n_chars padding the index in the name so the naming 
+                # in alphabetical order follows the order of the ecopath model.
                 n_chars = len(str(len(self.fg_names)))
                 param_name = self._format_param_name(prefix, i, n_chars, fg_name)
                 cat_idx = self._fg_param_prefixes.index(prefix)
@@ -165,7 +176,15 @@ class ParameterManager:
     def get_fg_param_names(
         self, param_prefixes: Union[str, List[str]] = "all"
     ) -> List[str]:
-        """Get functional group parameter names for given prefixes"""
+        """Get functional group parameter names for given prefixes.
+
+        Arguments:
+            param_prefixes (Union[str, List[str]]): List of parameter prefixes or 'all' to
+                get parameter names for.
+
+        Returns:
+            list[str]: list of functinoal group parameter names.
+        """
         if isinstance(param_prefixes, str) and param_prefixes == "all":
             param_prefixes = self._fg_param_prefixes
         elif isinstance(param_prefixes, str):
@@ -183,7 +202,12 @@ class ParameterManager:
     def set_constant_params(
         self, param_names: List[str], param_values: List[float]
     ) -> None:
-        """Set parameters as constant with given values"""
+        """Set parameters as constant with given values.
+
+        Sets given parameters as constants throughout scenario runs and stores the value in
+        the parameter manager. This function does NOT write the value into the core EwE
+        instance.
+        """
         for name, value in zip(param_names, param_values):
             if name not in self.params:
                 raise ValueError(f"Unknown parameter: {name}")
@@ -202,7 +226,14 @@ class ParameterManager:
         return []
 
     def apply_constant_params(self, core: CoreInterface) -> None:
-        """Apply all constant parameters to the core interface"""
+        """Apply all constant parameters to the core interface.
+
+        For all parameters in the parameter manager that is listed as constant, write the
+        value contained in the parameter object into the given EwE core instance.
+
+        Arguments:
+            core (CoreInterface): Core instance to write to.
+        """
         # Group parameters by category for batch application
         for cat_idx in range(len(self._fg_param_prefixes)):
             values = []
@@ -232,7 +263,7 @@ class ParameterManager:
     def set_variable_params(
         self, param_names: List[str], df_indices: List[int]
     ) -> None:
-        """Set parameters as variable with dataframe column indices"""
+        """Set parameters as variable with dataframe column indices."""
         for name, idx in zip(param_names, df_indices):
             if name not in self.params:
                 raise ValueError(f"Unknown parameter: {name}")
@@ -242,7 +273,14 @@ class ParameterManager:
         self._variable_params_processed = False
 
     def _process_variable_params(self) -> None:
-        """Pre-calculate variable parameter information for efficient scenario runs"""
+        """Pre-calculate variable parameter information for efficient scenario runs.
+
+        For each variable parameter, construct lists of indices indicating which parameters
+        for which functional groups should be written to the EwE core instance. Furthermore,
+        store the column index in the scenario dataframe that variables are store in. This
+        is only calculated once, repeated calls will do nothing, until '_variable_params
+        processed' is set to False.
+        """
         if self._variable_params_processed:
             return
 
@@ -274,11 +312,21 @@ class ParameterManager:
     def apply_variable_params(
         self, core: CoreInterface, scenario_values: List[float]
     ) -> None:
-        """Apply variable parameters for a scenario to the core interface efficiently"""
+        """Apply variable parameters for a scenario to the core interface efficiently
+
+        Given a list of parameter values for a given scenario, write them into the core
+        instance prior to a model run. If the variable parameter datastructures to help with
+        efficient writing have not been constructed, construct them.
+
+        Arguments:
+            scenario_values (list[float]): List of parameter values in the same order as the
+                columns passed to the set_variable_params function.
+
+        Returns:
+            None
+        """
         # Process variable params if not already done
         self._process_variable_params()
-        print(self._variable_fg_indices)
-        print(self._variable_fg_df_indices)
 
         # Apply functional group parameters
         for cat_idx in range(len(self._fg_param_prefixes)):
