@@ -6,6 +6,7 @@ from typing import Union, Dict, List, Optional
 from tqdm.auto import tqdm
 
 import numpy as np
+import pandas as pd
 import shutil
 import os
 import math
@@ -230,7 +231,7 @@ class EwEScenarioInterface:
             scenarios,
         )
 
-        parallel_arg_pack = [el for el in scenarios.iterrows()]
+        parallel_arg_pack = [(i, list(vals)) for (i, vals) in scenarios.iterrows()]
 
         with multiprocessing.Pool(
             processes=n_workers, initializer=worker_init, initargs=worker_init_args
