@@ -14,7 +14,7 @@ from ..core import results_extraction
 def select_dim_len(
     dim_name: str, n_scenarios: int, n_groups: int, n_months: int
 ) -> int:
-    """Given the dimension name, select the len of the dimension."""
+    """Given the dimension name, select the length of the dimension."""
     if dim_name == "scenario":
         return n_scenarios
     elif dim_name == "group":
@@ -22,7 +22,7 @@ def select_dim_len(
     elif dim_name == "time":
         return n_months
     elif dim_name == "env_group":
-        return n_groups + 1
+        return n_groups + 1  # Functional groups + environment group.
     raise ValueError(f"Dimension {dim_name} not supported.")
 
 
@@ -35,7 +35,7 @@ def select_dim_values(dim_name: str, n_scenarios: int, group_names, n_months: in
     elif dim_name == "time":
         return range(n_months)
     elif dim_name == "env_group":
-        return ["Environment", *group_names]
+        return ["Environment", *group_names]  # Functional groups + environment group.
     raise ValueError(f"Dimension {dim_name} not supported.")
 
 
@@ -63,7 +63,17 @@ def construct_xarray(
     first_year: int,
     buffer=None,
 ):
-    """Given a variable name and the size of dimensions, construct an empty xarray."""
+    """Given a variable name and the size of dimensions, construct an empty xarray.
+
+    Arguments:
+        variable_name (str): Name of variable
+        n_scenarios (int): Number of scenarios
+        group_names (list[str]): List of names of functional groups
+        n_months (int): Number of months the simulation is run for.
+        first_year (int): First year of simulations
+        buffer (Optional[mp.array]): Multiprocessor buffer to use as underlying memory for
+            xarrray
+    """
     # Get variable specification
     var_conf = VARIABLE_CONFIG[variable_name]
     var_cat = var_conf["category"]
@@ -91,7 +101,7 @@ def construct_xarray(
     # Fill in attributes
     empty_xr.attrs["name"] = var_conf["variable_name"]
     empty_xr.attrs["unit"] = var_conf["unit"]
-    empty_xr.attrs["unit"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    empty_xr.attrs["Run Date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     empty_xr.attrs["First Year"] = first_year
 
     return empty_xr
@@ -191,6 +201,17 @@ class ResultManager:
 
     @staticmethod
     def construct_mp_result_manager(py_core, var_names, scenarios):
+        """Construct a result manager using multiprocessor arrays.
+
+        Construct a result manager that uses multiprocessor arrays as the underlying buffer
+        for the stored xarrays.
+
+        Arguments:
+            py_core (CoreInstance): Core instance to extract results from.
+            var_names (list[str]): List of result varibles to store.
+            scenarios (DataFrame): Dataframe containing the parameters used for each
+                scenario
+        """
         _n_months = py_core.Ecosim.get_n_years() * 12
         _n_scenarios = len(scenarios)
         _n_groups = len(py_core.get_functional_group_names())

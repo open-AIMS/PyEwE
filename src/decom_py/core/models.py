@@ -15,7 +15,14 @@ from ..exceptions import (
 
 
 def _generate_group_getter(param_container_name: str, name: str):
-    """Generate getter functions for EwEParameterManager for group parameters."""
+    """Generate getter functions for EwEParameterManager for group parameters.
+
+    Arguments:
+        param_container_name (str): The name of the object that contains the parameter in
+            the cCore object.
+        name (str): Name of the parameter within the parameter container described in the
+            first argument.
+    """
 
     def getter(self: EwEScenarioModel):
         self._assert_scenario_loaded()
@@ -31,7 +38,14 @@ def _generate_group_getter(param_container_name: str, name: str):
 
 
 def _generate_group_setter(param_container_name, name):
-    """Generate getter functions for EwEParameterManager for group parameters."""
+    """Generate getter functions for EwEParameterManager for group parameters.
+
+    Arguments:
+        param_container_name (str): The name of the object that contains the parameter in
+            the cCore object.
+        name (str): Name of the parameter within the parameter container described in the
+            first argument.
+    """
 
     def setter(self: EwEScenarioModel, values, idxs=None):
         self._assert_scenario_loaded()
@@ -55,6 +69,15 @@ def _generate_group_setter(param_container_name, name):
 
 
 def _generate_env_getter(param_container_name: str, name: str):
+    """Generate getters for environmental parameters.
+
+    Arguments:
+        param_container_name (str): The name of the object that contains the parameter in
+            the cCore object.
+        name (str): Name of the parameter within the parameter container described in the
+            first argument.
+    """
+
     def getter(self: EwEScenarioModel):
         self._assert_scenario_loaded()
         param_container = getattr(self._core, param_container_name)()
@@ -66,6 +89,15 @@ def _generate_env_getter(param_container_name: str, name: str):
 
 
 def _generate_env_setter(param_container_name: str, name: str):
+    """Generate setters for environmental parameters.
+
+    Arguments:
+        param_container_name (str): The name of the object that contains the parameter in
+            the cCore object.
+        name (str): Name of the parameter within the parameter container described in the
+            first argument.
+    """
+
     def setter(self: EwEScenarioModel, value):
         self._assert_scenario_loaded()
         param_container = getattr(self._core, param_container_name)()
@@ -78,12 +110,17 @@ def _generate_env_setter(param_container_name: str, name: str):
 
 
 class EwEParameterManager:
-    """Generic parameter manager to manage EwE Model parameters."""
+    """Generic parameter manager to manage EwE Model parameters.
 
-    # _GROUP_PARAM_CONTAINER_NAME
-    # _GROUP_PARAM_NAMES
-    # _ENV_PARAM_CONTAINER_NAME
-    # _ENV_PARAM_NAMES
+    Subclass should define _GROUP_PARAM_CONTAINER_NAME, _GROUP_PARAM_NAMES,
+    _ENV_PARAM_CONTAINER_NAME and _ENV_PARAM_NAMES
+
+    The parameter names should be a a dictionary from the parameter names they want to be
+    accessed by and should map to the getters and setters find in the container object. See
+    the definition of Ecotracer or Ecosim managers. The Container names should be a string
+    that matches the name of the Parameter contained in the cCore object in the EwE
+    binaries.
+    """
 
     def __init_subclass__(cls):
 

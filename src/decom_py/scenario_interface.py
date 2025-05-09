@@ -6,6 +6,7 @@ from typing import Union, Dict, List, Optional
 from tqdm.auto import tqdm
 
 import numpy as np
+import pandas as pd
 import shutil
 import os
 import math
@@ -35,6 +36,25 @@ class EwEScenarioInterface:
     """
 
     def __init__(self, model_path: str, temp_model_path: Optional[str] = None):
+        """Initialise a EwEScenarioInterface
+
+        Given a path to the EwE model database, construct a EwEScenarioInterface object by
+        copying the database to a temporar location so that the given database is not
+        edited. When the interface is cleaned up or the python program exits, the object
+        will close the temporary database and delete the temporary folder it was placed in.
+
+        If the user supplies a temporary model path, then the model will copied to that
+        location. Ther user is responsible for deleting the copied database when complete
+        however. This is mainly for debugging purposes to check the underlying state.
+
+        'EwEScenarioInterface.cleanup()' is registered at exit but it also good practice to
+        manually call this function after completion.
+
+        Arguments:
+            model_path (str): Path to model database.
+            temp_model_path (Optonal[str]): Path to where the model database should be
+                copied, the user is responsible for cleaning up the copy.
+        """
         self._model_path = model_path
         mod_path_obj = Path(model_path)
         if not mod_path_obj.exists():
@@ -89,6 +109,7 @@ class EwEScenarioInterface:
         atexit.register(self.cleanup)
 
     def reset_parameters(self):
+        """Remove all saved constant and variable parameters names and values."""
         self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
 
     def get_ecotracer_fg_param_names(
@@ -177,16 +198,18 @@ class EwEScenarioInterface:
 
         return result_manager.to_result_set()
 
-    @staticmethod
-    def setup_core(core: CoreInterface, model_file: str):
-        core.load_model(model_file)
-        core.Ecosim.load_scenario("tmp_ecosim_scen")
-        core.Ecotracer.load_scenario("tmp_ecotracer_scen")
-
     def run_scenarios_parallel(
         self, scenarios: DataFrame, n_workers: Optional[int] = None
     ):
-        """Run scenarios in parallel."""
+        """Run scenarios in parallel.
+
+        Arguments:
+            scenarios (DataFrame): Dataframe containing parameters for each scenario.
+            n_workers (Optional[int]): Number of processes to run in parallel
+
+        Returns:
+            ResultSet: results from scenario runs.
+        """
 
         # Save scenarios so that when copied, new core instances have constant variables
         self._core_instance.Ecosim.save_scenario()
@@ -194,6 +217,8 @@ class EwEScenarioInterface:
 
         if n_workers is None:
             n_workers = os.cpu_count()
+            if n_workers is None:
+                raise RuntimeError("Failed to get number of cpus for default workers.")
             warn(f"n_workers not specified, using default {n_workers}")
 
         save_vars = [
@@ -230,14 +255,14 @@ class EwEScenarioInterface:
             scenarios,
         )
 
-        parallel_arg_pack = [el for el in scenarios.iterrows()]
+        parallel_arg_pack = [(i, list(vals)) for (i, vals) in scenarios.iterrows()]
 
         with multiprocessing.Pool(
             processes=n_workers, initializer=worker_init, initargs=worker_init_args
         ) as pool:
-
+            chunksize = math.floor(len(parallel_arg_pack) / n_workers)
             results_iterator = pool.imap_unordered(
-                worker_run_scenario_wrapper, parallel_arg_pack, chunksize=1
+                worker_run_scenario_wrapper, parallel_arg_pack, chunksize=chunksize
             )
 
             for _ in tqdm(
@@ -250,7 +275,12 @@ class EwEScenarioInterface:
         return manager.to_result_set()
 
     def set_ecosim_group_info(self, group_info: DataFrame) -> None:
-        """Set Ecosim group information"""
+        """Set Ecosim group information parameters.
+
+        Set the parameterisation for ecosim group information (feeding parameters). The
+        data frame should be in the same format with the same column names as the table in
+        the EwE GUI.
+        """
         # Implementation needed
         n_consumers = self._core_instance.n_consumers()
         cons_list = list(range(1, n_consumers + 1))
@@ -299,7 +329,11 @@ class EwEScenarioInterface:
         return self._core_instance.add_forcing_function(name, values)
 
     def set_ecosim_vulnerabilities(self, vulnerabilities: DataFrame) -> None:
-        """Set Ecosim vulnerabilities to use for all scenario runs"""
+        """Set Ecosim vulnerabilities to use for all scenario runs.
+
+        Set the vulnerabilitiy coefficient used in the Ecosim model. The format for the
+        input dataframe should be the same format as seen in the EwE GUI.
+        """
         # Implementation needed
         fg_names: list[str] = self._core_instance.get_functional_group_names()
         if "Prey \\ predator" in vulnerabilities.columns:
@@ -333,7 +367,14 @@ class EwEScenarioInterface:
         fg_param_names: List[str],
         n_scenarios: int = 1,
     ) -> DataFrame:
-        """Create empty scenarios dataframe for specified parameters"""
+        """Create empty scenarios dataframe for specified parameters.
+
+        Arguments:
+            env_param_names (list[str]): List of environmental parameter names.
+            fg_param_names (list[str]): List of functional group parameter names, (not
+                combined parameter names and functional group names.)
+            n_scenarios (int): Number of scenarios to create a dataframe for.
+        """
         # Validate environmental parameter names
         for name in env_param_names:
             if name not in self._param_manager._env_param_names:
@@ -352,7 +393,44 @@ class EwEScenarioInterface:
         cols.insert(0, "scenario")
         return DataFrame(empty, columns=cols)
 
+    def get_long_scen_dataframe(self):
+        """Get the full scenario dataframe in a long format.
+
+        Construct a scenario dataframe in a long format. Given four columns, 'Scenario',
+        'Group', 'Parameter', and 'Value'.
+        """
+        col_names: list[str] = ["Scenario", "Group", "Parameter", "Value"]
+        fg_names = self._core_instance.get_functional_group_names()
+        fg_params = self._param_manager._fg_param_prefixes
+        env_params = self._param_manager._env_param_names
+
+        data = []
+
+        for param in env_params:
+            data.append(
+                {
+                    "Scenario": 0,
+                    "Group": "Environment",
+                    "Parameter": param,
+                    "Value": None,
+                }
+            )
+
+        for group in fg_names:
+            for param in fg_params:
+                data.append(
+                    {"Scenario": 0, "Group": group, "Parameter": param, "Value": None}
+                )
+
+        scen_df = pd.DataFrame(data, columns=col_names)
+
+        return scen_df
+
     def cleanup(self):
+        """Clean up files and directoryies created by the interface.
+
+        Close the model database and delete the temporary directory containing the model.
+        """
         self._core_instance.close_model()
         print("Closed model.")
         if not self._debugged_model:

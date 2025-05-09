@@ -62,6 +62,7 @@ class CoreInterface:
         n_groups: int = self._core.nGroups
         fg_names: list[str] = [""] * n_groups
         for i in range(1, n_groups + 1):
+            # EwE uses one based indexing for functional groups
             fg_names[i - 1] = self._core.get_EcopathGroupInputs(i).Name
 
         return fg_names
@@ -86,7 +87,7 @@ class CoreInterface:
         """Get the number of producers in the loaded model"""
         return sum(
             [
-                self._core.get_EcopathGroupInputs(i).IsProducer
+                self._core.get_EcopathGroupInputs(i).IsProducer  # IsProducer is a bool
                 for i in range(1, self.n_groups() + 1)
             ]
         )
@@ -95,7 +96,7 @@ class CoreInterface:
         """Get the number of consumers in the loaded model."""
         return sum(
             [
-                self._core.get_EcopathGroupInputs(i).IsConsumer
+                self._core.get_EcopathGroupInputs(i).IsConsumer  # IsConsumer is a bool
                 for i in range(1, self.n_groups() + 1)
             ]
         )
@@ -104,8 +105,9 @@ class CoreInterface:
         """Add a forcing function to the core instance.
 
         Add a forcing function to the forcing function manager given a list of values and a
-        name.
-
+        name. Furthermore, this function prepends a value of 1.0 to the list as EwE begins
+        indexing the first value at 1.0 even though the underlying array is a 0 indexed
+        array. See the deveolpment notes in the documentation for more information.
 
         Arguments:
             name (str): Name of the forcing function.
@@ -113,7 +115,6 @@ class CoreInterface:
 
         Returns:
             int: Index of the forcing function in the forcing manager.
-
         """
         values = [1.0] + values
         return self._core.get_ForcingShapeManager().CreateNewShape(name, values).Index
