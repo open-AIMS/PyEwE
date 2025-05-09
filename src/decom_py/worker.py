@@ -2,6 +2,9 @@
 Define the worker initialisation function and run scenario function for multiprocess
 execution. This is required because the underling core object must be initialised by a
 process as it is not 'picklable'.
+
+Parameters passed to workers are assumed to be have been created a the top-level scenario
+interface.
 """
 
 import os
@@ -15,7 +18,7 @@ from .parameter_management import ParameterManager
 from .core.interface import CoreInterface
 from .results.manager import ResultManager
 
-# globals
+# globals to be reused between scenarios by the worker.
 worker_core: Optional[CoreInterface] = None
 worker_param_manager: Optional[ParameterManager] = None
 worker_result_manager: Optional[ResultManager] = None
@@ -29,15 +32,32 @@ def worker_init(
     var_names: list[str],
     scenarios: DataFrame,
 ):
-    """Initialise a worker, constructors the required globals."""
+    """Initialise a worker, constructors the required globals.
+
+    All variables passed to the initialiser are assumed to be constructed by the
+    EwEScenarioInterface object. Its assumed the scenario interface has saved constant
+    parameters to the 'tmp_ecosim_scenario' in the model database before this worker copies
+    the database.
+
+    Arguments:
+        source_model_path (str): Path to the temporary model database created by the
+            scenario interface.
+        param_manager (ParameterManager): ParameterManager used to set parameters between
+            scenarios.
+        mp_buffers (dict): Dictionary of multiprocess array buffers to write results to.
+        var_names (list[str]): List of result names to save.
+        scenarios (DataFrame): Data frame containing parameters for each scenario.
+    """
     global worker_core, worker_param_manager, worker_result_manager, worker_model_path
 
+    # Initialise the EwE core module for the worker.
     initialise(get_ewe_bin_path())
 
     # For debugging identification
     worker_pid = os.getpid()
     print(f"Initialising worker with pid: {worker_pid}")
 
+    # Construct the new file name for the temporary model database.
     mod_path_struct = os.path.splitext(source_model_path)
     mod_path_stem = mod_path_struct[0]
     mod_path_ext = mod_path_struct[1]
@@ -48,6 +68,7 @@ def worker_init(
 
     shutil.copy2(source_model_path, worker_model_path)
 
+    # Initialise a core object that is not shared between workers.
     worker_core = CoreInterface()
     worker_core.load_model(worker_model_path)
 
