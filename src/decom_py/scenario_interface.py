@@ -407,11 +407,20 @@ class EwEScenarioInterface:
         data = []
 
         for param in env_params:
-            data.append({"Scenario": 0, "Group": "Environment", "Parameter": param, "Value": None})
+            data.append(
+                {
+                    "Scenario": 0,
+                    "Group": "Environment",
+                    "Parameter": param,
+                    "Value": None,
+                }
+            )
 
         for group in fg_names:
             for param in fg_params:
-                data.append({"Scenario": 0, "Group": group, "Parameter": param, "Value": None})
+                data.append(
+                    {"Scenario": 0, "Group": group, "Parameter": param, "Value": None}
+                )
 
         scen_df = pd.DataFrame(data, columns=col_names)
 

@@ -149,7 +149,7 @@ class ParameterManager:
         # Create functional group parameters
         for prefix in self._fg_param_prefixes:
             for i, fg_name in enumerate(self.fg_names, 1):
-                # n_chars padding the index in the name so the naming 
+                # n_chars padding the index in the name so the naming
                 # in alphabetical order follows the order of the ecopath model.
                 n_chars = len(str(len(self.fg_names)))
                 param_name = self._format_param_name(prefix, i, n_chars, fg_name)
