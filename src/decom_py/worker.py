@@ -36,7 +36,7 @@ def worker_init(
 
     # For debugging identification
     worker_pid = os.getpid()
-    print("Initialising worker with pid: {worker_pid}")
+    print(f"Initialising worker with pid: {worker_pid}")
 
     mod_path_struct = os.path.splitext(source_model_path)
     mod_path_stem = mod_path_struct[0]
