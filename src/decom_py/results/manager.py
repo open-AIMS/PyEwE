@@ -238,7 +238,6 @@ class ResultManager:
             get_input = self._packed_input[var_name]
             var_arr = self.variable_stores[var_name]
             var_extr = self._variable_extractors[var_name]
-
             var_arr[dim_index] = (
                 var_extr.get_result()
                 if get_input == ""
