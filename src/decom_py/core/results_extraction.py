@@ -98,6 +98,7 @@ class DropEnum:
     DROP_NONE: int = 0
     DROP_FIRST: int = 1  # Drop the first slice of the given dimension
     DROP_LAST: int = 2  # Drop the last slice of the given dimension
+    KEEP_LAST: int = 3
 
 
 def get_drop_slice(drop_flag: int):
@@ -108,6 +109,8 @@ def get_drop_slice(drop_flag: int):
         return slice(1, None)
     elif drop_flag == DropEnum.DROP_LAST:
         return slice(None, -1)
+    elif drop_flag == DropEnum.KEEP_LAST:
+        return -1
     raise ValueError(f"Drop flag {drop_flag} is not valid.")
 
 
@@ -287,6 +290,18 @@ def create_ecosim_group_stats_extractors(core, monitor):
         },
         # See cEcosimResultWriter.vb, array copy starts from 1 in on a 0-indexed array.
         (DropEnum.DROP_FIRST, DropEnum.DROP_FIRST),
+    )
+
+
+def create_conc_end_extractor(core, monitor):
+    """Create an extractor for the Ecotracer concentration results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOTRACER,
+        "TracerConc",
+        # See cEcotracerRusultWriter, array copy start from 0 for group and 1 for time.
+        (DropEnum.DROP_LAST, DropEnum.KEEP_LAST),
     )
 
 

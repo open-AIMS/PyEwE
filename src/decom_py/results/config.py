@@ -17,6 +17,15 @@ CATEGORY_CONFIG = {
 }
 
 VARIABLE_CONFIG = {
+    "Concentration End": {
+        "variable_name": "Concentration End",
+        "dims": ["scenario", "env_group"],
+        "category": "ECOSYSTEM_STATS",
+        "unit": "t/t",
+        "extractor_name": "create_conc_end_extractor",
+        "extractor_input": "",  # only for packed variables
+        "save_filename": "Concentration_end",
+    },
     "Concentration": {
         "variable_name": "Concentration",
         "dims": ["scenario", "env_group", "time"],

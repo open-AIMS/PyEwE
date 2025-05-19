@@ -199,7 +199,22 @@ class EwEScenarioInterface:
         return result_manager.to_result_set()
 
     def run_scenarios_parallel(
-        self, scenarios: DataFrame, n_workers: Optional[int] = None
+        self,
+        scenarios: DataFrame,
+        n_workers: Optional[int] = None,
+        save_vars=[
+            "Concentration",
+            "Concentration Biomass",
+            "Biomass",
+            "Catch",
+            "Consumption Biomass",
+            "Mortality",
+            "Trophic Level",
+            "Trophic Level Catch",
+            "FIB",
+            "KemptonsQ",
+            "Shannon Diversity",
+        ],
     ):
         """Run scenarios in parallel.
 
@@ -221,19 +236,6 @@ class EwEScenarioInterface:
                 raise RuntimeError("Failed to get number of cpus for default workers.")
             warn(f"n_workers not specified, using default {n_workers}")
 
-        save_vars = [
-            "Concentration",
-            "Concentration Biomass",
-            "Biomass",
-            "Catch",
-            "Consumption Biomass",
-            "Mortality",
-            "Trophic Level",
-            "Trophic Level Catch",
-            "FIB",
-            "KemptonsQ",
-            "Shannon Diversity",
-        ]
         # Result managers share the same result store but need different intermediate caches
         manager, mp_buffers = ResultManager.construct_mp_result_manager(
             self._core_instance, save_vars, scenarios
@@ -260,9 +262,8 @@ class EwEScenarioInterface:
         with multiprocessing.Pool(
             processes=n_workers, initializer=worker_init, initargs=worker_init_args
         ) as pool:
-            chunksize = math.floor(len(parallel_arg_pack) / n_workers)
             results_iterator = pool.imap_unordered(
-                worker_run_scenario_wrapper, parallel_arg_pack, chunksize=chunksize
+                worker_run_scenario_wrapper, parallel_arg_pack, chunksize=1
             )
 
             for _ in tqdm(
