@@ -112,6 +112,13 @@ class EwEScenarioInterface:
         """Remove all saved constant and variable parameters names and values."""
         self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
 
+    def format_param_names(
+        self, full_param_names: List[str], functional_groups: List[str]
+    ) -> List[str]:
+        return ParameterManager.format_param_names(
+            full_param_names, functional_groups, self._core_instance
+        )
+
     def get_ecotracer_fg_param_names(
         self, param_names: Union[str, List[str]] = "all"
     ) -> List[str]:

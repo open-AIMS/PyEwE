@@ -67,6 +67,23 @@ class CoreInterface:
 
         return fg_names
 
+    def get_functional_group_indices(self, groups: list[str]) -> list[int]:
+        """Get the indices of the functional groups in the ecopath model."""
+        all_groups = self.get_functional_group_names()
+        indices = [all_groups.index(grp) for grp in groups]
+        missing = [idx for idx in indices if idx is None]
+        # Return if all match
+        if len(missing) == 0:
+            return indices
+
+        msg = "The following groups are not contained in the model"
+        msg += f" {[grp for grp in groups if all_groups.index(grp) is None]}"
+        raise KeyError(msg)
+
+    def get_functional_group_index(self, group: str) -> int:
+        """Get the index of a given functional gruop in the ecopath model."""
+        return self.get_functional_group_indices([group])[0]
+
     def get_first_year(self):
         """Get the first year for which ecosim is run."""
         return self._core.EcosimFirstYear()

@@ -3,6 +3,17 @@ from math import nan
 
 from decom_py import CoreInterface
 
+def _full_name_to_abbrev(nm: str) -> str:
+    """Map ecotracer parameter column names to abbreviated names."""
+    name_map = {
+        "Initial conc. (t/t)": "init_c",
+        "Conc. in immigrating biomass (t/t)": "immig_c",
+        "Direct absorption rate": "direct_abs_c",
+        "Physical decay rate": "phys_decay_r",
+        "Prop. of contaminant excreted": "excretion_r",
+        "Metabolic decay rate": "meta_decay_r"
+    }
+    return name_map[nm]
 
 class ParameterType:
     """Enum-like class for parameter types"""
@@ -168,6 +179,25 @@ class ParameterManager:
         """Format functional group parameter names"""
         idx_str = str(index).rjust(n_chars, "0")
         return f"{prefix}_{idx_str}_{name}"
+
+    @staticmethod
+    def format_param_names(
+        full_param_names: List[str], 
+        functional_groups: List[str],
+        core: CoreInterface
+    ):
+        prefixes = [_full_name_to_abbrev(full_nms) for full_nms in full_param_names]
+        idxs = core.get_functional_group_indices(functional_groups)
+        n_chars = len(str(len(core.get_functional_group_names())))
+        return [
+            ParameterManager._format_param_name(p, i, n_chars, n) 
+            for (p, i, n) in zip(prefixes, idxs, functional_groups)
+        ]
+
+    @staticmethod
+    def format_param_name(full_param_name: str, functional_group: str, core: CoreInterface):
+        """Given a functional group and full parameter name. Create the abbreviated name."""
+        return _full_param_format([full_param_name], [functional_group], core)[0]
 
     def get_all_param_names(self) -> List[str]:
         """Get list of all parameter names"""
