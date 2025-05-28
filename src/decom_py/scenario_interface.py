@@ -35,7 +35,12 @@ class EwEScenarioInterface:
             constant params.
     """
 
-    def __init__(self, model_path: str, temp_model_path: Optional[str] = None):
+    def __init__(
+        self,
+        model_path: str,
+        temp_model_path: Optional[str]=None,
+        ecosim_scenario: Optional[str]=None
+    ):
         """Initialise a EwEScenarioInterface
 
         Given a path to the EwE model database, construct a EwEScenarioInterface object by
@@ -84,14 +89,19 @@ class EwEScenarioInterface:
             raise EwEError(self._core_instance.get_state(), msg)
 
         # Initialize scenarios
-        if not self._core_instance.Ecosim.new_scenario(
-            "tmp_ecosim_scen",
-            "temporary ecosim scenario used by decom_py",
-            "",  # author
-            "",  # contact
-        ):
-            msg = "Failed to create and load temporary ecosim scenario."
-            raise EcosimError(self._core_instance.get_state(), msg)
+        if ecosim_scenario is None:
+            if not self._core_instance.Ecosim.new_scenario(
+                "tmp_ecosim_scen",
+                "temporary ecosim scenario used by decom_py",
+                "",  # author
+                "",  # contact
+            ):
+                msg = "Failed to create and load temporary ecosim scenario."
+                raise EcosimError(self._core_instance.get_state(), msg)
+        else:
+            if not self._core_instance.Ecosim.load_scenario(ecosim_scenario):
+                msg = f"Failed to load ecosim scenario {ecosim_scenario}."
+                raise EcosimError(self._core_instance.get_state(), msg)
 
         if not self._core_instance.Ecotracer.new_scenario(
             "tmp_ecotracer_scen",
