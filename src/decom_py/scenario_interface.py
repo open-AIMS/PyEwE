@@ -159,6 +159,8 @@ class EwEScenarioInterface:
             "KemptonsQ",
             "Shannon Diversity",
         ],
+        show_progress=True,
+        verbose=True
     ) -> ResultSet:
         """Run scenarios in given dataframe.
 
@@ -182,7 +184,8 @@ class EwEScenarioInterface:
         self._param_manager.apply_constant_params(self._core_instance)
 
         # Warn user about unset parameters if there are any
-        self._warn_unset_params()
+        if verbose:
+            self._warn_unset_params()
 
         # Setup result manager
         result_manager = ResultManager(
@@ -193,7 +196,8 @@ class EwEScenarioInterface:
 
         # Run each scenario
         for idx, row in tqdm(
-            scenarios.iterrows(), desc="Running scenarios", total=scenarios.shape[0]
+            scenarios.iterrows(), desc="Running scenarios", total=scenarios.shape[0],
+            disable=not show_progress
         ):
             # Apply variable parameters for this scenario
             self._param_manager.apply_variable_params(self._core_instance, list(row))
@@ -223,6 +227,7 @@ class EwEScenarioInterface:
             "KemptonsQ",
             "Shannon Diversity",
         ],
+        show_progress=True
     ):
         """Run scenarios in parallel.
 
@@ -275,7 +280,8 @@ class EwEScenarioInterface:
             )
 
             for _ in tqdm(
-                results_iterator, total=len(parallel_arg_pack), desc="Running scenarios"
+                results_iterator, total=len(parallel_arg_pack), desc="Running scenarios",
+                disable=not show_progress
             ):
                 continue
 
