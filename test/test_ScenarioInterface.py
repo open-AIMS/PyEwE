@@ -132,6 +132,11 @@ def scenario_run_results_w_forcing(model_path):
 
     ewe_int.cleanup()
 
+@pytest.fixture(scope="class")
+def scenario_interface(model_path):
+    ewe_int = EwEScenarioInterface(model_path)
+    yield ewe_int
+    ewe_int.cleanup()
 
 class TestScenarioInterface:
 
@@ -191,3 +196,40 @@ class TestScenarioInterface:
         produced = results[0]["Concentration"][scen_index].values
         # Remove timestep column from array
         assert_arrays_close(expected, produced, context="for ecotracer_res_scen_0.csv")
+
+class TestFormatParamNames:
+
+    def test_format_param_names(self, scenario_interface):
+        """Test th3e format param names helper functions."""
+
+        # Test Inputs
+        full_p_names = [
+            "Initial conc. (t/t)",
+            "Conc. in immigrating biomass (t/t)",
+            "Direct absorption rate",
+            "Physical decay rate",
+            "Prop. of contaminant excreted",
+            "Metabolic decay rate"
+        ]
+        fg_names = [
+            "Large pelagics", # 1
+            "Large demersal", # 2
+            "Small pelagics", # 5
+            "Belone and Scomber", # 6
+            "Chaetognaths", # 10
+            "Noctituca" # 13
+        ]
+
+        # Expected Outputs
+        expected = [
+            "init_c_00_Large pelagics",
+            "immig_c_01_Large demersal",
+            "direct_abs_c_04_Small pelagics",
+            "phys_decay_r_05_Belone and Scomber",
+            "excretion_r_09_Chaetognaths",
+            "meta_decay_r_12_Noctituca"
+        ]
+
+        # Outputs
+        returned = scenario_interface.format_param_names(full_p_names, fg_names)
+        assert all([ret == ex for (ret, ex) in zip(returned, expected)])
