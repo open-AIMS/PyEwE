@@ -8,7 +8,7 @@ def _full_name_to_abbrev(nm: str) -> str:
     name_map = {
         "Initial conc. (t/t)": "init_c",
         "Conc. in immigrating biomass (t/t)": "immig_c",
-        "Direct absorption rate": "direct_abs_c",
+        "Direct absorption rate": "direct_abs_r",
         "Physical decay rate": "phys_decay_r",
         "Prop. of contaminant excreted": "excretion_r",
         "Metabolic decay rate": "meta_decay_r"
