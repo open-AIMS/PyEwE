@@ -68,9 +68,13 @@ class CoreInterface:
         return fg_names
 
     def get_functional_group_indices(self, groups: list[str]) -> list[int]:
-        """Get the indices of the functional groups in the ecopath model."""
+        """Get the indices of the functional groups in the ecopath model.
+
+        Get the indices of the functional groups in the ecopath model. This is a one-based
+        index.
+        """
         all_groups = self.get_functional_group_names()
-        indices = [all_groups.index(grp) for grp in groups]
+        indices = [all_groups.index(grp) + 1 for grp in groups]
         missing = [idx for idx in indices if idx is None]
         # Return if all match
         if len(missing) == 0:

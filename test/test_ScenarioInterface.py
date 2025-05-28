@@ -222,12 +222,12 @@ class TestFormatParamNames:
 
         # Expected Outputs
         expected = [
-            "init_c_00_Large pelagics",
-            "immig_c_01_Large demersal",
-            "direct_abs_c_04_Small pelagics",
-            "phys_decay_r_05_Belone and Scomber",
-            "excretion_r_09_Chaetognaths",
-            "meta_decay_r_12_Noctituca"
+            "init_c_01_Large pelagics",
+            "immig_c_02_Large demersal",
+            "direct_abs_c_05_Small pelagics",
+            "phys_decay_r_06_Belone and Scomber",
+            "excretion_r_10_Chaetognaths",
+            "meta_decay_r_13_Noctituca"
         ]
 
         # Outputs
