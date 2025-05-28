@@ -146,6 +146,19 @@ class EwEScenarioInterface:
     def run_scenarios(
         self,
         scenarios: DataFrame,
+        save_vars=[
+            "Concentration",
+            "Concentration Biomass",
+            "Biomass",
+            "Catch",
+            "Consumption Biomass",
+            "Mortality",
+            "Trophic Level",
+            "Trophic Level Catch",
+            "FIB",
+            "KemptonsQ",
+            "Shannon Diversity",
+        ],
     ) -> ResultSet:
         """Run scenarios in given dataframe.
 
@@ -174,19 +187,7 @@ class EwEScenarioInterface:
         # Setup result manager
         result_manager = ResultManager(
             self._core_instance,
-            [
-                "Concentration",
-                "Concentration Biomass",
-                "Biomass",
-                "Catch",
-                "Consumption Biomass",
-                "Mortality",
-                "Trophic Level",
-                "Trophic Level Catch",
-                "FIB",
-                "KemptonsQ",
-                "Shannon Diversity",
-            ],
+            save_vars,
             scenarios,
         )
 
