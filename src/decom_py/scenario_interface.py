@@ -184,6 +184,7 @@ class EwEScenarioInterface:
             results (ResultSet): Containing results
         """
         col_names = [str(nm) for nm in scenarios.columns]
+        assert col_names[0] == "Scenario" "The first column of the scenario dataframe must be \"Scenario\""
 
         # Set variable parameters from dataframe columns (excluding scenario column)
         self._param_manager.set_variable_params(
@@ -265,6 +266,7 @@ class EwEScenarioInterface:
         )
 
         col_names = [str(nm) for nm in scenarios.columns]
+        assert col_names[0] == "Scenario" "The first column of the scenario dataframe must be \"Scenario\""
         n_scenarios = len(scenarios)
 
         # Set variable parameters from dataframe columns (excluding scenario column)
