@@ -132,11 +132,13 @@ def scenario_run_results_w_forcing(model_path):
 
     ewe_int.cleanup()
 
+
 @pytest.fixture(scope="class")
 def scenario_interface(model_path):
     ewe_int = EwEScenarioInterface(model_path)
     yield ewe_int
     ewe_int.cleanup()
+
 
 class TestScenarioInterface:
 
@@ -197,6 +199,7 @@ class TestScenarioInterface:
         # Remove timestep column from array
         assert_arrays_close(expected, produced, context="for ecotracer_res_scen_0.csv")
 
+
 class TestFormatParamNames:
 
     def test_format_param_names(self, scenario_interface):
@@ -209,15 +212,15 @@ class TestFormatParamNames:
             "Direct absorption rate",
             "Physical decay rate",
             "Prop. of contaminant excreted",
-            "Metabolic decay rate"
+            "Metabolic decay rate",
         ]
         fg_names = [
-            "Large pelagics", # 1
-            "Large demersal", # 2
-            "Small pelagics", # 5
-            "Belone and Scomber", # 6
-            "Chaetognaths", # 10
-            "Noctituca" # 13
+            "Large pelagics",  # 1
+            "Large demersal",  # 2
+            "Small pelagics",  # 5
+            "Belone and Scomber",  # 6
+            "Chaetognaths",  # 10
+            "Noctituca",  # 13
         ]
 
         # Expected Outputs
@@ -227,7 +230,7 @@ class TestFormatParamNames:
             "direct_abs_r_05_Small pelagics",
             "phys_decay_r_06_Belone and Scomber",
             "excretion_r_10_Chaetognaths",
-            "meta_decay_r_13_Noctituca"
+            "meta_decay_r_13_Noctituca",
         ]
 
         # Outputs

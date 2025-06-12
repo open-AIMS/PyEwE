@@ -38,8 +38,8 @@ class EwEScenarioInterface:
     def __init__(
         self,
         model_path: str,
-        temp_model_path: Optional[str]=None,
-        ecosim_scenario: Optional[str]=None
+        temp_model_path: Optional[str] = None,
+        ecosim_scenario: Optional[str] = None,
     ):
         """Initialise a EwEScenarioInterface
 
@@ -170,7 +170,7 @@ class EwEScenarioInterface:
             "Shannon Diversity",
         ],
         show_progress=True,
-        verbose=True
+        verbose=True,
     ) -> ResultSet:
         """Run scenarios in given dataframe.
 
@@ -184,7 +184,10 @@ class EwEScenarioInterface:
             results (ResultSet): Containing results
         """
         col_names = [str(nm) for nm in scenarios.columns]
-        assert col_names[0] == "Scenario" "The first column of the scenario dataframe must be \"Scenario\""
+        assert (
+            col_names[0] == "Scenario"
+            'The first column of the scenario dataframe must be "Scenario"'
+        )
 
         # Set variable parameters from dataframe columns (excluding scenario column)
         self._param_manager.set_variable_params(
@@ -207,8 +210,10 @@ class EwEScenarioInterface:
 
         # Run each scenario
         for idx, row in tqdm(
-            scenarios.iterrows(), desc="Running scenarios", total=scenarios.shape[0],
-            disable=not show_progress
+            scenarios.iterrows(),
+            desc="Running scenarios",
+            total=scenarios.shape[0],
+            disable=not show_progress,
         ):
             # Apply variable parameters for this scenario
             self._param_manager.apply_variable_params(self._core_instance, list(row))
@@ -238,7 +243,7 @@ class EwEScenarioInterface:
             "KemptonsQ",
             "Shannon Diversity",
         ],
-        show_progress=True
+        show_progress=True,
     ):
         """Run scenarios in parallel.
 
@@ -266,7 +271,10 @@ class EwEScenarioInterface:
         )
 
         col_names = [str(nm) for nm in scenarios.columns]
-        assert col_names[0] == "Scenario" "The first column of the scenario dataframe must be \"Scenario\""
+        assert (
+            col_names[0] == "Scenario"
+            'The first column of the scenario dataframe must be "Scenario"'
+        )
         n_scenarios = len(scenarios)
 
         # Set variable parameters from dataframe columns (excluding scenario column)
@@ -292,8 +300,10 @@ class EwEScenarioInterface:
             )
 
             for _ in tqdm(
-                results_iterator, total=len(parallel_arg_pack), desc="Running scenarios",
-                disable=not show_progress
+                results_iterator,
+                total=len(parallel_arg_pack),
+                desc="Running scenarios",
+                disable=not show_progress,
             ):
                 continue
 
