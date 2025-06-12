@@ -19,3 +19,4 @@ concentration_data = results["Concentration"]
 # You can use xarray's powerful indexing and computation features
 # For example, get biomass for the first scenario, first group, all time steps:
 # specific_biomass = biomass_data.sel(Scenario=0, Group='NameOfFirstGroup')
+```
