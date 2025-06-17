@@ -24,6 +24,13 @@ def worker_run_scenario_wrapper(args):
     scen_idx, scen_params = args
     return worker_run_scenario(scen_idx, scen_params)
 
+def _check_scenario_column(col_names: list[str]):
+    """Check if the scenario dataframe has a scenario column. Throw if not."""
+    if col_names[0] != "scenario":
+        msg = "The first column of the scenario dataframe must be \"scenario\"."
+        msg += f"The first column name received was {col_names[0]}"
+        raise ValueError(msg)
+
 
 class EwEScenarioInterface:
     """Interface for running Ecopath with Ecosim scenarios.
@@ -90,6 +97,7 @@ class EwEScenarioInterface:
 
         # Initialize scenarios
         if ecosim_scenario is None:
+            self._ecosim_scenario = "tmp_ecosim_scen"
             if not self._core_instance.Ecosim.new_scenario(
                 "tmp_ecosim_scen",
                 "temporary ecosim scenario used by decom_py",
@@ -99,6 +107,7 @@ class EwEScenarioInterface:
                 msg = "Failed to create and load temporary ecosim scenario."
                 raise EcosimError(self._core_instance.get_state(), msg)
         else:
+            self._ecosim_scenario = ecosim_scenario
             if not self._core_instance.Ecosim.load_scenario(ecosim_scenario):
                 msg = f"Failed to load ecosim scenario {ecosim_scenario}."
                 raise EcosimError(self._core_instance.get_state(), msg)
@@ -183,11 +192,8 @@ class EwEScenarioInterface:
         Returns:
             results (ResultSet): Containing results
         """
-        col_names = [str(nm) for nm in scenarios.columns]
-        assert (
-            col_names[0] == "Scenario"
-            'The first column of the scenario dataframe must be "Scenario"'
-        )
+        col_names = [str(cl) for cl in scenarios.columns]
+        _check_scenario_column(col_names)
 
         # Set variable parameters from dataframe columns (excluding scenario column)
         self._param_manager.set_variable_params(
@@ -254,6 +260,8 @@ class EwEScenarioInterface:
         Returns:
             ResultSet: results from scenario runs.
         """
+        col_names = [str(cl) for cl in scenarios.columns]
+        _check_scenario_column(col_names)
 
         # Save scenarios so that when copied, new core instances have constant variables
         self._core_instance.Ecosim.save_scenario()
@@ -269,12 +277,6 @@ class EwEScenarioInterface:
         manager, mp_buffers = ResultManager.construct_mp_result_manager(
             self._core_instance, save_vars, scenarios
         )
-
-        col_names = [str(nm) for nm in scenarios.columns]
-        assert (
-            col_names[0] == "Scenario"
-            'The first column of the scenario dataframe must be "Scenario"'
-        )
         n_scenarios = len(scenarios)
 
         # Set variable parameters from dataframe columns (excluding scenario column)
@@ -288,6 +290,7 @@ class EwEScenarioInterface:
             mp_buffers,
             save_vars,
             scenarios,
+            self._ecosim_scenario
         )
 
         parallel_arg_pack = [(i, list(vals)) for (i, vals) in scenarios.iterrows()]

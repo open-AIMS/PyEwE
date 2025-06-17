@@ -31,6 +31,7 @@ def worker_init(
     mp_buffers: dict,
     var_names: list[str],
     scenarios: DataFrame,
+    ecosim_scenario: str="tmp_ecosim_scenario"
 ):
     """Initialise a worker, constructors the required globals.
 
@@ -73,7 +74,7 @@ def worker_init(
     worker_core.load_model(worker_model_path)
 
     # The scenario should have already setup constant parameters
-    worker_core.Ecosim.load_scenario("tmp_ecosim_scen")
+    worker_core.Ecosim.load_scenario(ecosim_scenario)
     worker_core.Ecotracer.load_scenario("tmp_ecotracer_scen")
 
     worker_param_manager = param_manager
