@@ -5,6 +5,7 @@ from tempfile import TemporaryDirectory
 from typing import Union, Dict, List, Optional
 from tqdm.auto import tqdm
 
+import time
 import numpy as np
 import pandas as pd
 import shutil
@@ -67,7 +68,7 @@ class EwEScenarioInterface:
             temp_model_path (Optonal[str]): Path to where the model database should be
                 copied, the user is responsible for cleaning up the copy.
         """
-        self._model_path = model_path
+        self._model_pauh = model_path
         mod_path_obj = Path(model_path)
         if not mod_path_obj.exists():
             raise FileNotFoundError(model_path)
@@ -91,6 +92,7 @@ class EwEScenarioInterface:
 
         # Initialize core interface
         self._core_instance = CoreInterface()
+        self._core_instance.disable_logging()
         if not self._core_instance.load_model(self._temp_model_path):
             msg = "Failed to load EwE model. Check that the model file is loadable via the GUI."
             raise EwEError(self._core_instance.get_state(), msg)
@@ -294,6 +296,7 @@ class EwEScenarioInterface:
         )
 
         parallel_arg_pack = [(i, list(vals)) for (i, vals) in scenarios.iterrows()]
+        self._core_instance.close_model()
 
         with multiprocessing.Pool(
             processes=n_workers, initializer=worker_init, initargs=worker_init_args
@@ -312,6 +315,7 @@ class EwEScenarioInterface:
 
             print("Finished runs. Cleaning up workers.")
 
+        self._core_instance.load_model(self._temp_model_path)
         return manager.to_result_set()
 
     def set_ecosim_group_info(self, group_info: DataFrame) -> None:
@@ -474,10 +478,22 @@ class EwEScenarioInterface:
         self._core_instance.close_model()
         print("Closed model.")
         if not self._debugged_model:
-            self._temp_dir.cleanup()
-            msg = f"Temporary directory and model file at {self._temp_dir.name}"
-            msg += " has been removed."
-            print(msg)
+            max_retries = 10  # Try for 5 seconds (10 * 0.5s)
+            for i in range(max_retries):
+                try:
+                    # The operation we expect to fail
+                    self._temp_dir.cleanup()
+
+                    # If it succeeds, print message and break the loop
+                    msg = f"Temporary directory and model file at {self._temp_dir.name} has been removed."
+                    print(msg)
+                    break
+                except (PermissionError, OSError) as e:
+                    if i < max_retries - 1:
+                        print(f"File is still locked, retrying... ({i+1}/{max_retries})")
+                        time.sleep(0.5)  # Wait half a second before trying again
+                    else:
+                        print("ERROR: File lock was not released in time. Cleanup failed.")
 
         # If the user cleans up, no need to run at exit.
         atexit.unregister(self.cleanup)

@@ -1,4 +1,5 @@
 import os
+from  contextlib import redirect_stdout
 from warnings import warn
 from pathlib import Path
 from typing import Iterable, Union, Union
@@ -7,6 +8,7 @@ from warnings import warn
 from .state import EwEState
 from .module import (
     get_ewe_core_module,
+    get_ewe_util_module,
     result_type_enum_array,
     py_bool_to_ewe_tristate,
 )
@@ -43,6 +45,10 @@ class CoreInterface:
         self.Ecosim = EcosimStateManager(self._core, self._state)
         self.Ecotracer = EcotracerStateManager(self._core, self._state)
 
+    def disable_logging(self):
+        utils = get_ewe_util_module()
+        utils.Core.cLog.set_VerboseLevel(utils.Core.eVerboseLevel.Disabled)
+
     def get_core(self):
         return self._core
 
@@ -51,7 +57,11 @@ class CoreInterface:
 
     def load_model(self, path: str):
         """Load model from a EwE access database file into the EwE core."""
-        return self._core.LoadModel(path)
+        with open(os.devnull, 'w') as null:
+            with redirect_stdout(null):
+                ret = self._core.LoadModel(path)
+
+        return ret
 
     def get_country(self) -> str:
         """Get the country that the model is based on."""

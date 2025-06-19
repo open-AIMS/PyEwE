@@ -71,6 +71,7 @@ def worker_init(
 
     # Initialise a core object that is not shared between workers.
     worker_core = CoreInterface()
+    worker_core.disable_logging()
     worker_core.load_model(worker_model_path)
 
     # The scenario should have already setup constant parameters
