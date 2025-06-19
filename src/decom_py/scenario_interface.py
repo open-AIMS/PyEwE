@@ -25,10 +25,11 @@ def worker_run_scenario_wrapper(args):
     scen_idx, scen_params = args
     return worker_run_scenario(scen_idx, scen_params)
 
+
 def _check_scenario_column(col_names: list[str]):
     """Check if the scenario dataframe has a scenario column. Throw if not."""
     if col_names[0] != "scenario":
-        msg = "The first column of the scenario dataframe must be \"scenario\"."
+        msg = 'The first column of the scenario dataframe must be "scenario".'
         msg += f"The first column name received was {col_names[0]}"
         raise ValueError(msg)
 
@@ -292,7 +293,7 @@ class EwEScenarioInterface:
             mp_buffers,
             save_vars,
             scenarios,
-            self._ecosim_scenario
+            self._ecosim_scenario,
         )
 
         parallel_arg_pack = [(i, list(vals)) for (i, vals) in scenarios.iterrows()]
@@ -490,10 +491,14 @@ class EwEScenarioInterface:
                     break
                 except (PermissionError, OSError) as e:
                     if i < max_retries - 1:
-                        print(f"File is still locked, retrying... ({i+1}/{max_retries})")
+                        print(
+                            f"File is still locked, retrying... ({i+1}/{max_retries})"
+                        )
                         time.sleep(0.5)  # Wait half a second before trying again
                     else:
-                        print("ERROR: File lock was not released in time. Cleanup failed.")
+                        print(
+                            "ERROR: File lock was not released in time. Cleanup failed."
+                        )
 
         # If the user cleans up, no need to run at exit.
         atexit.unregister(self.cleanup)

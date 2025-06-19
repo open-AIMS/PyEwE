@@ -1,5 +1,5 @@
 import os
-from  contextlib import redirect_stdout
+from contextlib import redirect_stdout
 from warnings import warn
 from pathlib import Path
 from typing import Iterable, Union, Union
@@ -57,7 +57,7 @@ class CoreInterface:
 
     def load_model(self, path: str):
         """Load model from a EwE access database file into the EwE core."""
-        with open(os.devnull, 'w') as null:
+        with open(os.devnull, "w") as null:
             with redirect_stdout(null):
                 ret = self._core.LoadModel(path)
 

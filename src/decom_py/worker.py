@@ -31,7 +31,7 @@ def worker_init(
     mp_buffers: dict,
     var_names: list[str],
     scenarios: DataFrame,
-    ecosim_scenario: str="tmp_ecosim_scenario"
+    ecosim_scenario: str = "tmp_ecosim_scenario",
 ):
     """Initialise a worker, constructors the required globals.
 
