@@ -18,6 +18,11 @@ theme:
     - search.highlight
     - content.code.copy
 
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
 plugins:
   - search
   - mkdocstrings:
@@ -27,6 +32,12 @@ plugins:
             docstring_style: google
             show_source: true
             show_root_heading: true
+            show_signature_as_heading: true
+            show_root_full_path: false
+            category_section_style: spacy
+            show_root_members_full_path: false
+
+          paths: [./src/.]
   - section-index
 
 nav:

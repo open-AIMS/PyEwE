@@ -36,6 +36,9 @@ dev = [
     "pytest>=8.3.5",
     "ipykernel>=6.29.5",
     "pytest-mock>=3.14.0",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.6.14",
+    "mkdocstrings[python]>=0.29.1",
 ]
 test = [
     "pytest"
