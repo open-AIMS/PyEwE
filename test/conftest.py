@@ -1,12 +1,12 @@
 from os import environ
 from os import path
-from decom_py import get_ewe_core_module
+from pyewe import get_ewe_core_module
 import pytest
 import tempfile
 import shutil
 from pathlib import Path
 
-from decom_py import initialise, get_ewe_core_module
+from pyewe import initialise, get_ewe_core_module
 
 
 @pytest.fixture(scope="session")

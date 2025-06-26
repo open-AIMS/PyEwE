@@ -12,7 +12,7 @@ requirements and link the EwE binaries.
 ### Initialisation
 
 ```python
-from decom_py import EwEScenarioInterface 
+from pyewe import EwEScenarioInterface 
 
 model_path = "<Path to Model Database>"
 
