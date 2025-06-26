@@ -103,7 +103,7 @@ class EwEScenarioInterface:
             self._ecosim_scenario = "tmp_ecosim_scen"
             if not self._core_instance.Ecosim.new_scenario(
                 "tmp_ecosim_scen",
-                "temporary ecosim scenario used by decom_py",
+                "temporary ecosim scenario used by PyEwE",
                 "",  # author
                 "",  # contact
             ):
@@ -117,7 +117,7 @@ class EwEScenarioInterface:
 
         if not self._core_instance.Ecotracer.new_scenario(
             "tmp_ecotracer_scen",
-            "temporary ecosim scenario used by decom_py",
+            "temporary ecosim scenario used by PyEwE",
             "",  # author
             "",  # contact
         ):

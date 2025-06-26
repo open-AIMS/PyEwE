@@ -1,6 +1,6 @@
-# decom_py
+# PyEwE
 
-Welcome to `decom_py`! This tool utilizes [Ecopath with Ecosim](https://ecopath.org/) to explore a wide range of contaminant release and decommissioning scenarios.
+Welcome to `PyEwE`! This tool utilizes [Ecopath with Ecosim](https://ecopath.org/) to explore a wide range of contaminant release and modelling scenarios.
 
 This documentation provides guidance on setup, usage, and development.
 
@@ -15,7 +15,7 @@ Supports **Ecopath with Ecosim v6.7**.
     We recommend [uv](https://docs.astral.sh/uv/#__tabbed_1_2) for managing Python versions and dependencies. Install it if you haven't already. Restart your terminal after installation.
 
 3.  **Install Project Dependencies:**
-    Navigate to the `decom_py` project directory in your terminal and run:
+    Navigate to the `PyEwE` project directory in your terminal and run:
     ```bash
     uv sync
     ```

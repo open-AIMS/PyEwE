@@ -1,7 +1,7 @@
-# decom_py
+# PyEwE
 
 A tool using [Ecopath with Ecosim](https://ecopath.org/), to explore a wide range of
-decomissioning scenarios.
+model scenarios.
 
 ## Setup
 
@@ -35,7 +35,7 @@ export ENV_BIN_DIR_PATH="Path to EwE binaries"
 ## Example
 
 ```python
-from decom_py import EwEScenarioInterface
+from pyewe import EwEScenarioInterface
 
 # If EWE_BIN_PATH is not an environmental variable, manually pass path to binaries.
 # initialise(r'path/to/EwE/binaries/directory')
@@ -107,13 +107,13 @@ To setup a ipykernel:
 Linux:
 
 ```bash
-uv run ipython kernel install --user --env VIRTUAL_ENV $(pwd)/.venv --name=decom_py
+uv run ipython kernel install --user --env VIRTUAL_ENV $(pwd)/.venv --name=PyEwE
 ```
 
 For Powershell:
 
 ```bash
-uv run ipython kernel install --user --env VIRTUAL_ENV "$((Get-Location).Path)\.venv" --name=decom_py
+uv run ipython kernel install --user --env VIRTUAL_ENV "$((Get-Location).Path)\.venv" --name=PyEwE
 ```
 
 The appropriate kernel can then be selected in Jupyter Notebook.

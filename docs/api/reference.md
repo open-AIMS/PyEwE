@@ -1,28 +1,28 @@
 # API Reference
 
-This section provides a detailed reference for the main classes and functions in the `decom_py` library.
+This section provides a detailed reference for the main classes and functions in the `pyewe` library.
 
-::: decom_py.EwEScenarioInterface
+::: pyewe.EwEScenarioInterface
     options:
       show_root_heading: true
       show_source: false
 
-::: decom_py.results.ResultSet
+::: pyewe.results.ResultSet
     options:
       show_root_heading: true
       show_source: false
 
-::: decom_py.core.interface.CoreInterface
+::: pyewe.core.interface.CoreInterface
     options:
       show_root_heading: true
       show_source: false
 
-::: decom_py.core.models.EcosimStateManager
+::: pyewe.core.models.EcosimStateManager
     options:
       show_root_heading: true
       show_source: false
 
-::: decom_py.core.models.EcotracerStateManager
+::: pyewe.core.models.EcotracerStateManager
     options:
       show_root_heading: true
       show_source: false

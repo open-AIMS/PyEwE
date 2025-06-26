@@ -1,9 +1,9 @@
-from decom_py.results.manager import construct_extraction_objects
+from pyewe.results.manager import construct_extraction_objects
 import pytest
 import numpy as np
 import pandas as pd
 
-from decom_py import EwEScenarioInterface
+from pyewe import EwEScenarioInterface
 
 from test.utils import (
     ECOTRACER_GROUP_INFO_PATH,

@@ -1,12 +1,12 @@
-from decom_py.exceptions import EcotracerNoScenarioError
+from pyewe.exceptions import EcotracerNoScenarioError
 import pytest
 from random import random, randint
 from warnings import warn
 from math import isclose
 
-from decom_py import CoreInterface, EcotracerStateManager, EcosimStateManager
-from decom_py.exceptions import EwEError, EcopathError, EcosimError, EcotracerError
-from decom_py.exceptions import EcotracerNoScenarioError, EcosimNoScenarioError
+from pyewe import CoreInterface, EcotracerStateManager, EcosimStateManager
+from pyewe.exceptions import EwEError, EcopathError, EcosimError, EcotracerError
+from pyewe.exceptions import EcotracerNoScenarioError, EcosimNoScenarioError
 
 N_GROUPS = 16
 N_DETRITUS = 1

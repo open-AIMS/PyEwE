@@ -4,7 +4,7 @@ import numpy as np
 from io import StringIO
 from math import isclose
 
-from decom_py import EwEScenarioInterface
+from pyewe import EwEScenarioInterface
 
 from .utils import (
     ECOTRACER_GROUP_INFO_PATH,
