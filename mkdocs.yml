@@ -30,6 +30,7 @@ plugins:
         python:
           options:
             docstring_style: google
+            merge_init_into_class: true
             show_source: true
             show_root_heading: true
             show_signature_as_heading: true
@@ -43,9 +44,10 @@ plugins:
 nav:
   - Home: index.md
   - User Guide: usage.md
-  - High Level Interface: high_level_interface
+  - High Level Interface: high_level_interface.md
   - Medium Level Interface: medium_level_interface.md
   - Parameter Management: parameter_management.md
   - API: 
       - Reference: api/reference.md
       - Results: api/results.md
+  - Development: development.md

@@ -37,7 +37,56 @@ Then the full name of a ecotracer is structered as follows,
 `<prefix>_<group_index>_<group_name>`.
 
 For example, if `Baleen Whale` is the first functional group in the model and there is
-between 10 and 100 functional groups, then the parameter for the Baleen Whale's initial 
+between 10 and 99 functional groups, then the parameter for the Baleen Whale's initial 
 contaminant concentration would be `init_c_01_Baleen Whale`.
 
 ## Management
+
+The Ecotracer Parameter manager provides a simpler way to set parameter other then using the
+getter and setters in the Ecotracer object. The manager provides two ways to set parameters
+within the core. **Constant** parameters need to be set with the name of the parameter and
+the values, whilst **variable** parameters accept names of parameters and indices of
+parameter values into any future list that may be passed. The idea being that strings don't
+need to parsed everytime parameters are set.
+
+### Initialisation
+
+```julia
+core = CoreInterface()
+# A model must be loaded before the parameter manager is initialised.
+core.load_model("path/to/model/database")
+
+parameter_manager = EcotracerManager(core)
+```
+
+### Setting Parameters
+
+```julia
+const_param_names = ["name", "of", "params"]
+const_param_values = [value, of, params]
+# Configure the constant params within the parameter manager.
+parameter_manager.set_constant_params(const_param_names, cosnt_param_values)
+# Write the parameter into the core model.
+parameter_manager.apply_constant_params(core)
+```
+
+Variable parameters are intended for parameters that will changed frequently. Consider the
+situation where the parameter for different scenario are contained in a data frame, where
+the columns are the data frame.
+
+```julia
+import pandas as pd
+# Params has columns ["scenario", "param_1", "param_2", ...]
+params = pd.read_csv("scenario_params.csv")
+
+# Remove scenario columns
+param_names = list(params.columns)[1:]
+param_idxs = list(range(len(param_names)))
+parameter_manager.set_variable_params(param_names, param_idxs)
+
+for (i, row) in params.iterrows():
+    # Set parameters without processing strings in each iteration.
+    parameter_manager.apply_variable_params(core, list(row[1:]))
+    # Run model ...
+    # Collect results ...
+```
