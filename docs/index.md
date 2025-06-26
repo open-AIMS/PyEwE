@@ -40,6 +40,7 @@ Supports **Ecopath with Ecosim v6.7**.
 
 ## Quick Links
 
-*   See [Usage](usage.md) for a guide on how to use the library with examples.
+*   See [High Level Interface](high_level_interface.md) for a guide on how to use the library with examples.
+*   See [Medium Level Interface](medium_level_interface.md) for a guide on how to use the library with more control over initialisation and parameter setting.
 *   Explore the [API Reference](api/reference.md) for detailed information on classes and functions.
 *   For developers, the [Development Notes](development.md) provide insights into the library's internals and setup for contribution.

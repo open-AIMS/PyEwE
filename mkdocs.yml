@@ -43,7 +43,6 @@ plugins:
 
 nav:
   - Home: index.md
-  - User Guide: usage.md
   - High Level Interface: high_level_interface.md
   - Medium Level Interface: medium_level_interface.md
   - Parameter Management: parameter_management.md
