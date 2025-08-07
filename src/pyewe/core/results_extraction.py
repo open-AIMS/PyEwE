@@ -129,8 +129,7 @@ class ResultStoreEnum:
             ResultStoreEnum.ECOTRACER,
         ]
 
-
-class ResultExtractor:
+class PrivateResultsExtractor:
     """A base class to extract result variables from private core result objects.
 
     The results extraction class maintains a buffer the size of the variable being extracted
@@ -203,7 +202,7 @@ class ResultExtractor:
         return self._buffer
 
 
-class SingleResultsExtractor(ResultExtractor):
+class SingleResultsExtractor(PrivateResultsExtractor):
     """A result extraction class that handles the extraction of a single variable.
 
     Attributes:
@@ -228,7 +227,7 @@ class SingleResultsExtractor(ResultExtractor):
         return self._get_buffer()[self._drop_flags]
 
 
-class PackedResultsExtractor(ResultExtractor):
+class PackedResultsExtractor(PrivateResultsExtractor):
     """Results extractor for variables that are stored in the underling array.
 
     EwE stored Ecosim group statistics in the same array, where the first dimension is
@@ -262,7 +261,6 @@ class PackedResultsExtractor(ResultExtractor):
         else:
             slices = (self._variable_map[variable_name], *self._drop_flags)
             return self._get_buffer()[slices]
-
 
 def create_ecosim_group_stats_extractors(core, monitor):
     """Create an extractor for the EcoSim group statistics results."""
@@ -369,4 +367,293 @@ def create_shannon_diversity_extractor(core, monitor):
         ResultStoreEnum.ECOSIM,
         "ShannonDiversity",
         (DropEnum.DROP_LAST,),
+    )
+
+def create_b_extractor(core, monitor):
+    """Create an extractor for the Ecopath biomass in habitat area (t/km²) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "B",
+    )
+
+
+def create_bh_extractor(core, monitor):
+    """Create an extractor for the Ecopath biomass accumulation (t/km²/year) as entered by the user results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "BH",
+    )
+
+
+def create_ba_input_extractor(core, monitor):
+    """Create an extractor for the Ecopath biomass accumulation / biomass results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "BAInput",
+    )
+
+
+def create_babi_extractor(core, monitor):
+    """Create an extractor for the Ecopath biomass accumulation / biomass results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "BaBi",
+    )
+
+
+def create_ba_extractor(core, monitor):
+    """Create an extractor for the Ecopath biomass accumulation (t/km²/year) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "BA",
+    )
+
+
+def create_pb_extractor(core, monitor):
+    """Create an extractor for the Ecopath production / biomass (/year) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "PB",
+    )
+
+
+def create_qb_extractor(core, monitor):
+    """Create an extractor for the Ecopath consumption / biomass (/year) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "QB",
+    )
+
+
+def create_ee_extractor(core, monitor):
+    """Create an extractor for the Ecopath ecotrophic efficiency (ratio) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "EE",
+    )
+
+
+def create_ge_extractor(core, monitor):
+    """Create an extractor for the Ecopath production / consumption (ratio) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "GE",
+    )
+
+
+def create_gs_extractor(core, monitor):
+    """Create an extractor for the Ecopath unassimilation / consumption (ratio) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "GS",
+    )
+
+
+def create_gs_eng_extractor(core, monitor):
+    """Create an extractor for the Ecopath unassimilation / consumption (ratio) for Energy Currency units ONLY results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "GSEng",
+    )
+
+
+def create_f_catch_extractor(core, monitor):
+    """Create an extractor for the Ecopath catch results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "fCatch",
+    )
+
+
+def create_dc_extractor(core, monitor):
+    """Create an extractor for the Ecopath diet composition (per pred, prey) (ratio) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "DC",
+    )
+
+
+def create_df_extractor(core, monitor):
+    """Create an extractor for the Ecopath detritus fate (per NumGroups, NumDetrit) (ratio) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "DF",
+    )
+
+
+def create_area_extractor(core, monitor):
+    """Create an extractor for the Ecopath area (NumGroups) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "Area",
+    )
+
+
+def create_dc_changed_extractor(core, monitor):
+    """Create an extractor for the Ecopath diet (NumGroups pred, NumGroups prey) change flags results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "DCChanged",
+    )
+
+
+def create_bqb_extractor(core, monitor):
+    """Create an extractor for the Ecopath BQB results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "BQB",
+    )
+
+
+def create_resp_extractor(core, monitor):
+    """Create an extractor for the Ecopath all non-usable 'model currency' that leaves the box represented by a group results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "Resp",
+    )
+
+
+def create_pp_extractor(core, monitor):
+    """Create an extractor for the Ecopath trophic mode results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "PP",
+    )
+
+
+def create_det_extractor(core, monitor):
+    """Create an extractor for the Ecopath detritus flow (#groups + #fleet,#groups + #fleet) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "det",
+    )
+
+
+def create_dc_det_extractor(core, monitor):
+    """Create an extractor for the Ecopath diet composition of detritus for fishery results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "DCDet",
+    )
+
+
+def create_det_eaten_extractor(core, monitor):
+    """Create an extractor for the Ecopath detritus eaten for multiple detritus results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "DetEaten",
+    )
+
+
+def create_det_passed_on_extractor(core, monitor):
+    """Create an extractor for the Ecopath detritus passed on for multiple detritus results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "DetPassedOn",
+    )
+
+
+def create_det_passed_prop_extractor(core, monitor):
+    """Create an extractor for the Ecopath detritus passed proportion for multiple detritus results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "DetPassedProp",
+    )
+
+
+def create_flow_to_det_extractor(core, monitor):
+    """Create an extractor for the Ecopath flow to detritus (x (group + fleet)) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "FlowToDet",
+    )
+
+
+def create_input_to_det_extractor(core, monitor):
+    """Create an extractor for the Ecopath input to detritus (x group) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "InputToDet",
+    )
+
+
+def create_immig_extractor(core, monitor):
+    """Create an extractor for the Ecopath migration into the area covered by the model (t/km²/year) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "Immig",
+    )
+
+
+def create_emigration_extractor(core, monitor):
+    """Create an extractor for the Ecopath emigration (per group) out of the area covered by the model (t/km²/year) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "Emigration",
+    )
+
+
+def create_emig_extractor(core, monitor):
+    """Create an extractor for the Ecopath emigration (per group) relative to biomass (ratio) results."""
+    return SingleResultsExtractor(
+        core,
+        monitor,
+        ResultStoreEnum.ECOPATH,
+        "Emig",
     )
