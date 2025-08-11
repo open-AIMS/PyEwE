@@ -33,4 +33,5 @@ __all__ = [
     "XarrayCSV",
     "exceptions",
     "core",
+    "results"
 ]

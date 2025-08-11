@@ -173,10 +173,14 @@ class PrivateResultsExtractor:
             raise EcopathError(
                 self._monitor, "Ecopath must be run before accessing results."
             )
+        elif self._private_field == ResultStoreEnum.ECOPATH:
+            return None
         elif not self._monitor.HasEcosimRan():
             raise EcosimError(
                 self._monitor, "Ecosim must be run before accessing results."
             )
+        elif self._private_field == ResultStoreEnum.ECOSIM:
+            return None
         elif not self._monitor.HasEcotracerRanForEcosim():
             raise EcotracerError(
                 self._monitor, "Ecotracer must be run before accessing results."
@@ -376,6 +380,7 @@ def create_b_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "B",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -386,6 +391,7 @@ def create_bh_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "BH",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -396,6 +402,7 @@ def create_ba_input_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "BAInput",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -406,6 +413,7 @@ def create_babi_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "BaBi",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -416,6 +424,7 @@ def create_ba_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "BA",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -426,6 +435,7 @@ def create_pb_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "PB",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -436,6 +446,7 @@ def create_qb_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "QB",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -446,6 +457,7 @@ def create_ee_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "EE",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -456,6 +468,7 @@ def create_ge_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "GE",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -466,6 +479,7 @@ def create_gs_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "GS",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -476,6 +490,7 @@ def create_gs_eng_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "GSEng",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -486,27 +501,28 @@ def create_f_catch_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "fCatch",
+        (DropEnum.DROP_FIRST,),
     )
 
 
-def create_dc_extractor(core, monitor):
-    """Create an extractor for the Ecopath diet composition (per pred, prey) (ratio) results."""
-    return SingleResultsExtractor(
-        core,
-        monitor,
-        ResultStoreEnum.ECOPATH,
-        "DC",
-    )
-
-
-def create_df_extractor(core, monitor):
-    """Create an extractor for the Ecopath detritus fate (per NumGroups, NumDetrit) (ratio) results."""
-    return SingleResultsExtractor(
-        core,
-        monitor,
-        ResultStoreEnum.ECOPATH,
-        "DF",
-    )
+#def create_dc_extractor(core, monitor):
+#    """Create an extractor for the Ecopath diet composition (per pred, prey) (ratio) results."""
+#    return SingleResultsExtractor(
+#        core,
+#        monitor,
+#        ResultStoreEnum.ECOPATH,
+#        "DC",
+#    )
+#
+#
+#def create_df_extractor(core, monitor):
+#    """Create an extractor for the Ecopath detritus fate (per NumGroups, NumDetrit) (ratio) results."""
+#    return SingleResultsExtractor(
+#        core,
+#        monitor,
+#        ResultStoreEnum.ECOPATH,
+#        "DF",
+#    )
 
 
 def create_area_extractor(core, monitor):
@@ -516,10 +532,11 @@ def create_area_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "Area",
+        (DropEnum.DROP_FIRST,),
     )
 
 
-def create_dc_changed_extractor(core, monitor):
+#def create_dc_changed_extractor(core, monitor):
     """Create an extractor for the Ecopath diet (NumGroups pred, NumGroups prey) change flags results."""
     return SingleResultsExtractor(
         core,
@@ -536,6 +553,7 @@ def create_bqb_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "BQB",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -546,6 +564,7 @@ def create_resp_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "Resp",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -556,6 +575,7 @@ def create_pp_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "PP",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -566,6 +586,7 @@ def create_det_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "det",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -576,6 +597,7 @@ def create_dc_det_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "DCDet",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -586,17 +608,18 @@ def create_det_eaten_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "DetEaten",
+        (DropEnum.DROP_FIRST,),
     )
 
 
-def create_det_passed_on_extractor(core, monitor):
-    """Create an extractor for the Ecopath detritus passed on for multiple detritus results."""
-    return SingleResultsExtractor(
-        core,
-        monitor,
-        ResultStoreEnum.ECOPATH,
-        "DetPassedOn",
-    )
+#def create_det_passed_on_extractor(core, monitor):
+#    """Create an extractor for the Ecopath detritus passed on for multiple detritus results."""
+#    return SingleResultsExtractor(
+#        core,
+#        monitor,
+#        ResultStoreEnum.ECOPATH,
+#        "DetPassedOn",
+#    )
 
 
 def create_det_passed_prop_extractor(core, monitor):
@@ -606,27 +629,28 @@ def create_det_passed_prop_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "DetPassedProp",
+        (DropEnum.DROP_FIRST,),
     )
 
 
-def create_flow_to_det_extractor(core, monitor):
-    """Create an extractor for the Ecopath flow to detritus (x (group + fleet)) results."""
-    return SingleResultsExtractor(
-        core,
-        monitor,
-        ResultStoreEnum.ECOPATH,
-        "FlowToDet",
-    )
-
-
-def create_input_to_det_extractor(core, monitor):
-    """Create an extractor for the Ecopath input to detritus (x group) results."""
-    return SingleResultsExtractor(
-        core,
-        monitor,
-        ResultStoreEnum.ECOPATH,
-        "InputToDet",
-    )
+#def create_flow_to_det_extractor(core, monitor):
+#    """Create an extractor for the Ecopath flow to detritus (x (group + fleet)) results."""
+#    return SingleResultsExtractor(
+#        core,
+#        monitor,
+#        ResultStoreEnum.ECOPATH,
+#        "FlowToDet",
+#    )
+#
+#
+#def create_input_to_det_extractor(core, monitor):
+#    """Create an extractor for the Ecopath input to detritus (x group) results."""
+#    return SingleResultsExtractor(
+#        core,
+#        monitor,
+#        ResultStoreEnum.ECOPATH,
+#        "InputToDet",
+#    )
 
 
 def create_immig_extractor(core, monitor):
@@ -636,6 +660,7 @@ def create_immig_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "Immig",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -646,6 +671,7 @@ def create_emigration_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "Emigration",
+        (DropEnum.DROP_FIRST,),
     )
 
 
@@ -656,4 +682,5 @@ def create_emig_extractor(core, monitor):
         monitor,
         ResultStoreEnum.ECOPATH,
         "Emig",
+        (DropEnum.DROP_FIRST,),
     )
