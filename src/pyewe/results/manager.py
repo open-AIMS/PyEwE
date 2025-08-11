@@ -152,7 +152,7 @@ class ResultManager:
         self,
         py_core,
         var_names,
-        scenarios: pd.DataFrame,
+        scenarios: Optional[pd.DataFrame] = None,
         shared_store: Optional[dict] = None,
     ):
         self._py_core = py_core
@@ -160,7 +160,7 @@ class ResultManager:
         self._scenarios = scenarios
 
         self._n_months = py_core.Ecosim.get_n_years() * 12
-        self._n_scenarios = len(scenarios)
+        self._n_scenarios = 1 if self._scenarios is None else len(self._scenarios)
         self._group_names = py_core.get_functional_group_names()
 
         first_year = self._py_core.get_first_year()
@@ -198,6 +198,9 @@ class ResultManager:
         self._packed_input = {
             nm: VARIABLE_CONFIG[nm]["extractor_input"] for nm in var_names
         }
+
+    def get_core(self):
+        return self._py_core
 
     @staticmethod
     def construct_mp_result_manager(py_core, var_names, scenarios):

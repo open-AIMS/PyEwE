@@ -34,7 +34,7 @@ class ResultSet:
 
         self.country = py_core.get_country()
         self.first_year = py_core.get_first_year()
-        self.n_scenarios = len(self.scenarios)
+        self.n_scenarios = 1 if self.scenarios is None else len(self.scenarios)
         self.n_varied_params = self.scenarios.shape[1]
 
     def __str__(self):
