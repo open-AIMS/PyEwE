@@ -8,39 +8,41 @@ from numpy.ctypeslib import ctypes
 
 from .config import STD_DIM_NAMES, CATEGORY_CONFIG, VARIABLE_CONFIG
 from .results_set import ResultSet
-from ..core import results_extraction
+from ..core import results_extraction, CoreInterface
 
 
 def select_dim_len(
-    dim_name: str, n_scenarios: int, n_groups: int, n_months: int
+    dim_name: str, n_scenarios: int, core: CoreInterface
 ) -> int:
     """Given the dimension name, select the length of the dimension."""
     if dim_name == "scenario":
         return n_scenarios
     elif dim_name == "group":
-        return n_groups
+        return core.n_groups()
     elif dim_name == "time":
-        return n_months
-    elif dim_name == "env_group":
-        return n_groups + 1  # Functional groups + environment group.
+        return core.Ecosim.get_n_years() * 12
+    elif dim_name in ["env_group", "prey", "predator"]:
+        return core.n_groups() + 1  # Functional groups + environment group.
     raise ValueError(f"Dimension {dim_name} not supported.")
 
 
-def select_dim_values(dim_name: str, n_scenarios: int, group_names, n_months: int):
+def select_dim_values(dim_name: str, n_scenarios: int, core: CoreInterface):
     """Given a dimension name, construct the values for the coordinates."""
     if dim_name == "scenario":
         return range(n_scenarios)
     elif dim_name == "group":
-        return group_names
+        return core.get_functional_group_names()
     elif dim_name == "time":
-        return range(n_months)
+        return range(core.Ecosim.get_n_years() * 12)
     elif dim_name == "env_group":
-        return ["Environment", *group_names]  # Functional groups + environment group.
+        return ["Environment", *core.get_functional_group_names()]  # Functional groups + environment group.
+    elif dim_name == "prey" or dim_name == "predator":
+        return [*core.get_functional_group_names(), "Import"]  # Functional groups + environment group.
     raise ValueError(f"Dimension {dim_name} not supported.")
 
 
 def construct_var_buffer(
-    variable_name: str, n_scenarios: int, n_groups: int, n_months: int
+    variable_name: str, n_scenarios: int, core: CoreInterface
 ):
     """Given an variable names, construct a multiprocessor buffer."""
     # Get variable specification
@@ -49,7 +51,7 @@ def construct_var_buffer(
     # Get dimensions spec
     var_dims = var_conf["dims"]
     var_shape = [
-        select_dim_len(dim_n, n_scenarios, n_groups, n_months) for dim_n in var_dims
+        select_dim_len(dim_n, n_scenarios, core) for dim_n in var_dims
     ]
     # Create an array with 64 bit float
     return mp.Array("d", int(np.prod(var_shape)))
@@ -58,8 +60,7 @@ def construct_var_buffer(
 def construct_xarray(
     variable_name: str,
     n_scenarios: int,
-    group_names: list[str],
-    n_months: int,
+    core: CoreInterface,
     first_year: int,
     buffer=None,
 ):
@@ -68,8 +69,7 @@ def construct_xarray(
     Arguments:
         variable_name (str): Name of variable
         n_scenarios (int): Number of scenarios
-        group_names (list[str]): List of names of functional groups
-        n_months (int): Number of months the simulation is run for.
+        core (CoreInterface): Underlying core interface being wrapped
         first_year (int): First year of simulations
         buffer (Optional[mp.array]): Multiprocessor buffer to use as underlying memory for
             xarrray
@@ -80,14 +80,14 @@ def construct_xarray(
     # Get dimensions spec
     var_dims = var_conf["dims"]
     var_shape = [
-        select_dim_len(dim_n, n_scenarios, len(group_names), n_months)
+        select_dim_len(dim_n, n_scenarios, core)
         for dim_n in var_dims
     ]
     # Construct dimensions for xarray
     # Get standard dimension names
     var_dims_names = CATEGORY_CONFIG[var_cat]["dims"]
     coords = [
-        select_dim_values(dim_n, n_scenarios, group_names, n_months)
+        select_dim_values(dim_n, n_scenarios, core)
         for dim_n in var_dims
     ]
     if buffer is None:
@@ -150,18 +150,15 @@ class ResultManager:
 
     def __init__(
         self,
-        py_core,
-        var_names,
+        py_core: CoreInterface,
+        var_names: list[str],
         scenarios: Optional[pd.DataFrame] = None,
         shared_store: Optional[dict] = None,
     ):
         self._py_core = py_core
         self._var_names = var_names
         self._scenarios = scenarios
-
-        self._n_months = py_core.Ecosim.get_n_years() * 12
         self._n_scenarios = 1 if self._scenarios is None else len(self._scenarios)
-        self._group_names = py_core.get_functional_group_names()
 
         first_year = self._py_core.get_first_year()
 
@@ -175,8 +172,7 @@ class ResultManager:
                 vn: construct_xarray(
                     vn,
                     self._n_scenarios,
-                    self._group_names,
-                    self._n_months,
+                    self._py_core,
                     first_year,
                     shared_store[vn],
                 )
@@ -185,7 +181,7 @@ class ResultManager:
         else:
             self.variable_stores = {
                 vn: construct_xarray(
-                    vn, self._n_scenarios, self._group_names, self._n_months, first_year
+                    vn, self._n_scenarios, self._py_core, first_year
                 )
                 for vn in var_names
             }
@@ -220,7 +216,7 @@ class ResultManager:
         _n_groups = len(py_core.get_functional_group_names())
 
         mp_buffers = {
-            vn: construct_var_buffer(vn, _n_scenarios, _n_groups, _n_months)
+            vn: construct_var_buffer(vn, _n_scenarios, py_core)
             for vn in var_names
         }
 

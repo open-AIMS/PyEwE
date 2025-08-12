@@ -1,6 +1,8 @@
 STD_DIM_NAMES = {
     "group": "Group",
     "env_group": "Group",
+    "prey": "Prey",
+    "predator": "Predator",
     "time": "Time",
     "scenario": "Scenario",
     "fleet": "Fleet",
@@ -10,6 +12,7 @@ STD_DIM_NAMES = {
 
 CATEGORY_CONFIG = {
     "ECOPATH_STATS": {"dims": [STD_DIM_NAMES[s] for s in ["scenario", "group"]]},
+    "ECOPATH_FLOWS": {"dims": [STD_DIM_NAMES[s] for s in ["scenario", "prey", "predator"]]},
     "ECOSYSTEM_STATS": {"dims": [STD_DIM_NAMES[s] for s in ["scenario", "time"]]},
     "GROUP_STATS": {"dims": [STD_DIM_NAMES[s] for s in ["scenario", "group", "time"]]},
     "FISHING_STATS": {
@@ -108,24 +111,24 @@ VARIABLE_CONFIG = {
         "extractor_input": "",
         "save_filename": "Ecopath_GS_Ratio",
     },
-    #"Ecopath Diet Composition": {
-    #    "variable_name": "Ecopath Diet Composition",
-    #    "dims": ["scenario", "predator", "prey"],
-    #    "category": "ECOPATH_STATS",
-    #    "unit": "ratio",
-    #    "extractor_name": "create_dc_extractor",
-    #    "extractor_input": "",
-    #    "save_filename": "Ecopath_Diet_Composition",
-    #},
-    #"Ecopath Flow to Detritus": {
-    #    "variable_name": "Ecopath Flow to Detritus",
-    #    "dims": ["scenario", "group"],
-    #    "category": "ECOPATH_STATS",
-    #    "unit": "t/km²/year",
-    #    "extractor_name": "create_flow_to_det_extractor",
-    #    "extractor_input": "",
-    #    "save_filename": "Ecopath_Flow_To_Detritus",
-    #},
+    "Ecopath Diet Composition": {
+        "variable_name": "Ecopath Diet Composition",
+        "dims": ["scenario", "predator", "prey"],
+        "category": "ECOPATH_DIETS",
+        "unit": "ratio",
+        "extractor_name": "create_dc_extractor",
+        "extractor_input": "",
+        "save_filename": "Ecopath_Diet_Composition",
+    },
+    "Ecopath Detritus Consumption": {
+        "variable_name": "Ecopath Detritus Consumption",
+        "dims": ["scenario", "predator", "prey"],
+        "category": "ECOPATH_FLOWS",
+        "unit": "t/km²/year",
+        "extractor_name": "create_det_extractor",
+        "extractor_input": "",
+        "save_filename": "Ecopath_Detritus_Consumption",
+    },
     "Ecopath Immigration": {
         "variable_name": "Ecopath Immigration",
         "dims": ["scenario", "group"],
