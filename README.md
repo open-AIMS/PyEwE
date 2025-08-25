@@ -28,8 +28,7 @@ $env:EWE_BIN_PATH="Path to EwE binaries"
 
 **bash**
 ```bash
-export ENV_BIN_PATH="Path to EwE binaries"
-```
+export EWE_BIN_PATH="Path to EwE binaries" ```
 
 
 ## Example
