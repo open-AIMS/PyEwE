@@ -4,7 +4,7 @@ This section describes how results are managed and can be accessed or saved. The
 
 ## `ResultSet` Object
 
-The `ResultSet` object (class `decom_py.results.ResultSet`) holds all the outputs from your scenario runs. You can access individual variables as `xarray.DataArray` objects.
+The `ResultSet` object (class `pyewe.results.ResultSet`) holds all the outputs from your scenario runs. You can access individual variables as `xarray.DataArray` objects.
 
 ```python
 # Assuming 'results' is a ResultSet object from ewe_int.run_scenarios(scen_df)

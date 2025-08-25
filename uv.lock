@@ -393,65 +393,6 @@ wheels = [
 ]
 
 [[package]]
-name = "decom-py"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "netcdf4" },
-    { name = "numpy" },
-    { name = "pandas" },
-    { name = "polars" },
-    { name = "pythonnet" },
-    { name = "tqdm" },
-    { name = "xarray" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "autopep8" },
-    { name = "black" },
-    { name = "ipdb" },
-    { name = "ipykernel" },
-    { name = "ipython" },
-    { name = "jupyter" },
-    { name = "mkdocs" },
-    { name = "mkdocs-material" },
-    { name = "mkdocstrings", extra = ["python"] },
-    { name = "pytest" },
-    { name = "pytest-mock" },
-]
-test = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "netcdf4", specifier = ">=1.7.2" },
-    { name = "numpy", specifier = ">=2.2.4" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "polars", specifier = ">=1.29.0" },
-    { name = "pythonnet", specifier = ">=3.0.5" },
-    { name = "tqdm", specifier = ">=4.67.1" },
-    { name = "xarray", specifier = ">=2025.3.1" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "autopep8" },
-    { name = "black" },
-    { name = "ipdb" },
-    { name = "ipykernel", specifier = ">=6.29.5" },
-    { name = "ipython" },
-    { name = "jupyter" },
-    { name = "mkdocs", specifier = ">=1.6.1" },
-    { name = "mkdocs-material", specifier = ">=9.6.14" },
-    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.29.1" },
-    { name = "pytest", specifier = ">=8.3.5" },
-    { name = "pytest-mock", specifier = ">=3.14.0" },
-]
-test = [{ name = "pytest" }]
-
-[[package]]
 name = "decorator"
 version = "5.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1548,6 +1489,65 @@ sdist = { url = "https://files.pythonhosted.org/packages/1d/b2/31537cf4b1ca98883
 wheels = [
     { url = "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl", hash = "sha256:c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc", size = 117552 },
 ]
+
+[[package]]
+name = "pyewe"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "netcdf4" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "polars" },
+    { name = "pythonnet" },
+    { name = "tqdm" },
+    { name = "xarray" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "autopep8" },
+    { name = "black" },
+    { name = "ipdb" },
+    { name = "ipykernel" },
+    { name = "ipython" },
+    { name = "jupyter" },
+    { name = "mkdocs" },
+    { name = "mkdocs-material" },
+    { name = "mkdocstrings", extra = ["python"] },
+    { name = "pytest" },
+    { name = "pytest-mock" },
+]
+test = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "netcdf4", specifier = ">=1.7.2" },
+    { name = "numpy", specifier = ">=2.2.4" },
+    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "polars", specifier = ">=1.29.0" },
+    { name = "pythonnet", specifier = ">=3.0.5" },
+    { name = "tqdm", specifier = ">=4.67.1" },
+    { name = "xarray", specifier = ">=2025.3.1" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "autopep8" },
+    { name = "black" },
+    { name = "ipdb" },
+    { name = "ipykernel", specifier = ">=6.29.5" },
+    { name = "ipython" },
+    { name = "jupyter" },
+    { name = "mkdocs", specifier = ">=1.6.1" },
+    { name = "mkdocs-material", specifier = ">=9.6.14" },
+    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.29.1" },
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-mock", specifier = ">=3.14.0" },
+]
+test = [{ name = "pytest" }]
 
 [[package]]
 name = "pygments"

@@ -1,7 +1,7 @@
 from typing import Union, Dict, List
 from math import nan
 
-from decom_py import CoreInterface
+from pyewe import CoreInterface
 
 
 def _full_name_to_abbrev(nm: str) -> str:
