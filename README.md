@@ -23,12 +23,12 @@ binaries.
 
 **Powershell**
 ```Powershell
-$env:EWE_BIN_DIR_PATH="Path to EwE binaries"
+$env:EWE_BIN_PATH="Path to EwE binaries"
 ```
 
 **bash**
 ```bash
-export ENV_BIN_DIR_PATH="Path to EwE binaries"
+export ENV_BIN_PATH="Path to EwE binaries"
 ```
 
 
@@ -156,7 +156,7 @@ If you use an IDE test runner, you can specify the environment variable in a `.e
 which pytest will discover:
 
 ```
-EWE_BIN_DIR_PATH=c:\\Program Files\\Ecopath with Ecosim 40 years 6.7.0.18865_64-bit
+EWE_BIN_PATH=c:\\Program Files\\Ecopath with Ecosim 40 years 6.7.0.18865_64-bit
 ```
 
 For VSCode test runner, go through pytest setup in the Testing left panel, or search
@@ -165,7 +165,7 @@ For VSCode test runner, go through pytest setup in the Testing left panel, or se
 ```json
 {
     "terminal.integrated.env.windows": {
-        "EWE_BIN_DIR_PATH": "c:\\Program Files\\Ecopath with Ecosim 40 years 6.7.0.18865_64-bit"
+        "EWE_BIN_PATH": "c:\\Program Files\\Ecopath with Ecosim 40 years 6.7.0.18865_64-bit"
     },
     "python.testing.pytestArgs": [
         "test",
