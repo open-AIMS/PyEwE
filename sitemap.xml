@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://open-aims.github.io/PyEwE/</loc>
+         <lastmod>2025-10-16</lastmod>
+    </url>
+    <url>
+         <loc>https://open-aims.github.io/PyEwE/development/</loc>
+         <lastmod>2025-10-16</lastmod>
+    </url>
+    <url>
+         <loc>https://open-aims.github.io/PyEwE/high_level_interface/</loc>
+         <lastmod>2025-10-16</lastmod>
+    </url>
+    <url>
+         <loc>https://open-aims.github.io/PyEwE/medium_level_interface/</loc>
+         <lastmod>2025-10-16</lastmod>
+    </url>
+    <url>
+         <loc>https://open-aims.github.io/PyEwE/parameter_management/</loc>
+         <lastmod>2025-10-16</lastmod>
+    </url>
+    <url>
+         <loc>https://open-aims.github.io/PyEwE/api/reference/</loc>
+         <lastmod>2025-10-16</lastmod>
+    </url>
+    <url>
+         <loc>https://open-aims.github.io/PyEwE/api/results/</loc>
+         <lastmod>2025-10-16</lastmod>
+    </url>
+</urlset>

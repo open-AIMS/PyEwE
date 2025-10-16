@@ -1,0 +1,3214 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="EwE model wrapper">
+      
+      
+        <meta name="author" content="Daniel Tan">
+      
+      
+        <link rel="canonical" href="https://open-aims.github.io/PyEwE/api/reference/">
+      
+      
+        <link rel="prev" href="../../parameter_management/">
+      
+      
+        <link rel="next" href="../results/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Reference - PyEwE</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="PyEwE" class="md-header__button md-logo" aria-label="PyEwE" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PyEwE
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/open-AIMS/PyEwE" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="PyEwE" class="md-nav__button md-logo" aria-label="PyEwE" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    PyEwE
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/open-AIMS/PyEwE" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../high_level_interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    High Level Interface
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../medium_level_interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Medium Level Interface
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parameter_management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parameter Management
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface" class="md-nav__link">
+    <span class="md-ellipsis">
+      EwEScenarioInterface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EwEScenarioInterface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.add_forcing_function" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_forcing_function
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      cleanup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.get_ecotracer_fg_param_names" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_ecotracer_fg_param_names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.get_empty_scenarios_df" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_empty_scenarios_df
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.get_long_scen_dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_long_scen_dataframe
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.reset_parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      reset_parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.run_scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      run_scenarios
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.run_scenarios_parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      run_scenarios_parallel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.set_constant_params" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_constant_params
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.set_ecosim_group_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_ecosim_group_info
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.set_ecosim_vulnerabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_ecosim_vulnerabilities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.set_simulation_duration" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_simulation_duration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.results.ResultSet" class="md-nav__link">
+    <span class="md-ellipsis">
+      ResultSet
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ResultSet">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.results.ResultSet.save_results" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface" class="md-nav__link">
+    <span class="md-ellipsis">
+      CoreInterface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CoreInterface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.add_forcing_function" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_forcing_function
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_country" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_country
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_first_year" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_first_year
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_functional_group_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_functional_group_index
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_functional_group_indices" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_functional_group_indices
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_functional_group_names" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_functional_group_names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.load_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      load_model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_consumers" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_consumers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_detritus_groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_detritus_groups
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_groups
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_living_groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_living_groups
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_producers" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_producers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.print_summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      print_summary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.save_all_ecosim_results" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_all_ecosim_results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.save_ecosim_results" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_ecosim_results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.save_ecotracer_results" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_ecotracer_results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.set_default_save_dir" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_default_save_dir
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager" class="md-nav__link">
+    <span class="md-ellipsis">
+      EcosimStateManager
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EcosimStateManager">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.new_scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      new_scenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.save_scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_scenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.save_scenario_as" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_scenario_as
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.set_vulnerabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_vulnerabilities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager" class="md-nav__link">
+    <span class="md-ellipsis">
+      EcotracerStateManager
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EcotracerStateManager">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.get_contaminant_forcing_number" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_contaminant_forcing_number
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.new_scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      new_scenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.save_scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_scenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.save_scenario_as" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_scenario_as
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.set_contaminant_forcing_number" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_contaminant_forcing_number
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Results
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Development
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface" class="md-nav__link">
+    <span class="md-ellipsis">
+      EwEScenarioInterface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EwEScenarioInterface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.add_forcing_function" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_forcing_function
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      cleanup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.get_ecotracer_fg_param_names" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_ecotracer_fg_param_names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.get_empty_scenarios_df" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_empty_scenarios_df
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.get_long_scen_dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_long_scen_dataframe
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.reset_parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      reset_parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.run_scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      run_scenarios
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.run_scenarios_parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      run_scenarios_parallel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.set_constant_params" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_constant_params
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.set_ecosim_group_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_ecosim_group_info
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.set_ecosim_vulnerabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_ecosim_vulnerabilities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.EwEScenarioInterface.set_simulation_duration" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_simulation_duration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.results.ResultSet" class="md-nav__link">
+    <span class="md-ellipsis">
+      ResultSet
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ResultSet">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.results.ResultSet.save_results" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface" class="md-nav__link">
+    <span class="md-ellipsis">
+      CoreInterface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CoreInterface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.add_forcing_function" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_forcing_function
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_country" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_country
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_first_year" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_first_year
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_functional_group_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_functional_group_index
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_functional_group_indices" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_functional_group_indices
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.get_functional_group_names" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_functional_group_names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.load_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      load_model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_consumers" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_consumers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_detritus_groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_detritus_groups
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_groups
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_living_groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_living_groups
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.n_producers" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_producers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.print_summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      print_summary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.save_all_ecosim_results" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_all_ecosim_results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.save_ecosim_results" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_ecosim_results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.save_ecotracer_results" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_ecotracer_results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.interface.CoreInterface.set_default_save_dir" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_default_save_dir
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager" class="md-nav__link">
+    <span class="md-ellipsis">
+      EcosimStateManager
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EcosimStateManager">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.new_scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      new_scenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.save_scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_scenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.save_scenario_as" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_scenario_as
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcosimStateManager.set_vulnerabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_vulnerabilities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager" class="md-nav__link">
+    <span class="md-ellipsis">
+      EcotracerStateManager
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EcotracerStateManager">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.get_contaminant_forcing_number" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_contaminant_forcing_number
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.new_scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      new_scenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.save_scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_scenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.save_scenario_as" class="md-nav__link">
+    <span class="md-ellipsis">
+      save_scenario_as
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyewe.core.models.EcotracerStateManager.set_contaminant_forcing_number" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_contaminant_forcing_number
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="api-reference">API Reference</h1>
+<p>This section provides a detailed reference for the main classes and functions in the <code>pyewe</code> library.</p>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyewe.EwEScenarioInterface" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">EwEScenarioInterface</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">temp_model_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ecosim_scenario</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>Interface for running Ecopath with Ecosim scenarios.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.EwEScenarioInterface._model_path">_model_path</span></code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to EwE model database file.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.EwEScenarioInterface._temp_model_path">_temp_model_path</span></code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to temporary model database file.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.EwEScenarioInterface._param_manager">_param_manager</span></code></td>
+            <td>
+                  <code><span title="pyewe.parameter_management.ParameterManager">ParameterManager</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Parameter manager object to manage variable and
+constant params.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+        <p>Initialise a EwEScenarioInterface</p>
+<p>Given a path to the EwE model database, construct a EwEScenarioInterface object by
+copying the database to a temporar location so that the given database is not
+edited. When the interface is cleaned up or the python program exits, the object
+will close the temporary database and delete the temporary folder it was placed in.</p>
+<p>If the user supplies a temporary model path, then the model will copied to that
+location. Ther user is responsible for deleting the copied database when complete
+however. This is mainly for debugging purposes to check the underlying state.</p>
+<p>'EwEScenarioInterface.cleanup()' is registered at exit but it also good practice to
+manually call this function after completion.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>model_path</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to model database.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>temp_model_path</code>
+            </td>
+            <td>
+                  <code><span title="Optonal">Optonal</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to where the model database should be
+copied, the user is responsible for cleaning up the copy.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.add_forcing_function" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_forcing_function</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add/Register forcing function for use in scenario runs.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.cleanup" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">cleanup</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Clean up files and directoryies created by the interface.</p>
+<p>Close the model database and delete the temporary directory containing the model.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.get_ecotracer_fg_param_names" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_ecotracer_fg_param_names</span><span class="p">(</span><span class="n">param_names</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get functional group parameter names for given parameter prefixes</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.get_empty_scenarios_df" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_empty_scenarios_df</span><span class="p">(</span><span class="n">env_param_names</span><span class="p">,</span> <span class="n">fg_param_names</span><span class="p">,</span> <span class="n">n_scenarios</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create empty scenarios dataframe for specified parameters.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>env_param_names</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of environmental parameter names.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>fg_param_names</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of functional group parameter names, (not
+combined parameter names and functional group names.)</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>n_scenarios</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of scenarios to create a dataframe for.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.get_long_scen_dataframe" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_long_scen_dataframe</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the full scenario dataframe in a long format.</p>
+<p>Construct a scenario dataframe in a long format. Given four columns, 'Scenario',
+'Group', 'Parameter', and 'Value'.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.reset_parameters" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">reset_parameters</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Remove all saved constant and variable parameters names and values.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.run_scenarios" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">run_scenarios</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">save_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Concentration&#39;</span><span class="p">,</span> <span class="s1">&#39;Concentration Biomass&#39;</span><span class="p">,</span> <span class="s1">&#39;Biomass&#39;</span><span class="p">,</span> <span class="s1">&#39;Catch&#39;</span><span class="p">,</span> <span class="s1">&#39;Consumption Biomass&#39;</span><span class="p">,</span> <span class="s1">&#39;Mortality&#39;</span><span class="p">,</span> <span class="s1">&#39;Trophic Level&#39;</span><span class="p">,</span> <span class="s1">&#39;Trophic Level Catch&#39;</span><span class="p">,</span> <span class="s1">&#39;FIB&#39;</span><span class="p">,</span> <span class="s1">&#39;KemptonsQ&#39;</span><span class="p">,</span> <span class="s1">&#39;Shannon Diversity&#39;</span><span class="p">],</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Run scenarios in given dataframe.</p>
+<p>Run all scenarios in the given dataframe and save results in the given formats to
+the given directory.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>scenarios</code>
+            </td>
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Scenario dataframe listing parameter values for each scenario.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>results</code></td>            <td>
+                  <code><a class="autorefs autorefs-internal" title="ResultSet(py_core, scenarios, results) (pyewe.results.ResultSet)" href="#pyewe.results.ResultSet">ResultSet</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Containing results</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.run_scenarios_parallel" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">run_scenarios_parallel</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Concentration&#39;</span><span class="p">,</span> <span class="s1">&#39;Concentration Biomass&#39;</span><span class="p">,</span> <span class="s1">&#39;Biomass&#39;</span><span class="p">,</span> <span class="s1">&#39;Catch&#39;</span><span class="p">,</span> <span class="s1">&#39;Consumption Biomass&#39;</span><span class="p">,</span> <span class="s1">&#39;Mortality&#39;</span><span class="p">,</span> <span class="s1">&#39;Trophic Level&#39;</span><span class="p">,</span> <span class="s1">&#39;Trophic Level Catch&#39;</span><span class="p">,</span> <span class="s1">&#39;FIB&#39;</span><span class="p">,</span> <span class="s1">&#39;KemptonsQ&#39;</span><span class="p">,</span> <span class="s1">&#39;Shannon Diversity&#39;</span><span class="p">],</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Run scenarios in parallel.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>scenarios</code>
+            </td>
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dataframe containing parameters for each scenario.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>n_workers</code>
+            </td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[<span title="int">int</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of processes to run in parallel</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>ResultSet</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>results from scenario runs.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.set_constant_params" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_constant_params</span><span class="p">(</span><span class="n">param_names</span><span class="p">,</span> <span class="n">param_values</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set parameters that are constant across scenarios</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.set_ecosim_group_info" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_ecosim_group_info</span><span class="p">(</span><span class="n">group_info</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set Ecosim group information parameters.</p>
+<p>Set the parameterisation for ecosim group information (feeding parameters). The
+data frame should be in the same format with the same column names as the table in
+the EwE GUI.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.set_ecosim_vulnerabilities" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_ecosim_vulnerabilities</span><span class="p">(</span><span class="n">vulnerabilities</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set Ecosim vulnerabilities to use for all scenario runs.</p>
+<p>Set the vulnerabilitiy coefficient used in the Ecosim model. The format for the
+input dataframe should be the same format as seen in the EwE GUI.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.EwEScenarioInterface.set_simulation_duration" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_simulation_duration</span><span class="p">(</span><span class="n">n_years</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set the number of years to run ecosim for.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyewe.results.ResultSet" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">ResultSet</span><span class="p">(</span><span class="n">py_core</span><span class="p">,</span> <span class="n">scenarios</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>Contains results after scenario runs.</p>
+<p>This class is the user facing store of results. It should not contain references to the
+core object, and should contains all output results and scenario being run.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.results.ResultSet.scenarios">scenarios</span></code></td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dataframe containing scenario specification for results.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.results.ResultSet.results">results</span></code></td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dictionary mapping result variable names to xarrays.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.results.ResultSet.country">country</span></code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Name of country that the EwE model is based in.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.results.ResultSet.first_year">first_year</span></code></td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>First Year ecosim is run.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.results.ResultSet.n_scenarios">n_scenarios</span></code></td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of scenarios run.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.results.ResultSet.n_varied">n_varied</span></code></td>
+            <td>
+                  <code>params (int</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of parameters changed between scenarios.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.results.ResultSet.save_results" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_results</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">formats</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Write results to all formats given.</p>
+<p>Only NetCDF4, "netcdf", and CSV, "csv", are currently supported.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>formats list[str]</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>list of formats to save results in.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyewe.core.interface.CoreInterface" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">CoreInterface</span><span class="p">()</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>Interface to update the state of the underlying EwECore.</p>
+<p>CoreInterface provides a thin wrapper over the original cCore object defined in the EwE
+binaries. It should provide convenience functions to carry out operations already
+defined in the cCore object. Larger scale manipulations should not occur in this class.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.core.interface.CoreInterface._core">_core</span></code></td>
+            <td>
+                  <code><span title="cCore">cCore</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Visual Basic cCore object describing the state of the program.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.core.interface.CoreInterface._ecopath_result_writer">_ecopath_result_writer</span></code></td>
+            <td>
+                  <code><span title="cEcopathResultWriter">cEcopathResultWriter</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Object the handles writing ecopath results</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.core.interface.CoreInterface._ecosim_result_writer">_ecosim_result_writer</span></code></td>
+            <td>
+                  <code><span title="cEcosimResultWriter">cEcosimResultWriter</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Object the handles writing ecosim results</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.core.interface.CoreInterface._ecotracer_result_writer">_ecotracer_result_writer</span></code></td>
+            <td>
+                  <code><span title="cEcotracerResultWriter">cEcotracerResultWriter</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Object the handles writing ecotracer results</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.core.interface.CoreInterface._state">_state</span></code></td>
+            <td>
+                  <code><span title="cStateMonitor">cStateMonitor</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Object handling high level state information bout _core</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.core.interface.CoreInterface.Ecosim">Ecosim</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="EcosimStateManager(core, state) (pyewe.core.models.EcosimStateManager)" href="#pyewe.core.models.EcosimStateManager">EcosimStateManager</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>object that manages scenario loading, model runs and results for Ecosim</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="pyewe.core.interface.CoreInterface.Ecotracer">Ecotracer</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="EcotracerStateManager(core, state) (pyewe.core.models.EcotracerStateManager)" href="#pyewe.core.models.EcotracerStateManager">EcotracerStateManager</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>object that manages scenario loading, model runs and results for Ecotracer</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.add_forcing_function" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_forcing_function</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add a forcing function to the core instance.</p>
+<p>Add a forcing function to the forcing function manager given a list of values and a
+name. Furthermore, this function prepends a value of 1.0 to the list as EwE begins
+indexing the first value at 1.0 even though the underlying array is a 0 indexed
+array. See the deveolpment notes in the documentation for more information.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Name of the forcing function.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>values</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of values for the forcing function.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>int</code></td>            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Index of the forcing function in the forcing manager.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.get_country" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_country</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the country that the model is based on.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.get_first_year" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_first_year</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the first year for which ecosim is run.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.get_functional_group_index" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_functional_group_index</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the index of a given functional gruop in the ecopath model.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.get_functional_group_indices" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_functional_group_indices</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the indices of the functional groups in the ecopath model.</p>
+<p>Get the indices of the functional groups in the ecopath model. This is a one-based
+index.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.get_functional_group_names" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_functional_group_names</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the name of all functional groups in the EwE model.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.load_model" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">load_model</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Load model from a EwE access database file into the EwE core.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.n_consumers" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">n_consumers</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the number of consumers in the loaded model.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.n_detritus_groups" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">n_detritus_groups</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the number of detritus groups in the loaded model.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.n_groups" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">n_groups</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the number of functional groups in the loaded model.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.n_living_groups" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">n_living_groups</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the number of living groups in the loaded models.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.n_producers" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">n_producers</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the number of producers in the loaded model</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.print_summary" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">print_summary</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Print summary on the state of the EwE core.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.save_all_ecosim_results" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_all_ecosim_results</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Save all ecosim result variables to the given directory.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.save_ecosim_results" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_ecosim_results</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">result_types</span><span class="p">,</span> <span class="n">monthly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Save ecosim results for a given setup of result variables.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>dir</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Directory to save csv files to.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>result_types</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Names of variables to save.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>monthly</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>flag to save monthly or yearly values.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>quiet</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>flag to print information.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>bool</code></td>            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True if successful</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.save_ecotracer_results" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_ecotracer_results</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Save ecotracer results to a given file</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>filepath</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to save file</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>successful save</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.interface.CoreInterface.set_default_save_dir" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_default_save_dir</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set the default save directory in underlying core object.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyewe.core.models.EcosimStateManager" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">EcosimStateManager</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pyewe.core.models.EwEScenarioModel">EwEScenarioModel</span></code>, <code><span title="pyewe.core.models.EwEParameterManager">EwEParameterManager</span></code></p>
+
+
+        <p>Ecosim Model State Wrapper</p>
+<p>This should be the interface at which Ecosim information is set and retrieved.
+Parameter setting, results extraction and scenario loading should be controlled via this
+class.</p>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcosimStateManager.new_scenario" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">new_scenario</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">contact</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a new Ecosim scenario.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcosimStateManager.run" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">run</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Run the ecosim model without ecotracer and return whether it was successful.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcosimStateManager.save_scenario" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_scenario</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Save the current state of the ecosim scenario to the underlying database.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcosimStateManager.save_scenario_as" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_scenario_as</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Save the current state of the ecosim scenario to a new scenario.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcosimStateManager.set_vulnerabilities" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_vulnerabilities</span><span class="p">(</span><span class="n">vulnerabilities</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set ecosim vulnerabilites from a vulnerability matrix.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyewe.core.models.EcotracerStateManager" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">EcotracerStateManager</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pyewe.core.models.EwEScenarioModel">EwEScenarioModel</span></code>, <code><span title="pyewe.core.models.EwEParameterManager">EwEParameterManager</span></code></p>
+
+
+        <p>Ecotracer Model State Wrapper</p>
+<p>This should be the interface at which Ecotracer information is set and retrieved.
+Parameter setting, results extraction, scenario loading and ecotracer execution should
+be controlled via this class.</p>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcotracerStateManager.get_contaminant_forcing_number" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_contaminant_forcing_number</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the index of the Contaminant forcing function.</p>
+<p>Get the index of the contaminant forcing function in the core contaminant forcing
+function manager. A return a one based index.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcotracerStateManager.new_scenario" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">new_scenario</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">contact</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a new EcoTracer scenario.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcotracerStateManager.run" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">run</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Run the ecosim model with ecotracer and return whether it was successful</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcotracerStateManager.save_scenario" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_scenario</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Save the state of the ecotracer scenario to the underlying database.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcotracerStateManager.save_scenario_as" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_scenario_as</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Save the state of the ecotracer scenario to the underlying database.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyewe.core.models.EcotracerStateManager.set_contaminant_forcing_number" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_contaminant_forcing_number</span><span class="p">(</span><span class="n">forcing_index</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set the index of the contaminant forcing function.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pyewe.exceptions.EwEError">EwEError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>No forcing function with index: {forcing_index} contained in core.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
