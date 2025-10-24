@@ -42,7 +42,7 @@ def scenario_run_results(model_path):
     col_names = ["scenario"]
     for i, pref in enumerate(p_prefixes):
         vals.extend(list(ecotracer_params.iloc[:, 2 + i]))
-        col_names.extend(ewe_int.get_ecotracer_fg_param_names(pref))
+        col_names.extend(ewe_int.get_fg_param_names(pref))
 
     vals.extend([0.2, 0.1, 0.0002, 0.005])
     col_names.extend(
@@ -101,7 +101,7 @@ def scenario_run_results_w_forcing(model_path):
     col_names = ["scenario"]
     for i, pref in enumerate(p_prefixes):
         vals.extend(list(ecotracer_params.iloc[:, 2 + i]))
-        col_names.extend(ewe_int.get_ecotracer_fg_param_names(pref))
+        col_names.extend(ewe_int.get_fg_param_names(pref))
 
     vals.extend([0.2, 0.1, 0.0002, 0.005, forcing_idx])
     col_names.extend(

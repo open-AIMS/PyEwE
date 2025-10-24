@@ -14,20 +14,20 @@ from typing import Optional
 from pandas import DataFrame
 
 from .core.module import initialise, get_ewe_bin_path
-from .parameter_management import ParameterManager
+from .parameter_management import ParentParameterManager
 from .core.interface import CoreInterface
 from .results.manager import ResultManager
 
 # globals to be reused between scenarios by the worker.
 worker_core: Optional[CoreInterface] = None
-worker_param_manager: Optional[ParameterManager] = None
+worker_param_manager: Optional[ParentParameterManager] = None
 worker_result_manager: Optional[ResultManager] = None
 worker_model_path: Optional[str] = None
 
 
 def worker_init(
     source_model_path: str,
-    param_manager: ParameterManager,
+    param_manager: ParentParameterManager,
     mp_buffers: dict,
     var_names: list[str],
     scenarios: DataFrame,

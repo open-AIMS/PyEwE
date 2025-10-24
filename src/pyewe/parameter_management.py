@@ -1,7 +1,8 @@
-from typing import Union, Dict, List
+from typing import Union, Dict, List, Tuple, Set
 from math import nan
 
 from pyewe import CoreInterface
+from pyewe.core.models import EwEParameterManager as EwEModelParameterManager
 
 
 def _full_name_to_abbrev(nm: str) -> str:
@@ -22,6 +23,7 @@ class ParameterType:
 
     CONSTANT = "constant"
     VARIABLE = "variable"
+    VULNERABILITY = "vulnerability"
     UNSET = "unset"
 
 
@@ -36,7 +38,8 @@ class Parameter:
         is_env_param: A boolean indicating if it in environmental parameter.
         category_idx: Index into the type of function group parameter dictionary.
         group_idx: The index of the group in the underlying core instance. If the
-            parameter is an environmental parameter,this will be -1.
+            parameter is an environmental parameter,this will be -1. For vulnerability
+            parameters, this will be a tuple of (prey_idx, pred_idx).
     """
 
     def __init__(
@@ -44,7 +47,7 @@ class Parameter:
         name: str,
         category_idx: int,
         is_env_param: bool,
-        group_idx: int = -1,
+        group_idx: Union[int, Tuple[int, int]] = -1,
         param_type: str = ParameterType.UNSET,
         value: float = nan,
         df_idx: int = -1,
@@ -88,6 +91,7 @@ class ParameterManager:
     # Mapping from param category to setter function name
     def __init__(
         self,
+        model_name: str,
         fg_names: List[str],
         fg_param_prefixes: List[str],
         fg_param_to_setters: Dict[int, str],
@@ -95,6 +99,8 @@ class ParameterManager:
         env_param_to_setters: Dict[int, str],
     ):
         """Initialize parameter manager with functional group names"""
+        self.model_name = model_name
+
         self.fg_names = fg_names
         self.params: Dict[str, Parameter] = {}
         self._variable_params_processed = False
@@ -108,9 +114,10 @@ class ParameterManager:
         self._variable_fg_indices = [[] for _ in range(len(fg_param_prefixes))]
         self._variable_fg_df_indices = [[] for _ in range(len(fg_param_prefixes))]
         self._variable_env_params = []
+        self._variable_vuln_params = []
 
     @staticmethod
-    def EcotracerManager(core):
+    def EcotracerManager(core: CoreInterface):
         """Given a core instance, construct a Ecotracer parameter manager."""
         # The names of parameters are derived from the EwE model.
         fg_param_prefixes = [
@@ -146,12 +153,65 @@ class ParameterManager:
             4: "set_contaminant_forcing_number",
         }
         return ParameterManager(
+            "Ecotracer",
             core.get_functional_group_names(),
             fg_param_prefixes,
             fg_param_to_setter,
             env_param_names,
             env_param_to_setter,
         )
+
+    @staticmethod
+    def EcosimManager(core: CoreInterface):
+        """Given a core instance, construct an Ecosim parameter manager."""
+        fg_param_prefixes = [
+            "density_dep_catchability",
+            "feeding_time_adj_rate",
+            "max_rel_feeding_time",
+            "max_rel_pb",
+            "pred_effect_feeding_time",
+            "other_mort_feeding_time",
+            "qbmax_qbio",
+            "switching_power",
+        ]
+        fg_param_to_setter = {
+            0: "set_density_dep_catchability",
+            1: "set_feeding_time_adj_rate",
+            2: "set_max_rel_feeding_time",
+            3: "set_max_rel_pb",
+            4: "set_pred_effect_feeding_time",
+            5: "set_other_mort_feeding_time",
+            6: "set_qbmax_qbio",
+            7: "set_switching_power",
+        }
+        env_param_names = ["n_years"]
+        env_param_to_setter = {0: "set_n_years"}
+
+        manager = ParameterManager(
+            "Ecosim",
+            core.get_functional_group_names(),
+            fg_param_prefixes,
+            fg_param_to_setter,
+            env_param_names,
+            env_param_to_setter,
+        )
+
+        # Create vulnerability parameters
+        fg_names = core.get_functional_group_names()
+        n_chars = len(str(len(fg_names)))
+        for prey_idx, prey_name in enumerate(fg_names, 1):
+            prey_idx_str = str(prey_idx).rjust(n_chars, "0")
+            for pred_idx, pred_name in enumerate(fg_names, 1):
+                pred_idx_str = str(pred_idx).rjust(n_chars, "0")
+                param_name = f"vuln_{prey_idx_str}_{prey_name}_{pred_idx_str}_{pred_name}"
+                # Category index is not used for vulnerabilities, set to -1
+                param = Parameter(
+                    param_name, -1, False, group_idx=(prey_idx, pred_idx)
+                )
+                param.param_type = ParameterType.VULNERABILITY
+                manager.params[param_name] = param
+
+        return manager
 
     def _initialize_params(self) -> None:
         """Create all possible parameters.
@@ -233,17 +293,20 @@ class ParameterManager:
 
     def set_constant_params(
         self, param_names: List[str], param_values: List[float]
-    ) -> None:
+    ) -> Set[str]:
         """Set parameters as constant with given values.
 
         Sets given parameters as constants throughout scenario runs and stores the value in
         the parameter manager. This function does NOT write the value into the core EwE
         instance.
         """
+        ignored_params = set()
         for name, value in zip(param_names, param_values):
             if name not in self.params:
-                raise ValueError(f"Unknown parameter: {name}")
+                ignored_params.add(name)
             self.params[name].set_as_constant(value)
+
+        return ignored_params
 
     def get_unset_params(self) -> List[str]:
         """Get names of parameters that haven't been set"""
@@ -264,9 +327,10 @@ class ParameterManager:
         value contained in the parameter object into the given EwE core instance.
 
         Arguments:
-            core (CoreInterface): Core instance to write to.
+            core (CoreInterface): Core object to write to.
         """
         # Group parameters by category for batch application
+        model = getattr(core, self.model_name)
         for cat_idx in range(len(self._fg_param_prefixes)):
             values = []
             group_indices = []
@@ -282,27 +346,34 @@ class ParameterManager:
 
             if group_indices:
                 setter_name = self._fg_param_to_setters[cat_idx]
-                setter = getattr(core.Ecotracer, setter_name)
+                setter = getattr(model, setter_name)
                 setter(values, group_indices)
 
-        # Apply environmental parameters
+        # Apply environmental and vulnerability parameters (which are not batched)
         for param in self.params.values():
-            if param.param_type == ParameterType.CONSTANT and param.is_env_param:
-                setter_name = self._env_param_to_setter[param.category_idx]
-                setter = getattr(core.Ecotracer, setter_name)
-                setter(param.value)
+            if param.param_type == ParameterType.CONSTANT:
+                if param.is_env_param:
+                    setter_name = self._env_param_to_setter[param.category_idx]
+                    setter = getattr(model, setter_name)
+                    setter(param.value)
+                elif param.param_type == ParameterType.VULNERABILITY:
+                    prey_idx, pred_idx = param.group_idx
+                    model.set_vulnerability(prey_idx, pred_idx, param.value)
 
     def set_variable_params(
         self, param_names: List[str], df_indices: List[int]
-    ) -> None:
+    ) -> Set[str]:
         """Set parameters as variable with dataframe column indices."""
+        ignored_params = set()
         for name, idx in zip(param_names, df_indices):
             if name not in self.params:
-                raise ValueError(f"Unknown parameter: {name}")
+                ignored_params.add(name)
             self.params[name].set_as_variable(idx)
 
         # Reset processed flag to ensure recalculation
         self._variable_params_processed = False
+
+        return ignored_params
 
     def _process_variable_params(self) -> None:
         """Pre-calculate variable parameter information for efficient scenario runs.
@@ -320,6 +391,7 @@ class ParameterManager:
         self._variable_fg_indices = [[] for _ in range(len(self._fg_param_prefixes))]
         self._variable_fg_df_indices = [[] for _ in range(len(self._fg_param_prefixes))]
         self._variable_env_params = []
+        self._variable_vuln_params = []
 
         # Process functional group parameters
         for param in self.params.values():
@@ -329,6 +401,11 @@ class ParameterManager:
                     setter_name = self._env_param_to_setter[param.category_idx]
                     self._variable_env_params.append(
                         (param.category_idx, param.df_idx, setter_name)
+                    )
+                elif param.param_type == ParameterType.VULNERABILITY:
+                    prey_idx, pred_idx = param.group_idx
+                    self._variable_vuln_params.append(
+                        (prey_idx, pred_idx, param.df_idx)
                     )
                 else:
                     # Group by category
@@ -351,6 +428,7 @@ class ParameterManager:
         efficient writing have not been constructed, construct them.
 
         Arguments:
+            core (CoreInterface): Core object to write to.
             scenario_values (list[float]): List of parameter values in the same order as the
                 columns passed to the set_variable_params function.
 
@@ -360,6 +438,8 @@ class ParameterManager:
         # Process variable params if not already done
         self._process_variable_params()
 
+        model = getattr(core, self.model_name)
+
         # Apply functional group parameters
         for cat_idx in range(len(self._fg_param_prefixes)):
             if self._variable_fg_indices[cat_idx]:
@@ -368,10 +448,71 @@ class ParameterManager:
                     for df_idx in self._variable_fg_df_indices[cat_idx]
                 ]
                 setter_name = self._fg_param_to_setters[cat_idx]
-                setter = getattr(core.Ecotracer, setter_name)
+                setter = getattr(model, setter_name)
                 setter(values, self._variable_fg_indices[cat_idx])
 
         # Apply environmental parameters
-        for env_idx, df_idx, setter_name in self._variable_env_params:
-            setter = getattr(core.Ecotracer, setter_name)
             setter(scenario_values[df_idx])
+
+        # Apply vulnerability parameters
+        for prey_idx, pred_idx, df_idx in self._variable_vuln_params:
+            value = scenario_values[df_idx]
+            model.set_vulnerability(prey_idx, pred_idx, value)
+
+class ParentParameterManager:
+
+    def __init__(
+        self,
+        core: CoreInterface,
+        ecosim: bool=True,
+        ecotracer: bool=True
+    ):
+        self._managers = []
+        if ecosim:
+            self._managers.append(ParameterManager.EcosimManager(core))
+
+        if ecotracer:
+            self._managers.append(ParameterManager.EcotracerManager(core))
+
+    def set_constant_params(self, param_names: List[str], param_values: List[float]):
+        unused_params = set(param_names)
+        for manager in self._managers:
+            unused_params = unused_params.intersection(
+                manager.set_constant_params(param_names, param_values)
+            )
+
+        if unused_params:
+            ValueError(f"Unrecognised parameters: {unused_params}")
+
+        return None
+
+    def apply_constant_params(self, core: CoreInterface):
+        for manager in self._managers:
+            manager.apply_constant_params(core)
+
+        return None
+
+    def set_variable_params(self, param_names: List[str], param_idxs: List[int]):
+        unused_params = set(param_names)
+        for manager in self._managers:
+            unused_params = unused_params.intersection(
+                manager.set_variable_params(param_names, param_idxs)
+            )
+
+        if unused_params:
+            ValueError(f"Unrecognised parameters: {unused_params}")
+
+        return None
+
+    def apply_variable_params(self, core: CoreInterface, param_values: List[float]):
+        for manager in self._managers:
+            manager.apply_variable_params(core, param_values)
+
+        return None
+
+    def get_fg_param_names(self, param_names):
+        param_names = []
+        for manager in self._managers:
+            param_names.extend(manager.get_fg_param_names(param_names))
+
+        return param_names

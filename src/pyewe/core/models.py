@@ -388,6 +388,19 @@ class EcosimStateManager(EwEScenarioModel, EwEParameterManager):
 
         return successful
 
+    def set_vulnerability(self, prey_idx: int, pred_idx: int, value: float):
+        """Set a single vulnerability value for a given prey and predator."""
+        self._assert_scenario_loaded()
+        # EwE uses 1-based indexing for groups
+        prey_ecosim_input = self._core.get_EcosimGroupInputs(prey_idx)
+        prey_ecosim_input.set_VulMult(pred_idx, value)
+
+    def get_vulnerability(self, prey_idx: int, pred_idx: int) -> float:
+        """Get a single vulnerability value for a given prey and predator."""
+        self._assert_scenario_loaded()
+        prey_ecosim_input = self._core.get_EcosimGroupInputs(prey_idx)
+        return prey_ecosim_input.get_VulMult(pred_idx)
+
     def set_vulnerabilities(self, vulnerabilities: np.ndarray):
         """Set ecosim vulnerabilites from a vulnerability matrix."""
         # Assume correct shape is checked before hand.

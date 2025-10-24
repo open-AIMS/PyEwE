@@ -38,7 +38,7 @@ def construct_ecotracer_df(ewe_int, filepath: str):
     col_names = ["scenario"]
     for i, pref in enumerate(p_prefixes):
         vals.extend(list(ecotracer_params.iloc[:, 2 + i]))
-        col_names.extend(ewe_int.get_ecotracer_fg_param_names(pref))
+        col_names.extend(ewe_int.get_fg_param_names(pref))
 
     vals.extend([0.2, 0.1, 0.0002, 0.005])
     col_names.extend(
@@ -50,7 +50,7 @@ def construct_ecotracer_df(ewe_int, filepath: str):
 @pytest.fixture(scope="class")
 def multi_scen_res(model_path):
     """Runs the scenario once and provides two result sets that should be equal."""
-    ewe_int = EwEScenarioInterface(model_path)
+    ewe_int = EwEScenarioInterface(model_path, constant_ecosim=True)
 
     ecosim_group_info = pd.read_csv(ECOSIM_GROUP_INFO_PATH)
     ecosim_vuln = pd.read_csv(VULNERABILITIES_PATH)
@@ -74,7 +74,7 @@ def multi_scen_res(model_path):
 
 @pytest.fixture(scope="class")
 def test_outputs_res(model_path):
-    ewe_int = EwEScenarioInterface(model_path)
+    ewe_int = EwEScenarioInterface(model_path, constant_ecosim=True)
     ewe_int._core_instance.Ecosim.load_scenario("test_outputs")
     ewe_int._core_instance.Ecotracer.load_scenario("test_outputs")
     scen_df = ewe_int.get_empty_scenarios_df([], [], 1)
@@ -86,7 +86,7 @@ def test_outputs_res(model_path):
 
 @pytest.fixture(scope="class")
 def test_outputs_2_res(model_path):
-    ewe_int = EwEScenarioInterface(model_path)
+    ewe_int = EwEScenarioInterface(model_path, constant_ecosim=True)
     ewe_int._core_instance.Ecosim.load_scenario("test_outputs")
     ewe_int._core_instance.Ecotracer.load_scenario("test_outputs_2")
     scen_df = ewe_int.get_empty_scenarios_df([], [], 1)

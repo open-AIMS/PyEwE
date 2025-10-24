@@ -17,7 +17,7 @@ import multiprocessing
 from .core import CoreInterface
 from .exceptions import EwEError, EcotracerError, EcosimError
 from .results import ResultManager, ResultSet
-from .parameter_management import ParameterManager
+from .parameter_management import ParentParameterManager, ParameterManager
 from .worker import worker_init, worker_run_scenario, worker_clean_up
 
 
@@ -49,6 +49,7 @@ class EwEScenarioInterface:
         model_path: str,
         temp_model_path: Optional[str] = None,
         ecosim_scenario: Optional[str] = None,
+        constant_ecosim: bool = False
     ):
         """Initialise a EwEScenarioInterface
 
@@ -69,7 +70,7 @@ class EwEScenarioInterface:
             temp_model_path (Optonal[str]): Path to where the model database should be
                 copied, the user is responsible for cleaning up the copy.
         """
-        self._model_pauh = model_path
+        self._model_path = model_path
         mod_path_obj = Path(model_path)
         if not mod_path_obj.exists():
             raise FileNotFoundError(model_path)
@@ -124,15 +125,16 @@ class EwEScenarioInterface:
             msg = "Failed to create and load temporary ecotracer scenario."
             raise EcotracerError(self._core_instance.get_state(), msg)
 
-        # Initialize parameter manager
-        self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
+        # Initialize parameter managers
+        self._constant_ecosim = constant_ecosim
+        self._param_manager = ParentParameterManager(self._core_instance, ecosim=not constant_ecosim)
 
         # Clean up in case the user doesn't clean up.
         atexit.register(self.cleanup)
 
     def reset_parameters(self):
         """Remove all saved constant and variable parameters names and values."""
-        self._param_manager = ParameterManager.EcotracerManager(self._core_instance)
+        self._param_manager = ParentParameterManager(self._core_instance, ecosim=not self._constant_ecosim)
 
     def format_param_names(
         self, full_param_names: List[str], functional_groups: List[str]
@@ -141,7 +143,7 @@ class EwEScenarioInterface:
             full_param_names, functional_groups, self._core_instance
         )
 
-    def get_ecotracer_fg_param_names(
+    def get_fg_param_names(
         self, param_names: Union[str, List[str]] = "all"
     ) -> List[str]:
         """Get functional group parameter names for given parameter prefixes"""
@@ -156,14 +158,6 @@ class EwEScenarioInterface:
     ) -> None:
         """Set parameters that are constant across scenarios"""
         self._param_manager.set_constant_params(param_names, param_values)
-
-    def _warn_unset_params(self):
-        # Check for unset parameters
-        unset = self._param_manager.get_unset_params()
-        if unset:
-            msg = f"The parameters {unset} have not been set to constant or variable. "
-            msg += "They will be the default EwE parameters."
-            warn(msg)
 
     def run_scenarios(
         self,
@@ -205,10 +199,6 @@ class EwEScenarioInterface:
 
         # Apply constant parameters
         self._param_manager.apply_constant_params(self._core_instance)
-
-        # Warn user about unset parameters if there are any
-        if verbose:
-            self._warn_unset_params()
 
         # Setup result manager
         result_manager = ResultManager(
@@ -265,10 +255,6 @@ class EwEScenarioInterface:
         """
         col_names = [str(cl) for cl in scenarios.columns]
         _check_scenario_column(col_names)
-
-        # Save scenarios so that when copied, new core instances have constant variables
-        self._core_instance.Ecosim.save_scenario()
-        self._core_instance.Ecotracer.save_scenario()
 
         if n_workers is None:
             n_workers = os.cpu_count()
@@ -428,7 +414,7 @@ class EwEScenarioInterface:
                 raise ValueError(msg)
 
         # Get functional group parameter names
-        cols = self.get_ecotracer_fg_param_names(fg_param_names)
+        cols = self.get_fg_param_names(fg_param_names)
         cols.extend(env_param_names)
 
         # Create empty dataframe
