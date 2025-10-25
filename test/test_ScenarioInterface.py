@@ -92,7 +92,11 @@ def scenario_run_results(model_path):
     col_names = ["scenario"]
     for i, pref in enumerate(p_prefixes):
         vals.extend(list(ecotracer_params.iloc[:, 2 + i]))
-        col_names.extend(ewe_int.get_fg_param_names(pref))
+        col_names.extend(ewe_int.get_available_parameter_names(
+            model_type="ecotracer",
+            param_types="fg",
+            prefixes=pref
+        ))
 
     vals.extend([0.2, 0.1, 0.0002, 0.005])
     col_names.extend(
@@ -107,7 +111,7 @@ def scenario_run_results(model_path):
 
     ewe_int._core_instance.Ecosim.load_scenario("test_outputs")
     ewe_int._core_instance.Ecotracer.load_scenario("test_outputs")
-    scen_df = ewe_int.get_empty_scenarios_df([], [], 1)
+    scen_df = ewe_int.get_empty_scenarios_df([], 1)
 
     res_target = ewe_int.run_scenarios(scen_df)
 
@@ -151,7 +155,11 @@ def scenario_run_results_w_forcing(model_path):
     col_names = ["scenario"]
     for i, pref in enumerate(p_prefixes):
         vals.extend(list(ecotracer_params.iloc[:, 2 + i]))
-        col_names.extend(ewe_int.get_fg_param_names(pref))
+        col_names.extend(ewe_int.get_available_parameter_names(
+            model_type="ecotracer",
+            param_types="fg",
+            prefixes=pref
+        ))
 
     vals.extend([0.2, 0.1, 0.0002, 0.005, forcing_idx])
     col_names.extend(
@@ -174,7 +182,7 @@ def scenario_run_results_w_forcing(model_path):
     ewe_int._core_instance.Ecotracer.load_scenario("test_outputs")
     # Make sure
     ewe_int._core_instance.Ecotracer.set_contaminant_forcing_number(1)
-    scen_df = ewe_int.get_empty_scenarios_df([], [], 1)
+    scen_df = ewe_int.get_empty_scenarios_df([], 1)
 
     res_target = ewe_int.run_scenarios(scen_df)
 

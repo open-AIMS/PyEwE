@@ -344,6 +344,7 @@ class ParameterManager:
         for name, value in zip(param_names, param_values):
             if name not in self.params:
                 ignored_params.add(name)
+                continue
             self.params[name].set_as_constant(value)
 
         return ignored_params
@@ -408,6 +409,7 @@ class ParameterManager:
         for name, idx in zip(param_names, df_indices):
             if name not in self.params:
                 ignored_params.add(name)
+                continue
             self.params[name].set_as_variable(idx)
 
         # Reset processed flag to ensure recalculation
