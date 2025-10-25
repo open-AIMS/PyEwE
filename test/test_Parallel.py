@@ -38,7 +38,11 @@ def construct_ecotracer_df(ewe_int, filepath: str):
     col_names = ["scenario"]
     for i, pref in enumerate(p_prefixes):
         vals.extend(list(ecotracer_params.iloc[:, 2 + i]))
-        col_names.extend(ewe_int.get_fg_param_names(pref))
+        col_names.extend(ewe_int.get_available_parameter_names(
+            model_type="ecotracer",
+            param_types="fg",
+            prefixes=pref
+        ))
 
     vals.extend([0.2, 0.1, 0.0002, 0.005])
     col_names.extend(
@@ -77,7 +81,7 @@ def test_outputs_res(model_path):
     ewe_int = EwEScenarioInterface(model_path, constant_ecosim=True)
     ewe_int._core_instance.Ecosim.load_scenario("test_outputs")
     ewe_int._core_instance.Ecotracer.load_scenario("test_outputs")
-    scen_df = ewe_int.get_empty_scenarios_df([], [], 1)
+    scen_df = ewe_int.get_empty_scenarios_df([], 1)
     res = ewe_int.run_scenarios(scen_df)
     yield res
 
@@ -89,7 +93,7 @@ def test_outputs_2_res(model_path):
     ewe_int = EwEScenarioInterface(model_path, constant_ecosim=True)
     ewe_int._core_instance.Ecosim.load_scenario("test_outputs")
     ewe_int._core_instance.Ecotracer.load_scenario("test_outputs_2")
-    scen_df = ewe_int.get_empty_scenarios_df([], [], 1)
+    scen_df = ewe_int.get_empty_scenarios_df([], 1)
     res = ewe_int.run_scenarios(scen_df)
     yield res
 
