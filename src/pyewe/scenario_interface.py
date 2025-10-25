@@ -141,11 +141,73 @@ class EwEScenarioInterface:
             full_param_names, functional_groups, self._core_instance
         )
 
-    def get_ecotracer_fg_param_names(
-        self, param_names: Union[str, List[str]] = "all"
+    def get_available_parameter_names(
+        self,
+        model_type: Union[str, List[str]] = "ecotracer",
+        param_types: Union[str, List[str]] = "all",
+        prefixes: Optional[List[str]] = None,
+        functional_groups: Optional[List[str]] = None,
     ) -> List[str]:
-        """Get functional group parameter names for given parameter prefixes"""
-        return self._param_manager.get_fg_param_names(param_names)
+        """
+        Get a list of available parameter names based on specified criteria.
+
+        Args:
+            model_type (Union[str, List[str]]): 'ecosim', 'ecotracer', or 'all'.
+                                                Can also be a list, e.g., ['ecosim', 'ecotracer'].
+            param_types (Union[str, List[str]]): 'fg' for functional group parameters,
+                                                  'env' for environmental parameters, or 'all'.
+                                                  Can also be a list, e.g., ['fg', 'env'].
+            prefixes (Optional[List[str]]): List of functional group parameter prefixes
+                                            (e.g., 'init_c', 'immig_c'). If None, includes all.
+            functional_groups (Optional[List[str]]): List of specific functional group
+                                                      names. If None, includes all functional groups.
+
+        Returns:
+            List[str]: A list of parameter names matching the criteria.
+        """
+        all_param_names = []
+
+        if isinstance(model_type, str):
+            model_type = [model_type]
+        if isinstance(param_types, str):
+            param_types = [param_types]
+
+        target_managers = []
+        if "ecosim" in model_type or "all" in model_type:
+            target_managers.append(("ecosim", self._core_instance.Ecosim))
+        if "ecotracer" in model_type or "all" in model_type:
+            target_managers.append(("ecotracer", self._core_instance.Ecotracer))
+
+        if not target_managers:
+            raise ValueError("No valid model_type specified. Must be 'ecosim', 'ecotracer', or 'all'.")
+
+        all_fg_names = self._core_instance.get_functional_group_names()
+        target_fg_names = functional_groups if functional_groups is not None else all_fg_names
+        n_chars = len(str(len(all_fg_names)))
+
+        for m_type, manager_instance in target_managers:
+            # Functional Group Parameters
+            if "fg" in param_types or "all" in param_types:
+                fg_param_map = manager_instance._GROUP_PARAM_NAMES
+                all_fg_prefixes_for_manager = list(fg_param_map.keys())
+                target_prefixes_for_manager = prefixes if prefixes is not None else all_fg_prefixes_for_manager
+
+                for prefix_key in target_prefixes_for_manager:
+                    if prefix_key not in all_fg_prefixes_for_manager:
+                        raise ValueError(f"Invalid functional group parameter prefix '{prefix_key}' for model type '{m_type}'.")
+
+                    for i, fg_name in enumerate(all_fg_names, 1):
+                        if fg_name in target_fg_names:
+                            param_name = self._param_manager._format_param_name(prefix_key, i, n_chars, fg_name)
+                            all_param_names.append(param_name)
+
+            # Environmental Parameters
+            if "env" in param_types or "all" in param_types:
+                env_param_map = manager_instance._ENV_PARAM_NAMES
+                all_env_param_names_for_manager = list(env_param_map.keys())
+                all_param_names.extend(all_env_param_names_for_manager)
+
+        return sorted(list(set(all_param_names)))
 
     def set_simulation_duration(self, n_years: int):
         """Set the number of years to run ecosim for."""
@@ -408,34 +470,27 @@ class EwEScenarioInterface:
 
     def get_empty_scenarios_df(
         self,
-        env_param_names: List[str],
-        fg_param_names: List[str],
+        param_names: List[str],
         n_scenarios: int = 1,
     ) -> DataFrame:
         """Create empty scenarios dataframe for specified parameters.
 
         Arguments:
-            env_param_names (list[str]): List of environmental parameter names.
-            fg_param_names (list[str]): List of functional group parameter names, (not
-                combined parameter names and functional group names.)
+            param_names (list[str]): List of parameter names (environmental or functional group).
+                                     These can be obtained using get_available_parameter_names().
             n_scenarios (int): Number of scenarios to create a dataframe for.
         """
-        # Validate environmental parameter names
-        for name in env_param_names:
-            if name not in self._param_manager._env_param_names:
-                msg = f"Invalid parameter name: {name}. Make sure all are "
-                msg += f"elements of {ParameterManager._env_param_names}."
-                raise ValueError(msg)
+        # Validate parameter names
+        for name in param_names:
+            if name not in self._param_manager.params:
+                raise ValueError(f"Invalid parameter name: {name}. Use get_available_parameter_names() to get valid names.")
 
-        # Get functional group parameter names
-        cols = self.get_ecotracer_fg_param_names(fg_param_names)
-        cols.extend(env_param_names)
+        cols = ["scenario"] + param_names
 
         # Create empty dataframe
-        empty = np.zeros((n_scenarios, len(cols) + 1))
+        empty = np.zeros((n_scenarios, len(cols)))
         empty[:, 0] = np.arange(1, n_scenarios + 1)
 
-        cols.insert(0, "scenario")
         return DataFrame(empty, columns=cols)
 
     def get_long_scen_dataframe(self):

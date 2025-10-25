@@ -14,6 +14,25 @@ from .utils import (
     assert_arrays_close,
 )
 
+ECOSIM_FG_FG_PARAM_NAMES = [
+]
+
+ECOTRACER_FG_PARAM_NAMES = [
+    "init_c",
+    "immig_c",
+    "direct_abs_r",
+    "phys_decay_r",
+    "meta_decay_r",
+    "excretion_r"
+]
+
+ECOTRACER_ENV_PARAM_NAMES = [
+    "env_init_c",
+    "env_base_inflow_r",
+    "env_decay_r",
+    "base_vol_ex_loss",
+    "env_inflow_forcing_idx"
+]
 
 @pytest.fixture(scope="class")
 def scenario_run_results(model_path):
@@ -236,3 +255,32 @@ class TestFormatParamNames:
         # Outputs
         returned = scenario_interface.format_param_names(full_p_names, fg_names)
         assert all([ret == ex for (ret, ex) in zip(returned, expected)])
+
+class TestParamNameRetrieval:
+
+    def test_ecosim_fg_retrieval(self, scenario_interface):
+        """Test retrieval of functional group parameter names in ecosim."""
+        param_names = scenario_interface.get_available_parameter_names("ecosim", "fg")
+
+    def test_ecotracer_fg_retrieval(self, scenario_inferface):
+        """Test retrieval of functional group parameter names in ecotracer."""
+        param_names = scenario_interface.get_available_parameter_names("ecotracer", "fg")
+
+    def test_ecosim_env_retrieval(self, scenario_interface):
+        """Test retrieval of environmental parmeter names in ecosim."""
+        param_names = scenario_interface.get_available_parameter_names("ecosim", "env")
+
+    def test_ecotracer_env_retrieval(self, scenario_interface):
+        """Test retrieval of environmental parameter names in  ecotracer."""
+        param_names = scenario_interface.get_available_parameter_names("ecotracer", "env")
+
+    def test_all_ecosim(self, scenario_interface):
+        """test retrieval of all ecotracer parameter names."""
+        param_names = scenario_interface.get_available_parameter_names("ecosim")
+
+    def test_all_ecotracer(self, scenario_interface):
+        """Test retrieval of all ecotracer parameter names."""
+        param_names = scenario_interface.get_available_parameter_names("ecotracerr")
+
+    def test_all_parameters(self, scenario_interface):
+        """Test retrieval of all parameters (ecosim + ecotracer)."""
