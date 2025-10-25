@@ -143,11 +143,62 @@ class EwEScenarioInterface:
             full_param_names, functional_groups, self._core_instance
         )
 
-    def get_fg_param_names(
-        self, param_names: Union[str, List[str]] = "all"
+    def get_available_parameter_names(
+        self,
+        model_type: Optional[Union[str, List[str]]] = None,
+        param_types: Optional[Union[str, List[str]]] = None,
+        prefixes: Optional[Union[str, List[str]]] = None,
+        functional_groups: Optional[Union[str, int, List[Union[str, int]]]] = None,
     ) -> List[str]:
-        """Get functional group parameter names for given parameter prefixes"""
-        return self._param_manager.get_fg_param_names(param_names)
+        """
+        Get a list of available parameter names based on specified criteria.
+
+        Args:
+            model_type (Optional[Union[str, List[str]]]): 'ecosim', 'ecotracer', or a list of them.
+                If None, parameters for all models are returned.
+            param_types (Optional[Union[str, List[str]]]): 'fg' for functional group parameters,
+                'env' for environmental parameters. If None, all parameter types are returned.
+            prefixes (Optional[Union[str, List[str]]]): List of functional group parameter prefixes
+                (e.g., 'init_c', 'immig_c'). If None, includes all.
+            functional_groups (Optional[Union[str, int, List[Union[str, int]]]]): List of specific functional group
+                names or 1-based indices. If None, includes all functional groups.
+
+        Returns:
+            List[str]: A sorted list of unique parameter names matching the criteria.
+        """
+        all_param_names = set()
+
+        # Normalize model_type to a list
+        if model_type is None:
+            model_types = [m.model_name.lower() for m in self._param_manager._managers]
+        elif isinstance(model_type, str):
+            model_types = [model_type.lower()]
+        else:
+            model_types = [m.lower() for m in model_type]
+
+        # Normalize param_types to a list
+        if param_types is None:
+            param_type_list = ["fg", "env"]
+        elif isinstance(param_types, str):
+            param_type_list = [param_types]
+        else:
+            param_type_list = param_types
+
+        for manager in self._param_manager._managers:
+            if manager.model_name.lower() in model_types:
+                if "fg" in param_type_list:
+                    fg_params = manager.get_fg_param_names(
+                        param_prefixes=prefixes,
+                        functional_groups=functional_groups,
+                    )
+                    all_param_names.update(fg_params)
+
+                if "env" in param_type_list:
+                    # Assuming get_env_param_names exists as per user's information
+                    env_params = manager.get_env_param_names()
+                    all_param_names.update(env_params)
+
+        return sorted(list(all_param_names))
 
     def set_simulation_duration(self, n_years: int):
         """Set the number of years to run ecosim for."""
@@ -394,34 +445,27 @@ class EwEScenarioInterface:
 
     def get_empty_scenarios_df(
         self,
-        env_param_names: List[str],
-        fg_param_names: List[str],
+        param_names: List[str],
         n_scenarios: int = 1,
     ) -> DataFrame:
         """Create empty scenarios dataframe for specified parameters.
 
         Arguments:
-            env_param_names (list[str]): List of environmental parameter names.
-            fg_param_names (list[str]): List of functional group parameter names, (not
-                combined parameter names and functional group names.)
+            param_names (list[str]): List of parameter names (environmental or functional group).
+                                     These can be obtained using get_available_parameter_names().
             n_scenarios (int): Number of scenarios to create a dataframe for.
         """
-        # Validate environmental parameter names
-        for name in env_param_names:
-            if name not in self._param_manager._env_param_names:
-                msg = f"Invalid parameter name: {name}. Make sure all are "
-                msg += f"elements of {ParameterManager._env_param_names}."
-                raise ValueError(msg)
+        # Validate parameter names
+        for name in param_names:
+            if name not in self._param_manager.params:
+                raise ValueError(f"Invalid parameter name: {name}. Use get_available_parameter_names() to get valid names.")
 
-        # Get functional group parameter names
-        cols = self.get_fg_param_names(fg_param_names)
-        cols.extend(env_param_names)
+        cols = ["scenario"] + param_names
 
         # Create empty dataframe
-        empty = np.zeros((n_scenarios, len(cols) + 1))
+        empty = np.zeros((n_scenarios, len(cols)))
         empty[:, 0] = np.arange(1, n_scenarios + 1)
 
-        cols.insert(0, "scenario")
         return DataFrame(empty, columns=cols)
 
     def get_long_scen_dataframe(self):

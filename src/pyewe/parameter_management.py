@@ -1,4 +1,4 @@
-from typing import Union, Dict, List, Tuple, Set
+from typing import Union, Dict, List, Tuple, Set, Optional
 from math import nan
 
 from pyewe import CoreInterface
@@ -184,8 +184,8 @@ class ParameterManager:
             6: "set_qbmax_qbio",
             7: "set_switching_power",
         }
-        env_param_names = ["n_years"]
-        env_param_to_setter = {0: "set_n_years"}
+        env_param_names = []
+        env_param_to_setter = {}
 
         manager = ParameterManager(
             "Ecosim",
@@ -265,31 +265,71 @@ class ParameterManager:
         """Get list of all parameter names"""
         return list(self.params.keys())
 
+    def get_env_param_names(self) -> List[str]:
+        """Get list of all parameter names."""
+        return self._env_param_names
+
     def get_fg_param_names(
-        self, param_prefixes: Union[str, List[str]] = "all"
+        self,
+        param_prefixes: Optional[Union[str, List[str]]] = None,
+        functional_groups: Optional[Union[str, int, List[Union[str, int]]]] = None,
     ) -> List[str]:
-        """Get functional group parameter names for given prefixes.
+        """Get functional group parameter names for given prefixes and functional groups.
 
         Arguments:
-            param_prefixes (Union[str, List[str]]): List of parameter prefixes or 'all' to
-                get parameter names for.
+            param_prefixes (Optional[Union[str, List[str]]]): List of parameter prefixes or a single prefix string.
+                If None, all prefixes are used.
+            functional_groups (Optional[Union[str, int, List[Union[str, int]]]]): A single functional group name (str) or
+                1-based index (int), or a list of names or indices. If None, all functional groups are used.
 
         Returns:
-            list[str]: list of functinoal group parameter names.
+            list[str]: list of functional group parameter names.
         """
-        if isinstance(param_prefixes, str) and param_prefixes == "all":
-            param_prefixes = self._fg_param_prefixes
+        # Handle param_prefixes
+        if param_prefixes is None:
+            prefix_list = self._fg_param_prefixes
         elif isinstance(param_prefixes, str):
-            param_prefixes = [param_prefixes]
+            prefix_list = [param_prefixes]
+        else:
+            prefix_list = param_prefixes
+
+        # Handle functional_groups
+        target_fg_names = set()
+        if functional_groups is None:
+            target_fg_names = set(self.fg_names)
+        else:
+            if not isinstance(functional_groups, list):
+                functional_groups = [functional_groups]
+
+            for fg_identifier in functional_groups:
+                if isinstance(fg_identifier, int):
+                    # 1-based index
+                    if 1 <= fg_identifier <= len(self.fg_names):
+                        target_fg_names.add(self.fg_names[fg_identifier - 1])
+                    else:
+                        raise ValueError(f"Invalid functional group index: {fg_identifier}")
+                elif isinstance(fg_identifier, str):
+                    if fg_identifier in self.fg_names:
+                        target_fg_names.add(fg_identifier)
+                    else:
+                        raise ValueError(f"Invalid functional group name: {fg_identifier}")
+                else:
+                    raise TypeError(f"Unsupported type in functional_groups: {type(fg_identifier)}")
 
         names = []
-        for prefix in param_prefixes:
+        for prefix in prefix_list:
             if prefix not in self._fg_param_prefixes:
                 raise ValueError(f"Invalid parameter prefix: {prefix}")
-            names.extend(
-                [name for name in self.params.keys() if name.startswith(prefix + "_")]
-            )
-        return names
+
+            for fg_name in target_fg_names:
+                # Need to get the index for the name
+                fg_index = self.fg_names.index(fg_name) + 1
+                n_chars = len(str(len(self.fg_names)))
+                param_name = self._format_param_name(prefix, fg_index, n_chars, fg_name)
+                if param_name in self.params:  # Check if the parameter actually exists
+                    names.append(param_name)
+
+        return sorted(names)
 
     def set_constant_params(
         self, param_names: List[str], param_values: List[float]
