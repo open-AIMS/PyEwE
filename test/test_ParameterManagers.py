@@ -136,7 +136,7 @@ class TestParameterManager:
         assert f"init_c_3_{FG_NAMES[2]}" in init_c_immig_c
         assert f"immig_c_4_{FG_NAMES[3]}" in init_c_immig_c
 
-        all_fg_names = ecotracer_manager.get_fg_param_names("all")
+        all_fg_names = ecotracer_manager.get_fg_param_names()
         assert f"init_c_1_{FG_NAMES[0]}" in all_fg_names
         assert f"immig_c_3_{FG_NAMES[2]}" in all_fg_names
         assert f"direct_abs_r_4_{FG_NAMES[3]}" in all_fg_names

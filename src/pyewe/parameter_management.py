@@ -492,6 +492,8 @@ class ParameterManager:
                 setter(values, self._variable_fg_indices[cat_idx])
 
         # Apply environmental parameters
+        for _, df_idx, setter_name in self._variable_env_params:
+            setter = getattr(model, setter_name)
             setter(scenario_values[df_idx])
 
         # Apply vulnerability parameters
