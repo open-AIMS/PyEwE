@@ -38,10 +38,10 @@ class EwEScenarioInterface:
     """Interface for running Ecopath with Ecosim scenarios.
 
     Attributes:
+        parameter_manager (ParameterManager): Parameter manager object to manage variable and
+            constant params.
         _model_path (str): Path to EwE model database file.
         _temp_model_path (str): Path to temporary model database file.
-        _param_manager (ParameterManager): Parameter manager object to manage variable and
-            constant params.
     """
 
     def __init__(
@@ -127,14 +127,14 @@ class EwEScenarioInterface:
 
         # Initialize parameter managers
         self._constant_ecosim = constant_ecosim
-        self._param_manager = ParentParameterManager(self._core_instance, ecosim=not constant_ecosim)
+        self.parameter_manager = ParentParameterManager(self._core_instance, ecosim=not constant_ecosim)
 
         # Clean up in case the user doesn't clean up.
         atexit.register(self.cleanup)
 
     def reset_parameters(self):
         """Remove all saved constant and variable parameters names and values."""
-        self._param_manager = ParentParameterManager(self._core_instance, ecosim=not self._constant_ecosim)
+        self.parameter_manager = ParentParameterManager(self._core_instance, ecosim=not self._constant_ecosim)
 
     def format_param_names(
         self, full_param_names: List[str], functional_groups: List[str]
@@ -142,63 +142,6 @@ class EwEScenarioInterface:
         return ParameterManager.format_param_names(
             full_param_names, functional_groups, self._core_instance
         )
-
-    def get_available_parameter_names(
-        self,
-        model_type: Optional[Union[str, List[str]]] = None,
-        param_types: Optional[Union[str, List[str]]] = None,
-        prefixes: Optional[Union[str, List[str]]] = None,
-        functional_groups: Optional[Union[str, int, List[Union[str, int]]]] = None,
-    ) -> List[str]:
-        """
-        Get a list of available parameter names based on specified criteria.
-
-        Args:
-            model_type (Optional[Union[str, List[str]]]): 'ecosim', 'ecotracer', or a list of them.
-                If None, parameters for all models are returned.
-            param_types (Optional[Union[str, List[str]]]): 'fg' for functional group parameters,
-                'env' for environmental parameters. If None, all parameter types are returned.
-            prefixes (Optional[Union[str, List[str]]]): List of functional group parameter prefixes
-                (e.g., 'init_c', 'immig_c'). If None, includes all.
-            functional_groups (Optional[Union[str, int, List[Union[str, int]]]]): List of specific functional group
-                names or 1-based indices. If None, includes all functional groups.
-
-        Returns:
-            List[str]: A sorted list of unique parameter names matching the criteria.
-        """
-        all_param_names = set()
-
-        # Normalize model_type to a list
-        if model_type is None:
-            model_types = [m.model_name.lower() for m in self._param_manager._managers]
-        elif isinstance(model_type, str):
-            model_types = [model_type.lower()]
-        else:
-            model_types = [m.lower() for m in model_type]
-
-        # Normalize param_types to a list
-        if param_types is None:
-            param_type_list = ["fg", "env"]
-        elif isinstance(param_types, str):
-            param_type_list = [param_types]
-        else:
-            param_type_list = param_types
-
-        for manager in self._param_manager._managers:
-            if manager.model_name.lower() in model_types:
-                if "fg" in param_type_list:
-                    fg_params = manager.get_fg_param_names(
-                        param_prefixes=prefixes,
-                        functional_groups=functional_groups,
-                    )
-                    all_param_names.update(fg_params)
-
-                if "env" in param_type_list:
-                    # Assuming get_env_param_names exists as per user's information
-                    env_params = manager.get_env_param_names()
-                    all_param_names.update(env_params)
-
-        return sorted(list(all_param_names))
 
     def set_simulation_duration(self, n_years: int):
         """Set the number of years to run ecosim for."""
@@ -208,7 +151,7 @@ class EwEScenarioInterface:
         self, param_names: List[str], param_values: List[float]
     ) -> None:
         """Set parameters that are constant across scenarios"""
-        self._param_manager.set_constant_params(param_names, param_values)
+        self.parameter_manager.set_constant_params(param_names, param_values)
 
     def run_scenarios(
         self,
@@ -244,12 +187,12 @@ class EwEScenarioInterface:
         _check_scenario_column(col_names)
 
         # Set variable parameters from dataframe columns (excluding scenario column)
-        self._param_manager.set_variable_params(
+        self.parameter_manager.set_variable_params(
             col_names[1:], list(range(1, len(col_names)))
         )
 
         # Apply constant parameters
-        self._param_manager.apply_constant_params(self._core_instance)
+        self.parameter_manager.apply_constant_params(self._core_instance)
 
         # Setup result manager
         result_manager = ResultManager(
@@ -266,7 +209,7 @@ class EwEScenarioInterface:
             disable=not show_progress,
         ):
             # Apply variable parameters for this scenario
-            self._param_manager.apply_variable_params(self._core_instance, list(row))
+            self.parameter_manager.apply_variable_params(self._core_instance, list(row))
 
             # Run the model
             self._core_instance.Ecotracer.run()
@@ -320,13 +263,13 @@ class EwEScenarioInterface:
         n_scenarios = len(scenarios)
 
         # Set variable parameters from dataframe columns (excluding scenario column)
-        self._param_manager.set_variable_params(
+        self.parameter_manager.set_variable_params(
             col_names[1:], list(range(1, len(col_names)))
         )
 
         worker_init_args = (
             self._temp_model_path,
-            self._param_manager,
+            self.parameter_manager,
             mp_buffers,
             save_vars,
             scenarios,
@@ -457,7 +400,7 @@ class EwEScenarioInterface:
         """
         # Validate parameter names
         for name in param_names:
-            if name not in self._param_manager.params:
+            if name not in self.parameter_manager.params:
                 raise ValueError(f"Invalid parameter name: {name}. Use get_available_parameter_names() to get valid names.")
 
         cols = ["scenario"] + param_names
@@ -476,8 +419,8 @@ class EwEScenarioInterface:
         """
         col_names: list[str] = ["Scenario", "Group", "Parameter", "Value"]
         fg_names = self._core_instance.get_functional_group_names()
-        fg_params = self._param_manager._fg_param_prefixes
-        env_params = self._param_manager._env_param_names
+        fg_params = self.parameter_manager._fg_param_prefixes
+        env_params = self.parameter_manager._env_param_names
 
         data = []
 

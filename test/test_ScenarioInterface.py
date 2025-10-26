@@ -92,7 +92,7 @@ def scenario_run_results(model_path):
     col_names = ["scenario"]
     for i, pref in enumerate(p_prefixes):
         vals.extend(list(ecotracer_params.iloc[:, 2 + i]))
-        col_names.extend(ewe_int.get_available_parameter_names(
+        col_names.extend(ewe_int.parameter_manager.get_available_parameter_names(
             model_type="ecotracer",
             param_types="fg",
             prefixes=pref
@@ -155,7 +155,7 @@ def scenario_run_results_w_forcing(model_path):
     col_names = ["scenario"]
     for i, pref in enumerate(p_prefixes):
         vals.extend(list(ecotracer_params.iloc[:, 2 + i]))
-        col_names.extend(ewe_int.get_available_parameter_names(
+        col_names.extend(ewe_int.parameter_manager.get_available_parameter_names(
             model_type="ecotracer",
             param_types="fg",
             prefixes=pref
@@ -299,7 +299,7 @@ class TestParamNameRetrieval:
 
     def test_ecosim_fg_retrieval(self, scenario_interface):
         """Test retrieval of functional group parameter names in ecosim."""
-        param_names = set(scenario_interface.get_available_parameter_names("ecosim", "fg"))
+        param_names = set(scenario_interface.parameter_manager.get_available_parameter_names("ecosim", "fg"))
         fg_prefixes = [pn + "_" for pn in ECOSIM_FG_PARAM_NAMES]
         expected = set(''.join(s) for s  in itertools.product(fg_prefixes, BLACK_SEA_FG_NAMES))
 
@@ -308,7 +308,7 @@ class TestParamNameRetrieval:
 
     def test_ecotracer_fg_retrieval(self, scenario_interface):
         """Test retrieval of functional group parameter names in ecotracer."""
-        param_names = set(scenario_interface.get_available_parameter_names("ecotracer", "fg"))
+        param_names = set(scenario_interface.parameter_manager.get_available_parameter_names("ecotracer", "fg"))
         fg_prefixes = [pn + "_" for pn in ECOTRACER_FG_PARAM_NAMES]
         expected = set(''.join(s) for s  in itertools.product(fg_prefixes, BLACK_SEA_FG_NAMES))
 
@@ -316,17 +316,17 @@ class TestParamNameRetrieval:
 
     def test_ecosim_env_retrieval(self, scenario_interface):
         """Test retrieval of environmental parmeter names in ecosim."""
-        param_names = set(scenario_interface.get_available_parameter_names("ecosim", "env"))
+        param_names = set(scenario_interface.parameter_manager.get_available_parameter_names("ecosim", "env"))
         assert (set(ECOSIM_ENV_PARAM_NAMES) == param_names)
 
     def test_ecotracer_env_retrieval(self, scenario_interface):
         """Test retrieval of environmental parameter names in  ecotracer."""
-        param_names = set(scenario_interface.get_available_parameter_names("ecotracer", "env"))
+        param_names = set(scenario_interface.parameter_manager.get_available_parameter_names("ecotracer", "env"))
         assert (set(ECOTRACER_ENV_PARAM_NAMES) == param_names)
 
     def test_all_ecosim(self, scenario_interface):
         """test retrieval of all ecotracer parameter names."""
-        param_names = set(scenario_interface.get_available_parameter_names("ecosim"))
+        param_names = set(scenario_interface.parameter_manager.get_available_parameter_names("ecosim"))
         fg_prefixes = [pn + "_" for pn in ECOSIM_FG_PARAM_NAMES]
         expected = set(''.join(s) for s  in itertools.product(fg_prefixes, BLACK_SEA_FG_NAMES))
 
@@ -334,7 +334,7 @@ class TestParamNameRetrieval:
 
     def test_all_ecotracer(self, scenario_interface):
         """Test retrieval of all ecotracer parameter names."""
-        param_names = set(scenario_interface.get_available_parameter_names("ecotracer"))
+        param_names = set(scenario_interface.parameter_manager.get_available_parameter_names("ecotracer"))
         fg_prefixes = [pn + "_" for pn in ECOTRACER_FG_PARAM_NAMES]
         fg_expected = set(''.join(s) for s  in itertools.product(fg_prefixes, BLACK_SEA_FG_NAMES))
         env_expected = set(ECOTRACER_ENV_PARAM_NAMES)
@@ -344,7 +344,7 @@ class TestParamNameRetrieval:
 
     def test_all_parameters(self, scenario_interface):
         """Test retrieval of all parameters (ecosim + ecotracer)."""
-        param_names = set(scenario_interface.get_available_parameter_names())
+        param_names = set(scenario_interface.parameter_manager.get_available_parameter_names())
         tracer_fg_prefixes = [pn + "_" for pn in ECOTRACER_FG_PARAM_NAMES]
         tracer_fg_expected = set(''.join(s) for s  in itertools.product(tracer_fg_prefixes, BLACK_SEA_FG_NAMES))
         tracer_env_expected = set(ECOTRACER_ENV_PARAM_NAMES)

@@ -38,7 +38,7 @@ def construct_ecotracer_df(ewe_int, filepath: str):
     col_names = ["scenario"]
     for i, pref in enumerate(p_prefixes):
         vals.extend(list(ecotracer_params.iloc[:, 2 + i]))
-        col_names.extend(ewe_int.get_available_parameter_names(
+        col_names.extend(ewe_int.parameter_manager.get_available_parameter_names(
             model_type="ecotracer",
             param_types="fg",
             prefixes=pref
