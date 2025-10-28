@@ -342,9 +342,9 @@ class TestParamNameRetrieval:
 
         assert (expected == param_names)
 
-    def test_all_parameters(self, scenario_interface):
-        """Test retrieval of all parameters (ecosim + ecotracer)."""
-        param_names = set(scenario_interface.parameter_manager.get_available_parameter_names())
+    def test_ecosim_ecotracer_parameters(self, scenario_interface):
+        """Test retrieval of ecosim and ecotracer."""
+        param_names = set(scenario_interface.parameter_manager.get_available_parameter_names(["ecosim", "ecotracer"]))
         tracer_fg_prefixes = [pn + "_" for pn in ECOTRACER_FG_PARAM_NAMES]
         tracer_fg_expected = set(''.join(s) for s  in itertools.product(tracer_fg_prefixes, BLACK_SEA_FG_NAMES))
         tracer_env_expected = set(ECOTRACER_ENV_PARAM_NAMES)

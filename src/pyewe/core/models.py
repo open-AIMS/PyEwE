@@ -160,6 +160,13 @@ class EwEModel:
         self._core = core
         self._state = state
 
+    def _assert_setter_list_length(self, property: list):
+        if len(property) != self._core.nGroups:
+            msg = f"Expected list of length {self._core.nGroups} "
+            msg += f"but received {len(property)}"
+            raise EcopathError(self._state, msg)
+
+
 
 class EwEScenarioModel(EwEModel):
     """Abstract class to represent EwE Models that implement scenarios."""
@@ -191,12 +198,6 @@ class EwEScenarioModel(EwEModel):
     def _assert_scenario_loaded(self):
         """Check that a scenario is loaded. Throw error is not loaded."""
         pass
-
-    def _assert_setter_list_length(self, property: list):
-        if len(property) != self._core.nGroups:
-            msg = f"Expected list of length {self._core.nGroups} "
-            msg += f"but received {len(property)}"
-            raise EcopathError(self._state, msg)
 
     def _load_named_scenario(self, name: str) -> bool:
         """Load a scenario with the given name."""
@@ -294,6 +295,26 @@ class EwEScenarioModel(EwEModel):
     def run(self) -> bool:
         """Run the model."""
         pass
+
+
+class EcopathStateManager(EwEModel, EwEParameterManager):
+
+    _GROUP_PARAM_CONTAINER_NAME = "get_EcopathGroupInputs"
+    _GROUP_PARAM_NAMES = {
+        "immigration": ("get_Immigration", "set_Immigration"),
+        "emigration": ("get_Emigration", "set_Emigration"),
+        "bio_accum": ("get_BioAccumInput", "set_BioAccumInput"),
+    }
+    _ENV_PARAM_CONTAINER_NAME = ""
+    _ENV_PARAM_NAMES = {
+    }
+
+    def __init__(self, core, state):
+        super().__init__(core, state)
+
+    def _assert_scenario_loaded(self):
+        if not self._state.HasEcopathLoaded():
+            raise EcopathError(self._state, "No Ecopath model loaded.")
 
 
 class EcosimStateManager(EwEScenarioModel, EwEParameterManager):

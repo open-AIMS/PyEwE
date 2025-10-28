@@ -162,6 +162,33 @@ class ParameterManager:
         )
 
     @staticmethod
+    def EcopathManager(core:CoreInterface):
+        """Given a core instance, construct an Ecopath parameter manager."""
+        fg_param_prefixes = [
+            "immigration",
+            "emigration",
+            "bio_accum",
+        ]
+        fg_param_to_setter = {
+            0: "set_immigration",
+            1: "set_emigration",
+            2: "set_bio_acuum",
+        }
+        env_param_names = []
+        env_param_to_setter = {}
+
+        manager = ParameterManager(
+            "Ecopath",
+            core.get_functional_group_names(),
+            fg_param_prefixes,
+            fg_param_to_setter,
+            env_param_names,
+            env_param_to_setter,
+        )
+
+        return manager
+
+    @staticmethod
     def EcosimManager(core: CoreInterface):
         """Given a core instance, construct an Ecosim parameter manager."""
         fg_param_prefixes = [
@@ -264,6 +291,91 @@ class ParameterManager:
     def get_all_param_names(self) -> List[str]:
         """Get list of all parameter names"""
         return list(self.params.keys())
+
+    def get_vulnerability_names(
+        self,
+        core: CoreInterface,
+        prey: Optional[Union[str, int, List[Union[str, int]]]] = None,
+        predators: Optional[Union[str, int, List[Union[str, int]]]] = None,
+    ) -> List[str]:
+        """Get a list of valid vulnerability parameter names, with optional filters.
+
+        A vulnerability parameter is considered valid if the predator consumes the prey
+        in the base Ecopath model (i.e., the diet composition is > 0).
+
+        Arguments:
+            core (CoreInterface): The EwE core instance to check against.
+            prey (Optional): Filter for prey. Can be a name (str), 1-based index (int),
+                or a list of names/indices. If None, all prey are included.
+            predators (Optional): Filter for predators. Can be a name (str), 1-based index (int),
+                or a list of names/indices. If None, all predators are included.
+
+        Returns:
+            List[str]: A sorted list of valid vulnerability parameter names.
+        """
+        if self.model_name != "Ecosim":
+            return []
+
+        # Resolve prey filter
+        if prey is None:
+            target_prey_names = set(self.fg_names)
+        else:
+            target_prey_names = set()
+            prey_filter = prey if isinstance(prey, list) else [prey]
+            for identifier in prey_filter:
+                if isinstance(identifier, int):
+                    if 1 <= identifier <= len(self.fg_names):
+                        target_prey_names.add(self.fg_names[identifier - 1])
+                    else:
+                        raise ValueError(f"Invalid prey index: {identifier}")
+                elif isinstance(identifier, str):
+                    if identifier in self.fg_names:
+                        target_prey_names.add(identifier)
+                    else:
+                        raise ValueError(f"Invalid prey name: {identifier}")
+                else:
+                    raise TypeError(f"Unsupported type in prey filter: {type(identifier)}")
+
+        # Resolve predator filter
+        if predators is None:
+            target_predator_names = set(self.fg_names)
+        else:
+            target_predator_names = set()
+            predator_filter = predators if isinstance(predators, list) else [predators]
+            for identifier in predator_filter:
+                if isinstance(identifier, int):
+                    if 1 <= identifier <= len(self.fg_names):
+                        target_predator_names.add(self.fg_names[identifier - 1])
+                    else:
+                        raise ValueError(f"Invalid predator index: {identifier}")
+                elif isinstance(identifier, str):
+                    if identifier in self.fg_names:
+                        target_predator_names.add(identifier)
+                    else:
+                        raise ValueError(f"Invalid predator name: {identifier}")
+                else:
+                    raise TypeError(f"Unsupported type in predator filter: {type(identifier)}")
+
+        valid_names = []
+        diet_matrix = core.Ecopath.get_diet_matrix()
+
+        for name, param in self.params.items():
+            if param.param_type == ParameterType.VULNERABILITY:
+                prey_idx, pred_idx = param.group_idx
+                prey_name = self.fg_names[prey_idx - 1]
+                pred_name = self.fg_names[pred_idx - 1]
+
+                # Apply filters
+                if prey_name not in target_prey_names:
+                    continue
+                if pred_name not in target_predator_names:
+                    continue
+
+                # Check for validity in diet matrix
+                if diet_matrix[prey_idx - 1, pred_idx - 1] > 0:
+                    valid_names.append(name)
+
+        return sorted(valid_names)
 
     def get_env_param_names(self) -> List[str]:
         """Get list of all parameter names."""
@@ -511,7 +623,9 @@ class ParentParameterManager:
         ecosim: bool=True,
         ecotracer: bool=True
     ):
-        self._managers = []
+        self._managers = [
+            ParameterManager.EcopathManager(core)
+        ]
         if ecosim:
             self._managers.append(ParameterManager.EcosimManager(core))
 
@@ -560,6 +674,21 @@ class ParentParameterManager:
             param_names.extend(manager.get_fg_param_names(param_names))
 
         return param_names
+
+    def get_vulnerability_names(
+        self,
+        core: CoreInterface,
+        prey: Optional[Union[str, int, List[Union[str, int]]]] = None,
+        predators: Optional[Union[str, int, List[Union[str, int]]]] = None,
+    ) -> List[str]:
+        """Get a list of valid vulnerability parameter names from the Ecosim manager."""
+        for manager in self._managers:
+            if manager.model_name == "Ecosim":
+                # Delegate the call to the Ecosim ParameterManager
+                return manager.get_vulnerability_names(core, prey=prey, predators=predators)
+
+        # Return an empty list if no Ecosim manager is found
+        return []
 
     def get_available_parameter_names(
         self,

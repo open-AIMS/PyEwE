@@ -549,3 +549,60 @@ class TestEcotracerProperties:
         assert all(
             [isclose(exp, ret, rel_tol=1e-7) for (exp, ret) in zip(to_set, retrieved)]
         )
+
+
+class TestEcopathProperties:
+
+    def test_ecopath_get_property_exceptions(self,):
+        """
+        Test that accessing Ecopath properties raises an error
+        if no Ecopath model is loaded.
+        """
+        core = CoreInterface()
+        # NOTE: Do not load a model.
+
+        expected_error_msg = "No Ecopath model loaded."
+
+        # Test Group Parameters
+        group_params = core.Ecopath._GROUP_PARAM_NAMES.keys()
+        for param_name in group_params:
+            getter_method_name = f"get_{param_name}"
+            with pytest.raises(EcopathError, match=expected_error_msg):
+                getattr(core.Ecopath, getter_method_name)()
+
+            setter_method_name = f"set_{param_name}"
+            dummy_data = [0.0] * N_GROUPS
+            with pytest.raises(EcopathError, match=expected_error_msg):
+                getattr(core.Ecopath, setter_method_name)(dummy_data)
+
+    def test_ecopath_setters_and_getters(self, tmp_model_path):
+        """Test the Ecopath property setters and getters."""
+        core = CoreInterface()
+        core.load_model(tmp_model_path)
+
+        # Ecopath parameters do not require a scenario to be loaded, just the model.
+        # We will test by setting a value and immediately getting it back.
+
+        # Test Group Parameters
+        group_params = core.Ecopath._GROUP_PARAM_NAMES.keys()
+        for param_name in group_params:
+            setter_method_name = f"set_{param_name}"
+            getter_method_name = f"get_{param_name}"
+
+            # Generate random values to set for all groups
+            to_set = [random() for _ in range(N_GROUPS)]
+
+            # Use the setter
+            getattr(core.Ecopath, setter_method_name)(to_set)
+
+            # Use the getter
+            retrieved = getattr(core.Ecopath, getter_method_name)()
+
+            # Verify that the retrieved values match the set values
+            assert len(retrieved) == N_GROUPS
+            assert all(
+                isclose(exp, ret, rel_tol=1e-7)
+                for exp, ret in zip(to_set, retrieved)
+            )
+
+        core.close_model()

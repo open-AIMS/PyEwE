@@ -12,7 +12,7 @@ from .module import (
     result_type_enum_array,
     py_bool_to_ewe_tristate,
 )
-from .models import EcosimStateManager, EcotracerStateManager
+from .models import EcopathStateManager, EcosimStateManager, EcotracerStateManager
 
 
 class CoreInterface:
@@ -42,6 +42,7 @@ class CoreInterface:
         self._ecotracer_result_writer = core_module.cEcotracerResultWriter(self._core)
         self._state = EwEState(self._core)
 
+        self.Ecopath = EcopathStateManager(self._core, self._state)
         self.Ecosim = EcosimStateManager(self._core, self._state)
         self.Ecotracer = EcotracerStateManager(self._core, self._state)
 
